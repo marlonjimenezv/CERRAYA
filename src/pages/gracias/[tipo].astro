@@ -14,6 +14,13 @@ export function getStaticPaths() {
       },
     },
     {
+      params: { tipo: 'pregunta' },
+      props: {
+        titulo: '¡Gracias por tu pregunta!',
+        texto: 'La revisamos y, si nos dejaste tu contacto, te avisamos cuando la publiquemos en Consejos. Si es una urgencia, llámanos.',
+      },
+    },
+    {
       params: { tipo: 'aliados' },
       props: {
         titulo: '¡Gracias por postularte!',

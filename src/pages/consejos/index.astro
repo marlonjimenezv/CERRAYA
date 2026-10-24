@@ -1,0 +1,111 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import { empresa } from '../../data/empresa';
+import { categoriasConsejo } from '../../data/consejos';
+
+const consejos = (await getCollection('consejos')).sort(
+  (a, b) => Number(b.data.destacado) - Number(a.data.destacado) || b.data.fecha.getTime() - a.data.fecha.getTime(),
+);
+const categorias = categoriasConsejo.filter((c) => consejos.some((x) => x.data.categoria === c));
+const fecha = (d: Date) => d.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+---
+<Base
+  title="Consejos de cerrajería y seguridad"
+  description={`Guías y recomendaciones de cerrajeros con más de ${empresa.experiencia} años de experiencia: qué hacer si te quedas por fuera, cómo elegir una cerradura digital, cuándo cambiar las guardas y más.`}
+>
+  <section class="hero-cons">
+    <div class="container">
+      <span class="eyebrow">Consejos</span>
+      <h1>Consejos del cerrajero</h1>
+      <p class="lead">Lo que hemos aprendido en más de {empresa.experiencia} años abriendo, cambiando e instalando cerraduras. ¿Tienes una duda? <a href="#pregunta">Pregúntanos</a> y la respondemos aquí.</p>
+      {categorias.length > 1 && (
+        <div class="filtro" role="group" aria-label="Filtrar por tema">
+          <button type="button" class="chip activo" data-cat="">Todos</button>
+          {categorias.map((c) => <button type="button" class="chip" data-cat={c}>{c}</button>)}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="section section-tight">
+    <div class="container grid grid-3" id="lista">
+      {consejos.map((c) => (
+        <a class="card articulo" href={`/consejos/${c.id}`} data-cat={c.data.categoria}>
+          {c.data.imagen && <Image src={c.data.imagen} alt="" widths={[400, 700]} sizes="(max-width: 680px) 100vw, 33vw" />}
+          <div class="articulo-texto">
+            <span class="cat">{c.data.categoria}</span>
+            <h2>{c.data.titulo}</h2>
+            <p>{c.data.descripcion}</p>
+            <span class="meta">{fecha(c.data.fecha)} · Leer<Icon name="flecha" /></span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="section section-cream" id="pregunta">
+    <div class="narrow">
+      <div class="section-head">
+        <span class="eyebrow">Pregúntale al cerrajero</span>
+        <h2>¿Tienes una duda sobre cerraduras o seguridad?</h2>
+        <p class="lead">Escríbela. Respondemos las mejores aquí mismo, sin publicar tu nombre si no quieres.</p>
+      </div>
+      <form class="form card" name="pregunta" method="POST" action="/gracias/pregunta" data-netlify="true" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="pregunta" />
+        <p class="hidden-field"><label>No llenar: <input name="bot-field" /></label></p>
+        <div class="field">
+          <label for="p-pregunta">Tu pregunta</label>
+          <textarea id="p-pregunta" name="pregunta" rows="4" required placeholder="Ej: ¿Es seguro dejar una cerradura digital en una puerta que da a la calle?"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="p-nombre">Nombre <span class="opcional">(opcional)</span></label>
+            <input id="p-nombre" name="nombre" autocomplete="name" />
+          </div>
+          <div class="field">
+            <label for="p-contacto">WhatsApp o correo <span class="opcional">(opcional, para avisarte)</span></label>
+            <input id="p-contacto" name="contacto" />
+          </div>
+        </div>
+        <label class="consent">
+          <input type="checkbox" name="autoriza_datos" value="si" required />
+          <span>Autorizo a {empresa.nombre} a publicar mi pregunta (sin mis datos de contacto) y a tratar mis datos según la <a href="/privacidad" target="_blank">política de tratamiento de datos</a>.</span>
+        </label>
+        <button class="btn btn-green btn-lg btn-block" type="submit">Enviar pregunta<Icon name="flecha" /></button>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('.filtro .chip');
+  const items = document.querySelectorAll<HTMLElement>('.articulo');
+  chips.forEach((c) =>
+    c.addEventListener('click', () => {
+      chips.forEach((x) => x.classList.toggle('activo', x === c));
+      items.forEach((i) => (i.hidden = !!c.dataset.cat && i.dataset.cat !== c.dataset.cat));
+    }),
+  );
+</script>
+
+<style>
+  .hero-cons { background: var(--cream); padding: clamp(2.5rem, 6vw, 4rem) 0 2rem; }
+  .hero-cons .lead a { color: var(--green-600); font-weight: 600; }
+  .filtro { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.5rem; }
+  .filtro .chip { cursor: pointer; font: inherit; font-size: .88rem; font-weight: 600; }
+  .filtro .chip.activo { background: var(--green-800); border-color: var(--green-800); color: var(--cream); }
+  .articulo { padding: 0; overflow: hidden; text-decoration: none; display: flex; flex-direction: column; transition: border-color .18s, box-shadow .18s, transform .18s; }
+  .articulo[hidden] { display: none; }
+  .articulo:hover { border-color: var(--green-600); box-shadow: var(--shadow-sm); transform: translateY(-2px); }
+  .articulo :global(img) { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+  .articulo-texto { padding: 1.2rem 1.3rem 1.4rem; display: flex; flex-direction: column; gap: .4rem; flex: 1; }
+  .cat { font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--green-600); }
+  .articulo h2 { font-size: 1.12rem; margin: 0; }
+  .articulo p { color: var(--muted); font-size: .93rem; margin: 0; }
+  .meta { margin-top: auto; padding-top: .6rem; display: inline-flex; align-items: center; gap: .35rem; font-size: .85rem; font-weight: 600; color: var(--green-800); }
+  .meta :global(svg) { width: 16px; height: 16px; }
+  .opcional { font-weight: 400; color: var(--muted); font-size: .85rem; }
+</style>

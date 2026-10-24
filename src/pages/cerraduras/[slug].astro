@@ -1,10 +1,12 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Medidor from '../../components/Medidor.astro';
 import Ilustracion from '../../components/Ilustracion.astro';
 import ProductoCard from '../../components/ProductoCard.astro';
 import CtaFinal from '../../components/CtaFinal.astro';
 import { empresa } from '../../data/empresa';
+import { fotoTipo } from '../../data/fotos';
 import { tiposCerradura, productos, rangoPrecios, pesos, type TipoCerradura } from '../../data/cerraduras';
 
 export function getStaticPaths() {
@@ -13,6 +15,7 @@ export function getStaticPaths() {
 
 const { tipo } = Astro.props as { tipo: TipoCerradura };
 const r = rangoPrecios(tipo);
+const foto = fotoTipo(tipo.slug);
 const lista = productos.filter((p) => p.tipo === tipo.slug);
 const marcas = [...new Set(lista.map((p) => p.marca))];
 const otros = tiposCerradura.filter((t) => t.slug !== tipo.slug).slice(0, 3);
@@ -50,7 +53,14 @@ const schema = {
             <a class="btn btn-outline btn-lg" href={cotizar}>Pedir asesoría</a>
           </div>
         </div>
-        <div class="hero-ilu"><Ilustracion tipo={tipo.slug} /></div>
+        {foto ? (
+          <figure class="hero-foto">
+            <Image src={foto} alt={tipo.nombre} widths={[480, 800, 1100]} sizes="(max-width: 860px) 100vw, 40vw" loading="eager" />
+            <figcaption>Imagen de referencia</figcaption>
+          </figure>
+        ) : (
+          <div class="hero-ilu"><Ilustracion tipo={tipo.slug} /></div>
+        )}
       </div>
     </div>
   </section>
@@ -99,7 +109,11 @@ const schema = {
       <div class="grid grid-3">
         {otros.map((t) => (
           <a class="card otro" href={`/cerraduras/${t.slug}`}>
-            <span class="otro-ilu"><Ilustracion tipo={t.slug} /></span>
+            {fotoTipo(t.slug) ? (
+              <span class="otro-foto"><Image src={fotoTipo(t.slug)!} alt="" width={176} height={132} /></span>
+            ) : (
+              <span class="otro-ilu"><Ilustracion tipo={t.slug} /></span>
+            )}
             <div>
               <h3>{t.nombre}</h3>
               <span>Desde {pesos(rangoPrecios(t).desde)}</span>
@@ -135,6 +149,11 @@ const schema = {
   .datos dd { margin: .2rem 0 0; font-family: var(--display); font-weight: 700; color: var(--ink); }
   .hero-tipo .actions { margin-top: 1.5rem; }
   .hero-ilu { background: radial-gradient(circle at 50% 45%, var(--white), transparent 70%); padding: 1rem; }
+  .hero-foto { position: relative; margin: 0; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  .hero-foto :global(img) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  .hero-foto figcaption { position: absolute; left: .75rem; bottom: .75rem; padding: .2rem .65rem; border-radius: 999px; background: rgba(4, 32, 26, .72); color: var(--cream); font-size: .72rem; font-weight: 600; }
+  .otro-foto { flex: none; width: 88px; border-radius: var(--radius-sm); overflow: hidden; }
+  .otro-foto :global(img) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
   .modelos-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
   .modelos-head h2 { margin: 0; font-size: clamp(1.4rem, 3vw, 1.9rem); }
   .marca-filtro { display: flex; flex-wrap: wrap; gap: .4rem; }
@@ -151,6 +170,6 @@ const schema = {
   .otro h3 { margin: 0 0 .2rem; font-size: 1rem; }
   .otro span { font-family: var(--display); font-weight: 700; color: var(--green-600); font-size: .9rem; }
   @media (max-width: 1080px) { .productos { grid-template-columns: repeat(3, 1fr); } }
-  @media (max-width: 860px) { .hero-tipo-grid { grid-template-columns: 1fr; } .hero-ilu { max-width: 320px; } }
+  @media (max-width: 860px) { .hero-tipo-grid { grid-template-columns: 1fr; } .hero-ilu { max-width: 320px; } .hero-foto { max-width: 520px; } }
   @media (max-width: 760px) { .productos { grid-template-columns: repeat(2, 1fr); gap: .7rem; } }
 </style>

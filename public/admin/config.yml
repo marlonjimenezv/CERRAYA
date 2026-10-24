@@ -22,6 +22,29 @@ media_folder: src/assets/trabajos
 public_folder: ../../assets/trabajos
 
 collections:
+  - name: consejos
+    label: Consejos
+    label_singular: Consejo
+    description: Artículos y respuestas a preguntas de clientes en cerraya.com/consejos
+    folder: src/content/consejos
+    create: true
+    slug: '{{slug}}'
+    summary: '{{titulo}} · {{categoria}}'
+    sortable_fields: ['fecha', 'titulo']
+    media_folder: ../../assets/consejos
+    public_folder: ../../assets/consejos
+    fields:
+      - { label: Título, name: titulo, widget: string }
+      - { label: Descripción corta, name: descripcion, widget: text, hint: 'Una o dos frases. Sale en Google y en la lista de consejos.' }
+      - { label: Fecha, name: fecha, widget: datetime, date_format: 'DD/MM/YYYY', time_format: false, format: 'YYYY-MM-DD' }
+      - label: Tema
+        name: categoria
+        widget: select
+        options: ['Guías', 'Seguridad', 'Urgencias', 'Llaves de carro', 'Preguntas de clientes']
+      - { label: Imagen (opcional), name: imagen, widget: image, required: false, choose_url: false }
+      - { label: Destacar, name: destacado, widget: boolean, default: false, required: false }
+      - { label: Texto, name: body, widget: markdown }
+
   - name: trabajos
     label: Trabajos
     label_singular: Trabajo

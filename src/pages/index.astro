@@ -13,6 +13,9 @@ import { serviciosPopulares, servicios } from '../data/servicios';
 import { productos } from '../data/cerraduras';
 import { marcasCarro } from '../data/llaves';
 import { promocionesActivas } from '../data/promociones';
+import { fotoTipo } from '../data/fotos';
+
+const fotoLlave = fotoTipo('llave-carro');
 
 const destacados = [
   'yale-kit-yale-connect-con-cerradura-digital-ymf30',
@@ -24,6 +27,10 @@ const destacados = [
   .filter((p) => p !== undefined);
 
 const trabajos = (await getCollection('trabajos'))
+  .sort((a, b) => Number(b.data.destacado) - Number(a.data.destacado) || b.data.fecha.getTime() - a.data.fecha.getTime())
+  .slice(0, 3);
+
+const consejos = (await getCollection('consejos'))
   .sort((a, b) => Number(b.data.destacado) - Number(a.data.destacado) || b.data.fecha.getTime() - a.data.fecha.getTime())
   .slice(0, 3);
 
@@ -179,9 +186,12 @@ const preguntas = [
           <a class="btn btn-accent btn-lg" href="/llaves-de-carro">Cotizar mi llave<Icon name="flecha" /></a>
         </div>
       </div>
-      <ul class="marcas-carro">
-        {marcasCarro.filter((m) => m.modelos.length).map((m) => <li>{m.marca}</li>)}
-      </ul>
+      <div class="llaves-lado">
+        {fotoLlave && <Image class="llaves-foto" src={fotoLlave} alt="Llave de carro con chip y control remoto" widths={[480, 800]} sizes="(max-width: 960px) 100vw, 40vw" />}
+        <ul class="marcas-carro">
+          {marcasCarro.filter((m) => m.modelos.length).map((m) => <li>{m.marca}</li>)}
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -237,6 +247,31 @@ const preguntas = [
             <a class="trabajo" href="/trabajos">
               <Image src={t.data.foto} alt={t.data.titulo} widths={[400, 800]} sizes="(max-width: 680px) 100vw, 33vw" />
               <span class="trabajo-texto"><strong>{t.data.titulo}</strong>{t.data.localidad && <span>{t.data.localidad}</span>}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {consejos.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-head split">
+          <div>
+            <span class="eyebrow">Consejos del cerrajero</span>
+            <h2>Lo que nadie te cuenta de tus cerraduras</h2>
+          </div>
+          <a href="/consejos" class="btn btn-outline">Ver todos los consejos<Icon name="flecha" /></a>
+        </div>
+        <div class="grid grid-3">
+          {consejos.map((c) => (
+            <a class="card consejo" href={`/consejos/${c.id}`}>
+              {c.data.imagen && <Image src={c.data.imagen} alt="" widths={[400, 700]} sizes="(max-width: 680px) 100vw, 33vw" />}
+              <span class="consejo-texto">
+                <span class="consejo-cat">{c.data.categoria}</span>
+                <strong>{c.data.titulo}</strong>
+              </span>
             </a>
           ))}
         </div>
@@ -317,6 +352,8 @@ const preguntas = [
   .productos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
 
   .llaves { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2.5rem; align-items: center; }
+  .llaves-lado { display: grid; gap: 1.25rem; }
+  .llaves-lado :global(.llaves-foto) { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; border-radius: var(--radius); box-shadow: var(--shadow); }
   .marcas-carro { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
   .marcas-carro li { padding: .5rem 1rem; border-radius: 999px; border: 1px solid rgba(247, 245, 232, .25); font-family: var(--display); font-weight: 700; color: var(--cream); font-size: .92rem; }
 
@@ -329,6 +366,12 @@ const preguntas = [
   .mant h2 { margin-bottom: .3rem; }
   .mant .lead { margin: 0; }
 
+  .consejo { padding: 0; overflow: hidden; text-decoration: none; display: flex; flex-direction: column; transition: border-color .18s, transform .18s; }
+  .consejo:hover { border-color: var(--green-600); transform: translateY(-2px); }
+  .consejo :global(img) { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+  .consejo-texto { padding: 1rem 1.2rem 1.2rem; display: grid; gap: .3rem; }
+  .consejo-cat { font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--green-600); }
+  .consejo strong { font-family: var(--display); line-height: 1.3; color: var(--ink); }
   .trabajo { display: block; border-radius: var(--radius); overflow: hidden; background: var(--white); border: 1px solid var(--line); text-decoration: none; }
   .trabajo :global(img) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
   .trabajo-texto { padding: 1rem 1.2rem; display: grid; gap: .15rem; }

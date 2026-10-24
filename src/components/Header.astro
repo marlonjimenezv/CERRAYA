@@ -20,6 +20,7 @@ const actual = Astro.url.pathname.replace(/\/$/, '') || '/';
         <a href={e.href} aria-current={actual.startsWith(e.href) ? 'page' : undefined}>{e.texto}</a>
       ))}
       <a href="/cotizar" class="nav-cotizar" aria-current={actual.startsWith('/cotizar') ? 'page' : undefined}>Cotizar</a>
+      <a href="/consejos" class="nav-secundario" aria-current={actual.startsWith('/consejos') ? 'page' : undefined}>Consejos</a>
       <a href="/aliados" class="nav-secundario" aria-current={actual.startsWith('/aliados') ? 'page' : undefined}>Trabaja con nosotros</a>
     </nav>
     <a href="/mi-cotizacion" class="carrito-link" data-carrito-link aria-label="Mi cotización">

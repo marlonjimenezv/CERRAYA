@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import FondoVivo from '../../components/FondoVivo.astro';
 import Icon from '../../components/Icon.astro';
@@ -7,6 +8,7 @@ import ProductoCard from '../../components/ProductoCard.astro';
 import CtaFinal from '../../components/CtaFinal.astro';
 import { tiposCerradura, productos, rangoPrecios, pesos } from '../../data/cerraduras';
 import { promociones } from '../../data/promociones';
+import { fotoTipo } from '../../data/fotos';
 
 const marcas = [...new Set(productos.map((p) => p.marca))].sort((a, b) => a.localeCompare(b, 'es'));
 const promo = promociones.find((p) => p.activa && p.enTienda);
@@ -85,7 +87,11 @@ const promo = promociones.find((p) => p.activa && p.enTienda);
       <div class="grid grid-3">
         {tiposCerradura.map((t) => (
           <a class="card tipo" href={`/cerraduras/${t.slug}`}>
-            <span class="tipo-ilu"><Ilustracion tipo={t.slug} /></span>
+            {fotoTipo(t.slug) ? (
+              <span class="tipo-foto"><Image src={fotoTipo(t.slug)!} alt="" width={184} height={138} /></span>
+            ) : (
+              <span class="tipo-ilu"><Ilustracion tipo={t.slug} /></span>
+            )}
             <div>
               <h3>{t.nombre}</h3>
               <p>{t.usoIdeal[0]}</p>
@@ -184,6 +190,8 @@ const promo = promociones.find((p) => p.activa && p.enTienda);
   .tipo { display: flex; gap: 1rem; align-items: center; text-decoration: none; transition: border-color .18s, transform .18s; }
   .tipo:hover { border-color: var(--green-600); transform: translateY(-2px); }
   .tipo-ilu { flex: none; width: 92px; padding: .4rem; border-radius: var(--radius-sm); background: var(--cream); }
+  .tipo-foto { flex: none; width: 92px; border-radius: var(--radius-sm); overflow: hidden; }
+  .tipo-foto :global(img) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
   .tipo h3 { font-size: 1rem; margin: 0 0 .2rem; }
   .tipo p { margin: 0; color: var(--muted); font-size: .88rem; }
   .tipo-precio { display: block; margin-top: .3rem; font-family: var(--display); font-weight: 700; font-size: .88rem; color: var(--green-600); }

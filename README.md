@@ -17,6 +17,7 @@ Sitio de Cerraya, cerrajería de confianza en Bogotá. Está hecho con [Astro](h
 | `/mantenimiento` | Planes de mantenimiento preventivo (Hogar, Conjunto, Empresa) |
 | `/promociones` | Promociones activas con condiciones y vigencia |
 | `/trabajos` | Galería de fotos de trabajos (se alimenta desde `/admin`) |
+| `/consejos` | Artículos y respuestas del cerrajero, con el formulario "Pregúntale al cerrajero" (se publica desde `/admin`) |
 | `/aliados` | Reclutamiento de cerrajeros aliados, con código de conducta y formulario |
 | `/resena` | Para el QR que el cerrajero muestra al terminar: lleva a calificar en Google |
 | `/cotizador` | **Interno**: arma cotizaciones y genera el PDF (no está enlazado ni indexado) |
@@ -36,9 +37,13 @@ Todo el contenido del negocio vive en `src/data/`. Lo marcado con `CONFIRMAR` es
 
 ### Fotos de productos
 
-Mientras un producto no tenga foto se muestra una ilustración del tipo de cerradura. Para poner la foto real, guárdala en `src/assets/cerraduras/` con el **id del producto** como nombre. Por ejemplo, `yale-manija-digital-biometrica-bari-negra.jpg`. El id es marca + nombre en minúsculas y con guiones.
+Cada producto muestra, en este orden:
 
-Usen fotos propias o las que les entregue el distribuidor o la marca como vendedores autorizados. No copien fotos de Homecenter ni de otras tiendas: tienen derechos de autor.
+1. **Su foto exacta**, si existe `src/assets/cerraduras/<id-del-producto>.jpg` (o `.png` / `.webp`). El id es marca + nombre en minúsculas y con guiones, por ejemplo `yale-manija-digital-biometrica-bari-negra.jpg`.
+2. **Una foto de referencia del tipo**, de `src/assets/cerraduras/tipos/`, con la etiqueta "Imagen de referencia". Son fotos de Unsplash con licencia libre para uso comercial; los créditos están en `CREDITOS.md`.
+3. Si no hay ninguna, una ilustración.
+
+Para las fotos exactas usen fotos propias o las que les entregue el distribuidor como revendedores. No copien fotos de Homecenter ni de las marcas: tienen derechos de autor.
 
 ### Fotos de trabajos (`/admin`)
 
@@ -62,7 +67,7 @@ El panel usa Decap CMS: cada trabajo subido queda como un commit en GitHub y Net
    | `CNAME` | `www` | `<nombre-del-sitio>.netlify.app` |
 
 4. **Netlify → HTTPS**: esperar a que salga el certificado y dejar `cerraya.com` como dominio principal.
-5. **Netlify → Forms**: activar la detección de formularios. Llegan dos: `cotizacion` y `aliados`. Configurar las notificaciones por correo.
+5. **Netlify → Forms**: activar la detección de formularios. Llegan tres: `cotizacion`, `aliados` y `pregunta` (las preguntas de Consejos). Configurar las notificaciones por correo.
 
 ## Google Ads
 
