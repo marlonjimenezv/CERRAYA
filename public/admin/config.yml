@@ -2,7 +2,7 @@
 # Inicia sesión con GitHub a través del proveedor OAuth de Netlify (ver README).
 backend:
   name: github
-  repo: Innnovader/CERRAYA
+  repo: marlonjimenezv/CERRAYA
   branch: main
   base_url: https://api.netlify.com
   commit_messages:

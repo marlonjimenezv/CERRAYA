@@ -52,7 +52,7 @@ El panel usa Decap CMS: cada trabajo subido queda como un commit en GitHub y Net
 
 ## Publicación: GitHub → Netlify → Cloudflare
 
-1. **Netlify**: *Add new project → Import an existing project → GitHub →* `Innnovader/CERRAYA`. Netlify lee `netlify.toml` (build `npm run build`, carpeta `dist`).
+1. **Netlify**: *Add new project → Import an existing project → GitHub →* `marlonjimenezv/CERRAYA`. Netlify lee `netlify.toml` (build `npm run build`, carpeta `dist`).
 2. **Netlify → Domain management → Add a domain**: `cerraya.com`, y elegir DNS externo.
 3. **Cloudflare → cerraya.com → DNS → Records**: crear estos registros con el proxy **apagado** (nube gris, "DNS only"):
 
