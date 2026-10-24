@@ -1,0 +1,27 @@
+---
+import Icon from './Icon.astro';
+import { tel, whatsapp } from '../data/empresa';
+---
+<div class="mobile-bar">
+  <a href={tel} class="btn btn-accent"><Icon name="telefono" />Llamar ahora</a>
+  <a href={whatsapp()} target="_blank" rel="noopener" class="btn btn-wa"><Icon name="whatsapp" />WhatsApp</a>
+</div>
+
+<style>
+  .mobile-bar { display: none; }
+  @media (max-width: 760px) {
+    :global(body) { padding-bottom: 80px; }
+    .mobile-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .6rem;
+      position: fixed;
+      inset: auto 0 0 0;
+      z-index: 60;
+      padding: .7rem 16px calc(.7rem + env(safe-area-inset-bottom));
+      background: rgba(6, 42, 32, .97);
+      border-top: 1px solid rgba(247, 245, 232, .12);
+    }
+    .mobile-bar .btn { min-height: 52px; padding: .7rem; }
+  }
+</style>

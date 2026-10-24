@@ -1,0 +1,72 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Faq from '../components/Faq.astro';
+import FormCotizacion from '../components/FormCotizacion.astro';
+import { empresa } from '../data/empresa';
+
+const preguntas = [
+  { p: '¿La cotización tiene costo?', r: 'No. Con tu mensaje, y si quieres una foto, cotizamos sin costo. Si el trabajo necesita visita técnica te lo decimos antes.' },
+  { p: '¿Cuánto tarda en llegar?', r: 'En minutos. Apenas nos escribes armamos tu cotización y te la enviamos en PDF por WhatsApp.' },
+  { p: '¿Puedo comprar la cerradura y que ustedes solo la instalen?', r: 'Sí. Cotizamos solo la instalación o el producto con instalación, como prefieras.' },
+  { p: '¿Trabajan con conjuntos, constructoras y empresas?', r: 'Sí. Hacemos proyectos de varias puertas, llave maestra y mantenimiento preventivo, con cotización formal para tu administración.' },
+];
+---
+<Base
+  title="Pide tu cotización de cerrajería en Bogotá"
+  description={`Escribe qué necesitas y recibe tu cotización profesional en PDF por WhatsApp: cerraduras digitales, cambio de guardas, cerrojos, llaves de carro y proyectos. Más de ${empresa.experiencia} años de experiencia.`}
+>
+  <section class="hero-cot">
+    <div class="container hero-cot-grid">
+      <div class="hero-cot-texto">
+        <span class="eyebrow">Cotizaciones</span>
+        <h1>Dinos qué necesitas y te enviamos tu cotización en PDF</h1>
+        <p class="lead">Sin formularios largos: escríbelo con tus palabras. Te respondemos por WhatsApp con una cotización formal, con producto, instalación y garantía.</p>
+        <ol class="mini-steps">
+          <li><Icon name="documento" /><span><strong>Escribes</strong> qué necesitas</span></li>
+          <li><Icon name="descargar" /><span><strong>Recibes tu PDF</strong> por WhatsApp</span></li>
+          <li><Icon name="garantia" /><span><strong>Instalamos</strong> con garantía</span></li>
+        </ol>
+      </div>
+      <div class="card form-card">
+        <FormCotizacion />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-cream">
+    <div class="narrow">
+      <div class="section-head">
+        <span class="eyebrow">Preguntas frecuentes</span>
+        <h2>Sobre las cotizaciones</h2>
+      </div>
+      <Faq preguntas={preguntas} />
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Llega desde la tienda: /cotizar?producto=...
+  const producto = new URLSearchParams(location.search).get('producto');
+  const texto = document.getElementById('necesidad') as HTMLTextAreaElement | null;
+  if (producto && texto && !texto.value) {
+    texto.value = `Quiero cotizar: ${producto}.\n`;
+    texto.focus();
+    texto.setSelectionRange(texto.value.length, texto.value.length);
+  }
+</script>
+
+<style>
+  .hero-cot { background: linear-gradient(180deg, var(--cream) 0%, var(--paper) 100%); padding: clamp(2.5rem, 6vw, 4.5rem) 0; }
+  .hero-cot-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+  .hero-cot-texto { position: sticky; top: calc(var(--header-h) + 2rem); }
+  .mini-steps { list-style: none; padding: 0; margin: 2rem 0 0; display: grid; gap: 1rem; }
+  .mini-steps li { display: flex; gap: .9rem; align-items: center; }
+  .mini-steps :global(svg) { width: 44px; height: 44px; padding: 10px; border-radius: 12px; background: var(--green-800); color: var(--cream); flex: none; }
+  .mini-steps strong { color: var(--ink); }
+  .form-card { padding: clamp(1.25rem, 3vw, 2rem); box-shadow: var(--shadow); }
+  @media (max-width: 960px) {
+    .hero-cot-grid { grid-template-columns: 1fr; }
+    .hero-cot-texto { position: static; }
+  }
+</style>

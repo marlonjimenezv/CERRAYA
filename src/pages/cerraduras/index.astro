@@ -1,0 +1,197 @@
+---
+import Base from '../../layouts/Base.astro';
+import FondoVivo from '../../components/FondoVivo.astro';
+import Icon from '../../components/Icon.astro';
+import Ilustracion from '../../components/Ilustracion.astro';
+import ProductoCard from '../../components/ProductoCard.astro';
+import CtaFinal from '../../components/CtaFinal.astro';
+import { tiposCerradura, productos, rangoPrecios, pesos } from '../../data/cerraduras';
+import { promociones } from '../../data/promociones';
+
+const marcas = [...new Set(productos.map((p) => p.marca))].sort((a, b) => a.localeCompare(b, 'es'));
+const promo = promociones.find((p) => p.activa && p.enTienda);
+---
+<Base
+  title="Tienda de cerraduras con instalación en Bogotá"
+  description="Vendemos e instalamos cerraduras digitales, cerrojos de seguridad, cerraduras de sobreponer, eléctricas, cajas fuertes y candados de Yale, Schlage, Kwikset, Philips y más, con garantía en Bogotá."
+>
+  <section class="hero-tienda con-fondo">
+    <FondoVivo />
+    <div class="container">
+      <span class="eyebrow">Tienda Cerraya</span>
+      <h1>Cerraduras que vendemos e instalamos</h1>
+      <p class="lead">Elige tus cerraduras, agrégalas a tu cotización y te las llevamos instaladas, con garantía. Las marcas más reconocidas del mercado.</p>
+      <ul class="beneficios">
+        <li><Icon name="herramienta" />Instalación profesional</li>
+        <li><Icon name="garantia" />Garantía en cada trabajo</li>
+        <li><Icon name="lista" />Cotización en PDF en minutos</li>
+      </ul>
+    </div>
+  </section>
+
+  {promo && (
+    <a class="promo-banda" href="/promociones">
+      <div class="container promo-inner">
+        <span class="promo-etiqueta">{promo.etiqueta}</span>
+        <strong>{promo.titulo}</strong>
+        <span class="promo-ver">Ver condiciones<Icon name="flecha" /></span>
+      </div>
+    </a>
+  )}
+
+  <section class="section section-tight">
+    <div class="container">
+      <div class="categorias" role="group" aria-label="Tipo de cerradura">
+        <button type="button" class="cat activo" data-tipo="">
+          <span class="cat-ico todas"><Icon name="lista" /></span>Todas
+        </button>
+        {tiposCerradura.map((t) => (
+          <button type="button" class="cat" data-tipo={t.slug}>
+            <span class="cat-ico"><Ilustracion tipo={t.slug} /></span>{t.nombre.replace('Cerraduras ', '').replace(/^\w/, (c) => c.toUpperCase())}
+          </button>
+        ))}
+      </div>
+
+      <div class="barra-filtros">
+        <p id="conteo" class="conteo" aria-live="polite">{productos.length} productos</p>
+        <div class="selects">
+          <label class="sr-only" for="filtroMarca">Marca</label>
+          <select id="filtroMarca">
+            <option value="">Todas las marcas</option>
+            {marcas.map((m) => <option value={m}>{m}</option>)}
+          </select>
+          <label class="sr-only" for="orden">Ordenar</label>
+          <select id="orden">
+            <option value="">Recomendados</option>
+            <option value="asc">Menor precio</option>
+            <option value="desc">Mayor precio</option>
+            <option value="seg">Más seguras</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="productos" id="productos">
+        {productos.map((p) => <ProductoCard producto={p} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-cream">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Guía rápida</span>
+        <h2>¿Qué cerradura le conviene a tu puerta?</h2>
+      </div>
+      <div class="grid grid-3">
+        {tiposCerradura.map((t) => (
+          <a class="card tipo" href={`/cerraduras/${t.slug}`}>
+            <span class="tipo-ilu"><Ilustracion tipo={t.slug} /></span>
+            <div>
+              <h3>{t.nombre}</h3>
+              <p>{t.usoIdeal[0]}</p>
+              <span class="tipo-precio">Desde {pesos(rangoPrecios(t).desde)}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container asesoria">
+      <div>
+        <span class="eyebrow">Asesoría gratis</span>
+        <h2>¿No sabes cuál elegir?</h2>
+        <p class="lead">Cuéntanos cómo es tu puerta y te recomendamos la mejor opción para tu presupuesto.</p>
+      </div>
+      <a class="btn btn-green btn-lg" href="/cotizar"><Icon name="documento" />Pedir asesoría</a>
+    </div>
+  </section>
+
+  <CtaFinal titulo="¿Necesitas cambiar la cerradura hoy?" texto="Si es una urgencia, salimos de inmediato. Llámanos y te damos un valor estimado en el momento." />
+</Base>
+
+<script>
+  const cats = document.querySelectorAll<HTMLButtonElement>('.cat');
+  const marca = document.getElementById('filtroMarca') as HTMLSelectElement;
+  const orden = document.getElementById('orden') as HTMLSelectElement;
+  const contenedor = document.getElementById('productos')!;
+  const conteo = document.getElementById('conteo')!;
+  const tarjetas = [...contenedor.querySelectorAll<HTMLElement>('.producto')];
+  let tipo = new URLSearchParams(location.search).get('tipo') ?? '';
+
+  function aplicar() {
+    cats.forEach((c) => c.classList.toggle('activo', c.dataset.tipo === tipo));
+    let visibles = 0;
+    tarjetas.forEach((t) => {
+      const ok = (!tipo || t.dataset.tipo === tipo) && (!marca.value || t.dataset.marca === marca.value);
+      t.hidden = !ok;
+      if (ok) visibles++;
+    });
+    const orden_ = [...tarjetas];
+    if (orden.value === 'asc') orden_.sort((a, b) => Number(a.dataset.precio) - Number(b.dataset.precio));
+    if (orden.value === 'desc') orden_.sort((a, b) => Number(b.dataset.precio) - Number(a.dataset.precio));
+    if (orden.value === 'seg') orden_.sort((a, b) => Number(b.dataset.seguridad) - Number(a.dataset.seguridad));
+    contenedor.append(...orden_);
+    conteo.textContent = `${visibles} ${visibles === 1 ? 'producto' : 'productos'}`;
+  }
+
+  cats.forEach((c) =>
+    c.addEventListener('click', () => {
+      tipo = c.dataset.tipo ?? '';
+      const url = new URL(location.href);
+      if (tipo) url.searchParams.set('tipo', tipo);
+      else url.searchParams.delete('tipo');
+      history.replaceState(null, '', url);
+      aplicar();
+    }),
+  );
+  marca.addEventListener('change', aplicar);
+  orden.addEventListener('change', aplicar);
+  aplicar();
+</script>
+
+<style>
+  .hero-tienda { background: linear-gradient(180deg, var(--green-800), var(--green-900)); color: var(--on-green); padding: clamp(2.25rem, 5vw, 3.75rem) 0; }
+  .hero-tienda h1 { color: var(--cream); }
+  .hero-tienda .eyebrow { color: var(--accent); }
+  .hero-tienda .lead { color: var(--on-green-muted); }
+  .beneficios { list-style: none; padding: 0; margin: 1.5rem 0 0; display: flex; flex-wrap: wrap; gap: .6rem 1.6rem; color: var(--cream); font-size: .93rem; }
+  .beneficios li { display: inline-flex; align-items: center; gap: .45rem; }
+  .beneficios :global(svg) { width: 20px; height: 20px; color: var(--accent); }
+
+  .promo-banda { display: block; background: var(--accent); color: var(--accent-ink); text-decoration: none; }
+  .promo-inner { display: flex; align-items: center; gap: .9rem; flex-wrap: wrap; padding: .85rem 0; }
+  .promo-etiqueta { font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; padding: .2rem .6rem; border-radius: 999px; background: var(--accent-ink); color: var(--accent); }
+  .promo-inner strong { font-family: var(--display); }
+  .promo-ver { margin-left: auto; display: inline-flex; align-items: center; gap: .3rem; font-weight: 700; font-size: .9rem; }
+  .promo-ver :global(svg) { width: 18px; height: 18px; }
+
+  .categorias { display: flex; gap: .6rem; overflow-x: auto; padding: .25rem .1rem 1rem; scrollbar-width: thin; }
+  .cat { flex: none; display: grid; justify-items: center; gap: .4rem; width: 108px; padding: .7rem .5rem; border: 1.5px solid var(--line); border-radius: var(--radius-sm); background: var(--white); font: inherit; font-size: .8rem; font-weight: 600; line-height: 1.25; color: var(--text); cursor: pointer; transition: border-color .15s, background-color .15s; }
+  .cat:hover { border-color: var(--green-600); }
+  .cat.activo { border-color: var(--green-800); background: var(--green-100); color: var(--green-800); }
+  .cat-ico { display: grid; place-items: center; width: 64px; height: 48px; }
+  .cat-ico.todas :global(svg) { width: 30px; height: 30px; color: var(--green-800); }
+
+  .barra-filtros { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin: .5rem 0 1.25rem; }
+  .conteo { margin: 0; font-weight: 600; color: var(--muted); }
+  .selects { display: flex; gap: .5rem; flex-wrap: wrap; }
+  .selects select { min-height: 44px; padding: .5rem 2rem .5rem .9rem; border-radius: 999px; border: 1.5px solid var(--line); background: var(--white); font: inherit; font-size: .9rem; font-weight: 600; }
+
+  .productos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+
+  .tipo { display: flex; gap: 1rem; align-items: center; text-decoration: none; transition: border-color .18s, transform .18s; }
+  .tipo:hover { border-color: var(--green-600); transform: translateY(-2px); }
+  .tipo-ilu { flex: none; width: 92px; padding: .4rem; border-radius: var(--radius-sm); background: var(--cream); }
+  .tipo h3 { font-size: 1rem; margin: 0 0 .2rem; }
+  .tipo p { margin: 0; color: var(--muted); font-size: .88rem; }
+  .tipo-precio { display: block; margin-top: .3rem; font-family: var(--display); font-weight: 700; font-size: .88rem; color: var(--green-600); }
+
+  .asesoria { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .asesoria h2 { margin-bottom: .3rem; }
+  .asesoria .lead { margin: 0; }
+
+  @media (max-width: 1080px) { .productos { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 760px) { .productos { grid-template-columns: repeat(2, 1fr); gap: .7rem; } .promo-ver { margin-left: 0; } }
+</style>

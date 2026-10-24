@@ -1,0 +1,165 @@
+---
+// Fondo animado de los encabezados verdes: pines de una cerradura de pines (pin tumbler)
+// que suben y bajan; una onda dorada recorre la fila y los alinea en la línea de corte,
+// como cuando entra la llave correcta. Bajo el cursor también se alinean.
+// Se pausa fuera de pantalla y respeta "reducir movimiento".
+---
+<div class="fondo-vivo" aria-hidden="true">
+  <canvas></canvas>
+</div>
+
+<style>
+  .fondo-vivo { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .fondo-vivo canvas { display: block; width: 100%; height: 100%; }
+  .fondo-vivo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(6, 42, 32, .85) 0%, rgba(6, 42, 32, .35) 45%, transparent 70%, rgba(6, 42, 32, .6) 100%),
+      linear-gradient(180deg, transparent 55%, rgba(4, 32, 26, .55) 100%);
+    opacity: .55;
+  }
+</style>
+
+<script>
+  type Pin = { x: number; fase: number; vel: number; amp: number; alto: number; alin: number };
+  type Fila = { y: number; pines: Pin[] };
+
+  const reducir = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ACENTO = [242, 179, 61];
+  const CREMA = [247, 245, 232];
+  const rgba = (c: number[], a: number) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+
+  function rectRedondo(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number | number[]) {
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, r);
+  }
+
+  document.querySelectorAll<HTMLElement>('.fondo-vivo').forEach((cont) => {
+    const canvas = cont.querySelector('canvas')!;
+    const ctx = canvas.getContext('2d')!;
+    const seccion = cont.parentElement!;
+    let ancho = 0, alto = 0, filas: Fila[] = [];
+    let visible = true, cursor = { x: -9999, y: -9999, activo: false };
+    let ultimo = 0, t = 0, raf = 0;
+
+    function preparar() {
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      ancho = cont.clientWidth;
+      alto = cont.clientHeight;
+      canvas.width = Math.round(ancho * dpr);
+      canvas.height = Math.round(alto * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const paso = ancho < 600 ? 34 : 46;
+      const separacion = ancho < 600 ? 150 : 175;
+      filas = [];
+      for (let y = separacion * 0.62; y < alto + 40; y += separacion) {
+        const pines: Pin[] = [];
+        const desfase = (filas.length % 2) * paso * 0.5;
+        for (let x = -paso + desfase; x < ancho + paso; x += paso) {
+          pines.push({ x, fase: Math.random() * Math.PI * 2, vel: 0.6 + Math.random() * 0.7, amp: 14 + Math.random() * 16, alto: 26 + Math.random() * 22, alin: 0 });
+        }
+        filas.push({ y, pines });
+      }
+    }
+
+    function dibujar(dt: number) {
+      ctx.clearRect(0, 0, ancho, alto);
+      const ciclo = 9; // segundos que tarda la onda en cruzar
+      const ondaX = ((t % ciclo) / ciclo) * (ancho + 600) - 300;
+
+      // Luz que sigue al cursor
+      if (cursor.activo) {
+        const g = ctx.createRadialGradient(cursor.x, cursor.y, 0, cursor.x, cursor.y, 260);
+        g.addColorStop(0, rgba(ACENTO, 0.12));
+        g.addColorStop(1, rgba(ACENTO, 0));
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, ancho, alto);
+      }
+
+      const w = ancho < 600 ? 10 : 12;
+      for (const fila of filas) {
+        // Línea de corte
+        ctx.strokeStyle = rgba(CREMA, 0.07);
+        ctx.lineWidth = 1;
+        ctx.setLineDash([2, 6]);
+        ctx.beginPath();
+        ctx.moveTo(0, fila.y);
+        ctx.lineTo(ancho, fila.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        for (const p of fila.pines) {
+          const enOnda = Math.exp(-((p.x - ondaX) ** 2) / (2 * 70 ** 2));
+          const dCursor = Math.hypot(p.x - cursor.x, fila.y - cursor.y);
+          const enCursor = cursor.activo ? Math.max(0, 1 - dCursor / 170) : 0;
+          const objetivo = Math.min(1, Math.max(enOnda, enCursor * 1.2));
+          p.alin += (objetivo - p.alin) * Math.min(1, dt * 6);
+          const a = p.alin;
+
+          // Separación entre pin conductor y pin de llave: oscila, y se alinea con la línea de corte
+          const libre = Math.sin(p.fase + t * p.vel) * p.amp;
+          const corte = fila.y + libre * (1 - a);
+          const camara = 2 * p.alto + 40;
+
+          // Cámara
+          ctx.strokeStyle = rgba(CREMA, 0.035 + a * 0.05);
+          rectRedondo(ctx, p.x - w / 2 - 4, fila.y - camara / 2, w + 8, camara, 8);
+          ctx.stroke();
+
+          const color = a > 0.02 ? [CREMA[0] + (ACENTO[0] - CREMA[0]) * a, CREMA[1] + (ACENTO[1] - CREMA[1]) * a, CREMA[2] + (ACENTO[2] - CREMA[2]) * a] : CREMA;
+          if (a > 0.3) {
+            ctx.shadowColor = rgba(ACENTO, 0.6 * a);
+            ctx.shadowBlur = 14 * a;
+          }
+          // Pin conductor (arriba)
+          ctx.fillStyle = rgba(color, 0.055 + a * 0.3);
+          rectRedondo(ctx, p.x - w / 2, corte - p.alto - 2, w, p.alto, w / 2);
+          ctx.fill();
+          // Pin de llave (abajo, punta redondeada)
+          ctx.fillStyle = rgba(color, 0.08 + a * 0.36);
+          rectRedondo(ctx, p.x - w / 2, corte + 2, w, p.alto * 0.85, [2, 2, w / 2, w / 2]);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+      }
+    }
+
+    function cuadro(ahora: number) {
+      const dt = Math.min(0.05, (ahora - ultimo) / 1000 || 0.016);
+      ultimo = ahora;
+      t += dt;
+      dibujar(dt);
+      if (visible && !document.hidden) raf = requestAnimationFrame(cuadro);
+    }
+
+    function arrancar() {
+      cancelAnimationFrame(raf);
+      ultimo = performance.now();
+      raf = requestAnimationFrame(cuadro);
+    }
+
+    preparar();
+    if (reducir) {
+      t = 4.2;
+      dibujar(1);
+      new ResizeObserver(() => { preparar(); dibujar(1); }).observe(cont);
+      return;
+    }
+
+    new ResizeObserver(preparar).observe(cont);
+    new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      if (visible) arrancar();
+    }).observe(cont);
+    document.addEventListener('visibilitychange', () => !document.hidden && visible && arrancar());
+
+    seccion.addEventListener('pointermove', (e) => {
+      const r = cont.getBoundingClientRect();
+      cursor = { x: e.clientX - r.left, y: e.clientY - r.top, activo: e.pointerType === 'mouse' };
+    });
+    seccion.addEventListener('pointerleave', () => (cursor.activo = false));
+    arrancar();
+  });
+</script>

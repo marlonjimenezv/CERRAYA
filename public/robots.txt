@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /cotizador
+Disallow: /gracias/
+Disallow: /resena
+Disallow: /mi-cotizacion
+
+Sitemap: https://cerraya.com/sitemap-index.xml

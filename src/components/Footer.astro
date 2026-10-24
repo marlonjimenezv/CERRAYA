@@ -1,0 +1,60 @@
+---
+import Logo from './Logo.astro';
+import { empresa, tel, whatsapp } from '../data/empresa';
+const anio = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <Logo />
+      <p>{empresa.lema}. Cerrajeros con más de {empresa.experiencia} años de experiencia.</p>
+      <a class="footer-rating" href={empresa.enlacePerfilGoogle} target="_blank" rel="noopener">
+        <span class="stars" aria-hidden="true">★★★★★</span>
+        {empresa.resenas.calificacion} en Google
+      </a>
+    </div>
+    <nav aria-label="Servicios">
+      <h2>Servicios</h2>
+      <a href="/urgencias">Cerrajería de urgencia 24/7</a>
+      <a href="/servicios">Todos los servicios</a>
+      <a href="/llaves-de-carro">Llaves de carro</a>
+      <a href="/cerraduras">Cerraduras que vendemos</a>
+      <a href="/mantenimiento">Mantenimiento preventivo</a>
+      <a href="/promociones">Promociones</a>
+      <a href="/cotizar">Pedir cotización</a>
+      <a href="/trabajos">Nuestros trabajos</a>
+    </nav>
+    <nav aria-label="Cerraya">
+      <h2>Cerraya</h2>
+      <a href="/aliados">Trabaja con nosotros</a>
+      <a href="/resena">Califica tu servicio</a>
+      <a href="/privacidad">Tratamiento de datos</a>
+    </nav>
+    <div class="footer-contact">
+      <h2>Contacto</h2>
+      <a href={tel}>{empresa.telefonoVisible}</a>
+      <a href={whatsapp()} target="_blank" rel="noopener">WhatsApp</a>
+      <a href={`mailto:${empresa.email}`}>{empresa.email}</a>
+      <p>{empresa.horario}<br />{empresa.ciudad}, Colombia</p>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>© {anio} {empresa.nombre}. Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer { background: var(--green-950); color: var(--on-green-muted); padding: 3.5rem 0 1.5rem; font-size: .93rem; }
+  .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 2.5rem; }
+  .footer-brand { color: var(--cream); font-size: 1.1rem; }
+  .footer-brand p { color: var(--on-green-muted); font-size: .93rem; margin: 1rem 0; max-width: 34ch; }
+  .footer-rating { color: var(--cream); text-decoration: none; font-size: .9rem; }
+  .site-footer h2 { font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--cream); margin-bottom: 1rem; }
+  .site-footer nav a, .footer-contact a { display: block; padding: .3rem 0; text-decoration: none; }
+  .site-footer a:hover { color: var(--cream); }
+  .footer-contact p { margin-top: .5rem; }
+  .footer-bottom { border-top: 1px solid rgba(247, 245, 232, .1); margin-top: 2.5rem; padding-top: 1.25rem; font-size: .85rem; }
+  .footer-bottom p { margin: 0; }
+  @media (max-width: 860px) { .footer-grid { grid-template-columns: 1fr 1fr; } .footer-brand { grid-column: 1 / -1; } }
+  @media (max-width: 520px) { .footer-grid { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { tel } from '../data/empresa';
+---
+<Base title="Página no encontrada" description="La página que buscas no existe." noindex>
+  <section class="section">
+    <div class="narrow no-existe">
+      <span class="eyebrow">Error 404</span>
+      <h1>Esta puerta no existe</h1>
+      <p class="lead">La página que buscas no está aquí, pero si necesitas un cerrajero te ayudamos ya mismo.</p>
+      <div class="actions">
+        <a class="btn btn-accent btn-lg" href={tel}><Icon name="telefono" />Llamar ahora</a>
+        <a class="btn btn-outline btn-lg" href="/">Ir al inicio</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .no-existe { text-align: center; }
+  .no-existe h1, .no-existe .lead { margin-inline: auto; }
+  .no-existe .actions { justify-content: center; margin-top: 1.5rem; }
+</style>

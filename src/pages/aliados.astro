@@ -1,0 +1,193 @@
+---
+import Base from '../layouts/Base.astro';
+import FondoVivo from '../components/FondoVivo.astro';
+import Icon from '../components/Icon.astro';
+import Faq from '../components/Faq.astro';
+import { empresa } from '../data/empresa';
+
+// Reclutamiento de cerrajeros aliados. CONFIRMAR: requisitos, forma de pago y reglas con la operación real.
+const zonas = [
+  'Norte (Usaquén, Suba)',
+  'Noroccidente (Engativá, Barrios Unidos)',
+  'Centro (Chapinero, Teusaquillo, Santa Fe, La Candelaria, Los Mártires)',
+  'Occidente (Fontibón, Kennedy, Puente Aranda)',
+  'Sur (Bosa, Ciudad Bolívar, Tunjuelito, Usme, Rafael Uribe Uribe, San Cristóbal, Antonio Nariño)',
+  'Municipios cercanos (Chía, Cota, Soacha, Funza, Mosquera)',
+];
+const especialidades = ['Apertura de puertas', 'Cambio de guardas', 'Cerraduras digitales', 'Vehículos y llaves con chip', 'Cajas fuertes', 'Cerraduras eléctricas', 'Puertas de seguridad'];
+const disponibilidad = ['Días entre semana', 'Noches', 'Fines de semana y festivos', 'Urgencias 24/7'];
+
+const preguntas = [
+  { p: '¿Cómo me pagan?', r: 'Cada servicio tiene una tarifa acordada antes de salir. Te pagamos de forma puntual y con soporte de cada trabajo.' },
+  { p: '¿Puedo seguir trabajando por mi cuenta?', r: 'Sí. Lo único que pedimos es que los clientes que llegan por Cerraya se atiendan siempre como clientes Cerraya: mismas tarifas, misma garantía y sin ofrecer servicios por fuera.' },
+  { p: '¿Qué pasa si un cliente queda inconforme?', r: 'Respondemos juntos con la garantía Cerraya. Revisamos el caso con las fotos de antes y después para resolverlo de forma justa.' },
+  { p: '¿Necesito tener herramienta propia?', r: 'Sí, especialmente la de apertura sin daños. Si te falta algo para cerraduras digitales te orientamos en la capacitación.' },
+];
+---
+<Base
+  title="Trabaja con nosotros: red de cerrajeros aliados"
+  description="¿Eres cerrajero en Bogotá? Únete a la red de aliados Cerraya: servicios en tu zona, pago puntual y el respaldo de un equipo con más de 25 años de experiencia."
+  barraMovil={false}
+>
+  <section class="hero-al con-fondo">
+    <FondoVivo />
+    <div class="container hero-al-grid">
+      <div>
+        <span class="eyebrow">Red de cerrajeros aliados</span>
+        <h1>Únete a la red de cerrajeros Cerraya</h1>
+        <p class="lead">Buscamos cerrajeros responsables, puntuales y honestos para atender servicios Cerraya en su zona. Tú pones el oficio; nosotros los clientes y el respaldo de un equipo con más de {empresa.experiencia} años en la cerrajería.</p>
+        <a class="btn btn-accent btn-lg" href="#postulacion">Postularme<Icon name="flecha" /></a>
+      </div>
+      <ul class="beneficios">
+        <li><Icon name="mapa" /><div><strong>Servicios en tu zona</strong><span>Te asignamos trabajos cerca de donde estás.</span></div></li>
+        <li><Icon name="precio" /><div><strong>Pago puntual y claro</strong><span>Tarifa acordada antes de cada servicio.</span></div></li>
+        <li><Icon name="estrella" /><div><strong>Respaldo de marca</strong><span>Los clientes ya confían en Cerraya.</span></div></li>
+        <li><Icon name="herramienta" /><div><strong>Capacitación</strong><span>Cerraduras digitales y nuevas tecnologías.</span></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid-2 req">
+      <div>
+        <span class="eyebrow">Requisitos</span>
+        <h2>Lo que pedimos a cada aliado</h2>
+        <ul class="check-list">
+          <li>Mínimo 2 años de experiencia comprobable en cerrajería.</li>
+          <li>Herramienta propia, incluida la de apertura sin daños.</li>
+          <li>Certificados de antecedentes de Policía, Procuraduría y Contraloría al día.</li>
+          <li>Dos referencias laborales verificables.</li>
+          <li>Celular con WhatsApp y medio de transporte propio.</li>
+          <li>Disponibilidad en los horarios acordados.</li>
+        </ul>
+      </div>
+      <div class="codigo card">
+        <span class="eyebrow">Código Cerraya</span>
+        <h2>Lo que no se negocia</h2>
+        <ol class="codigo-lista">
+          <li><strong>Las tarifas son las de Cerraya.</strong> Si el trabajo cambia, se le explica al cliente y se cobra solo lo que él aprueba.</li>
+          <li><strong>El cliente es de Cerraya.</strong> No se ofrecen servicios por fuera a clientes que llegaron por la marca.</li>
+          <li><strong>Puntualidad.</strong> Confirmas tu tiempo de llegada y lo cumples.</li>
+          <li><strong>Identificación.</strong> Te presentas con nombre, foto y carné Cerraya.</li>
+          <li><strong>Fotos de antes y después</strong> en cada servicio, para la garantía.</li>
+          <li><strong>Verificar la propiedad</strong> antes de abrir cualquier puerta o vehículo.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-green">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Cómo entrar a la red</span>
+        <h2>Cinco pasos, sin atajos</h2>
+      </div>
+      <ol class="steps steps-5">
+        <li><strong>Postulación</strong><span>Llenas el formulario de esta página.</span></li>
+        <li><strong>Entrevista y prueba</strong><span>Conversamos y haces una prueba técnica.</span></li>
+        <li><strong>Verificación</strong><span>Revisamos antecedentes y referencias.</span></li>
+        <li><strong>Servicios acompañados</strong><span>Tus primeros trabajos son con nuestro equipo.</span></li>
+        <li><strong>Aliado activo</strong><span>Empiezas a recibir servicios en tu zona.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section-cream" id="postulacion">
+    <div class="narrow">
+      <div class="section-head">
+        <span class="eyebrow">Postulación</span>
+        <h2>Cuéntanos de ti</h2>
+        <p class="lead">Toma unos 3 minutos. Revisamos cada postulación personalmente.</p>
+      </div>
+      <form class="form card" name="aliados" method="POST" action="/gracias/aliados" data-netlify="true" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="aliados" />
+        <p class="hidden-field"><label>No llenar: <input name="bot-field" /></label></p>
+
+        <div class="form-row">
+          <div class="field"><label for="a-nombre">Nombre completo</label><input id="a-nombre" name="nombre" autocomplete="name" required /></div>
+          <div class="field"><label for="a-tel">Celular / WhatsApp</label><input id="a-tel" name="telefono" type="tel" inputmode="tel" autocomplete="tel" required /></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label for="a-email">Correo</label><input id="a-email" name="email" type="email" autocomplete="email" /></div>
+          <div class="field"><label for="a-barrio">Barrio donde vives</label><input id="a-barrio" name="barrio" required /></div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="a-exp">Años de experiencia</label>
+            <select id="a-exp" name="experiencia" required>
+              <option value="">Elige</option>
+              <option>Menos de 2 años</option>
+              <option>2 a 5 años</option>
+              <option>5 a 10 años</option>
+              <option>Más de 10 años</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="a-transporte">Transporte</label>
+            <select id="a-transporte" name="transporte" required>
+              <option value="">Elige</option>
+              <option>Moto</option>
+              <option>Carro</option>
+              <option>Bicicleta</option>
+              <option>Transporte público</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field"><fieldset><legend>Zonas que puedes cubrir</legend>
+          <div class="options">{zonas.map((z) => <label class="option"><input type="checkbox" name="zonas" value={z} /><span>{z}</span></label>)}</div>
+        </fieldset></div>
+
+        <div class="field"><fieldset><legend>Especialidades</legend>
+          <div class="options">{especialidades.map((e) => <label class="option"><input type="checkbox" name="especialidades" value={e} /><span>{e}</span></label>)}</div>
+        </fieldset></div>
+
+        <div class="field"><fieldset><legend>Disponibilidad</legend>
+          <div class="options">{disponibilidad.map((d) => <label class="option"><input type="checkbox" name="disponibilidad" value={d} /><span>{d}</span></label>)}</div>
+        </fieldset></div>
+
+        <div class="field"><fieldset><legend>¿Tienes herramienta de apertura sin daños?</legend>
+          <div class="options">{['Sí', 'Parcialmente', 'No'].map((o) => <label class="option"><input type="radio" name="herramienta" value={o} required /><span>{o}</span></label>)}</div>
+        </fieldset></div>
+
+        <div class="field"><label for="a-ref">Dos referencias laborales (nombre y teléfono)</label><textarea id="a-ref" name="referencias" required></textarea></div>
+        <div class="field"><label for="a-sobre">Cuéntanos de tu experiencia</label><textarea id="a-sobre" name="sobre_mi" placeholder="Dónde has trabajado, qué tipo de servicios haces más, qué te diferencia..."></textarea></div>
+
+        <label class="consent"><input type="checkbox" name="autoriza_datos" value="si" required /><span>Autorizo a {empresa.nombre} a tratar mis datos para este proceso de selección, según la <a href="/privacidad" target="_blank">política de tratamiento de datos</a>.</span></label>
+        <label class="consent"><input type="checkbox" name="autoriza_verificacion" value="si" required /><span>Autorizo la verificación de mis antecedentes y referencias.</span></label>
+
+        <button class="btn btn-green btn-lg btn-block" type="submit">Enviar postulación<Icon name="flecha" /></button>
+      </form>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="narrow">
+      <div class="section-head">
+        <span class="eyebrow">Preguntas de aliados</span>
+        <h2>Lo que nos preguntan los cerrajeros</h2>
+      </div>
+      <Faq preguntas={preguntas} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero-al { background: linear-gradient(180deg, var(--green-800), var(--green-900)); color: var(--on-green); padding: clamp(2.5rem, 6vw, 5rem) 0; }
+  .hero-al-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+  .hero-al h1 { color: var(--cream); }
+  .hero-al .eyebrow { color: var(--accent); }
+  .hero-al .lead { color: var(--on-green-muted); margin-bottom: 1.75rem; }
+  .beneficios { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; }
+  .beneficios li { display: flex; gap: 1rem; align-items: flex-start; padding: 1.1rem 1.25rem; border-radius: var(--radius); background: rgba(247, 245, 232, .06); border: 1px solid rgba(247, 245, 232, .14); }
+  .beneficios :global(svg) { width: 40px; height: 40px; padding: 8px; border-radius: 10px; background: var(--accent); color: var(--accent-ink); flex: none; }
+  .beneficios strong { display: block; color: var(--cream); font-family: var(--display); }
+  .beneficios span { color: var(--on-green-muted); font-size: .93rem; }
+  .req { align-items: start; gap: 2.5rem; }
+  .codigo { background: var(--green-100); border-color: transparent; }
+  .codigo-lista { margin: 0; padding-left: 1.3rem; display: grid; gap: .75rem; }
+  .codigo-lista li::marker { font-family: var(--display); font-weight: 800; color: var(--green-800); }
+  .steps-5 { grid-template-columns: repeat(5, 1fr); }
+  @media (max-width: 960px) { .hero-al-grid { grid-template-columns: 1fr; } .steps-5 { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 680px) { .steps-5 { grid-template-columns: 1fr; } }
+</style>

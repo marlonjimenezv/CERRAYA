@@ -1,0 +1,112 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import FormCotizacion from '../components/FormCotizacion.astro';
+---
+<Base title="Mi cotización" description="Las cerraduras que elegiste para cotizar con instalación." noindex>
+  <section class="section section-tight mi-cot">
+    <div class="container mi-cot-grid">
+      <div>
+        <span class="eyebrow">Mi cotización</span>
+        <h1>Tus cerraduras elegidas</h1>
+        <div id="vacio" class="card vacio" hidden>
+          <span class="icon-badge"><Icon name="lista" /></span>
+          <h2>Aún no has agregado productos</h2>
+          <p>Elige tus cerraduras en la tienda y te las cotizamos instaladas.</p>
+          <a class="btn btn-green" href="/cerraduras">Ir a la tienda</a>
+        </div>
+        <ul class="lista" id="lista"></ul>
+        <div class="resumen card" id="resumen" hidden>
+          <div><span>Productos</span><strong id="subtotal"></strong></div>
+          <p>La instalación se suma en tu cotización según tu puerta, o va incluida si el producto tiene promoción. Te enviamos el total en PDF por WhatsApp en minutos.</p>
+          <div class="resumen-acciones">
+            <a class="btn btn-outline" href="/cerraduras"><Icon name="mas" />Agregar más</a>
+            <button class="btn-link" type="button" id="vaciar">Vaciar lista</button>
+          </div>
+        </div>
+      </div>
+      <aside class="card form-lado" id="formLado">
+        <h2>Envíala para cotizar</h2>
+        <FormCotizacion boton="Enviar mi cotización" placeholder="Ej: Son para la puerta principal y la del estudio. Las puertas son de madera." />
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { leerCarrito, cambiarCantidad, vaciar, alCambiar, type ItemCarrito } from '../scripts/carrito';
+
+  const formato = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
+  const lista = document.getElementById('lista')!;
+  const oculto = document.querySelector<HTMLInputElement>('[data-productos]')!;
+
+  function resumenTexto(items: ItemCarrito[]) {
+    if (!items.length) return '';
+    return ['Productos elegidos en la tienda:', ...items.map((i) => `• ${i.cantidad} × ${i.nombre} (${i.marca}) - ${formato.format(i.precio)} c/u`)].join('\n');
+  }
+
+  function pintar() {
+    const items = leerCarrito();
+    document.getElementById('vacio')!.hidden = items.length > 0;
+    document.getElementById('resumen')!.hidden = items.length === 0;
+    lista.innerHTML = '';
+    items.forEach((i) => {
+      const li = document.createElement('li');
+      li.className = 'item card';
+      li.innerHTML = `
+        <div class="item-info"><span class="item-marca"></span><strong class="item-nombre"></strong><span class="item-tipo"></span></div>
+        <div class="item-cant" role="group" aria-label="Cantidad">
+          <button type="button" data-menos aria-label="Quitar uno">−</button><span></span><button type="button" data-mas aria-label="Agregar uno">+</button>
+        </div>
+        <strong class="item-precio"></strong>`;
+      li.querySelector('.item-marca')!.textContent = i.marca;
+      li.querySelector('.item-nombre')!.textContent = i.nombre;
+      li.querySelector('.item-tipo')!.textContent = i.tipo;
+      li.querySelector('.item-cant span')!.textContent = String(i.cantidad);
+      li.querySelector('.item-precio')!.textContent = formato.format(i.precio * i.cantidad);
+      li.querySelector('[data-menos]')!.addEventListener('click', () => cambiarCantidad(i.id, i.cantidad - 1));
+      li.querySelector('[data-mas]')!.addEventListener('click', () => cambiarCantidad(i.id, i.cantidad + 1));
+      lista.append(li);
+    });
+    document.getElementById('subtotal')!.textContent = formato.format(items.reduce((s, i) => s + i.precio * i.cantidad, 0));
+    oculto.value = resumenTexto(items);
+  }
+
+  document.getElementById('vaciar')!.addEventListener('click', () => confirm('¿Vaciar tu lista?') && vaciar());
+  alCambiar(pintar);
+  pintar();
+</script>
+
+<style>
+  .mi-cot-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: start; }
+  .mi-cot h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); }
+  .vacio { text-align: center; display: grid; justify-items: center; }
+  .vacio[hidden], .resumen[hidden] { display: none; }
+  .vacio h2 { font-size: 1.25rem; }
+  .vacio p { color: var(--muted); }
+  .lista { list-style: none; margin: 0 0 1rem; padding: 0; display: grid; gap: .75rem; }
+  .lista :global(.item) { display: grid; grid-template-columns: 1fr auto auto; gap: 1rem; align-items: center; padding: 1rem 1.2rem; }
+  .lista :global(.item-info) { display: grid; gap: .1rem; }
+  .lista :global(.item-marca) { font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--green-600); }
+  .lista :global(.item-nombre) { font-weight: 600; font-size: .95rem; color: var(--ink); }
+  .lista :global(.item-tipo) { font-size: .8rem; color: var(--muted); }
+  .lista :global(.item-cant) { display: inline-flex; align-items: center; border: 1.5px solid var(--line); border-radius: 999px; }
+  .lista :global(.item-cant button) { width: 38px; height: 38px; border: 0; background: none; font-size: 1.2rem; cursor: pointer; color: var(--green-800); }
+  .lista :global(.item-cant span) { min-width: 24px; text-align: center; font-weight: 700; }
+  .lista :global(.item-precio) { font-family: var(--display); min-width: 110px; text-align: right; }
+  .resumen > div:first-child { display: flex; justify-content: space-between; font-size: 1.1rem; }
+  .resumen strong { font-family: var(--display); }
+  .resumen p { color: var(--muted); font-size: .9rem; margin: .6rem 0 1rem; }
+  .resumen-acciones { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .btn-link { background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; font: inherit; font-size: .9rem; }
+  .form-lado { position: sticky; top: calc(var(--header-h) + 1rem); }
+  .form-lado h2 { font-size: 1.3rem; }
+  @media (max-width: 900px) {
+    .mi-cot-grid { grid-template-columns: minmax(0, 1fr); }
+    .form-lado { position: static; }
+  }
+  @media (max-width: 520px) {
+    .lista :global(.item) { grid-template-columns: 1fr auto; }
+    .lista :global(.item-precio) { grid-column: 1 / -1; text-align: left; }
+  }
+</style>

@@ -1,0 +1,136 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import CtaFinal from '../components/CtaFinal.astro';
+
+const entradas = (await getCollection('trabajos')).sort(
+  (a, b) => Number(b.data.destacado) - Number(a.data.destacado) || b.data.fecha.getTime() - a.data.fecha.getTime(),
+);
+
+const trabajos = await Promise.all(
+  entradas.map(async (t) => ({
+    ...t,
+    grande: (await getImage({ src: t.data.foto, width: 1600, format: 'webp' })).src,
+    antesGrande: t.data.antes ? (await getImage({ src: t.data.antes, width: 1600, format: 'webp' })).src : undefined,
+    Contenido: (await render(t)).Content,
+  })),
+);
+const servicios = [...new Set(trabajos.map((t) => t.data.servicio))];
+const fecha = (d: Date) => d.toLocaleDateString('es-CO', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+---
+<Base
+  title="Nuestros trabajos de cerrajería en Bogotá"
+  description="Fotos reales de instalaciones de cerraduras digitales, cambios de guardas, cerrojos de seguridad y aperturas hechas por Cerraya en Bogotá."
+>
+  <section class="hero-trab">
+    <div class="container">
+      <span class="eyebrow">Trabajos</span>
+      <h1>Así dejamos cada puerta</h1>
+      <p class="lead">Fotos reales de nuestros servicios en Bogotá. Cada trabajo queda con garantía.</p>
+      {servicios.length > 1 && (
+        <div class="filtro" role="group" aria-label="Filtrar por servicio">
+          <button type="button" class="chip activo" data-servicio="">Todos</button>
+          {servicios.map((s) => <button type="button" class="chip" data-servicio={s}>{s}</button>)}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="section section-tight">
+    <div class="container">
+      {trabajos.length === 0 ? (
+        <div class="vacio card">
+          <span class="icon-badge"><Icon name="foto" /></span>
+          <h2>Muy pronto, nuestros trabajos</h2>
+          <p>Estamos subiendo las fotos de nuestras instalaciones. Mientras tanto, mira lo que dicen nuestros clientes en Google.</p>
+          <a class="btn btn-green" href="/cotizar">Cotizar mi proyecto</a>
+        </div>
+      ) : (
+        <div class="galeria">
+          {trabajos.map((t) => (
+            <article class="item" data-servicio={t.data.servicio}>
+              <button type="button" class="abrir" data-dialogo={`d-${t.id}`} aria-label={`Ver ${t.data.titulo}`}>
+                <Image src={t.data.foto} alt={t.data.titulo} widths={[480, 800]} sizes="(max-width: 680px) 100vw, (max-width: 960px) 50vw, 33vw" />
+                {t.data.antes && <span class="badge">Antes y después</span>}
+              </button>
+              <div class="item-info">
+                <span class="servicio">{t.data.servicio}</span>
+                <h2>{t.data.titulo}</h2>
+                <p>{[t.data.localidad, fecha(t.data.fecha)].filter(Boolean).join(' · ')}</p>
+              </div>
+              <dialog id={`d-${t.id}`} class="dialogo">
+                <form method="dialog"><button class="cerrar" aria-label="Cerrar"><Icon name="cerrar" /></button></form>
+                <div class:list={['fotos', { doble: t.antesGrande }]}>
+                  {t.antesGrande && <figure><img src={t.antesGrande} alt={`${t.data.titulo}, antes`} loading="lazy" /><figcaption>Antes</figcaption></figure>}
+                  <figure><img src={t.grande} alt={t.data.titulo} loading="lazy" />{t.antesGrande && <figcaption>Después</figcaption>}</figure>
+                </div>
+                <div class="dialogo-texto">
+                  <span class="servicio">{t.data.servicio}</span>
+                  <h3>{t.data.titulo}</h3>
+                  <p class="meta">{[t.data.localidad, fecha(t.data.fecha)].filter(Boolean).join(' · ')}</p>
+                  <t.Contenido />
+                </div>
+              </dialog>
+            </article>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <CtaFinal titulo="¿Quieres un trabajo así en tu puerta?" texto="Cuéntanos qué necesitas y te enviamos tu cotización en PDF." />
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.abrir').forEach((b) =>
+    b.addEventListener('click', () => (document.getElementById(b.dataset.dialogo!) as HTMLDialogElement).showModal()),
+  );
+  document.querySelectorAll<HTMLDialogElement>('dialog').forEach((d) =>
+    d.addEventListener('click', (e) => e.target === d && d.close()),
+  );
+  const chips = document.querySelectorAll<HTMLButtonElement>('.filtro .chip');
+  const items = document.querySelectorAll<HTMLElement>('.item');
+  chips.forEach((c) =>
+    c.addEventListener('click', () => {
+      chips.forEach((x) => x.classList.toggle('activo', x === c));
+      items.forEach((i) => (i.hidden = !!c.dataset.servicio && i.dataset.servicio !== c.dataset.servicio));
+    }),
+  );
+</script>
+
+<style>
+  .hero-trab { background: var(--cream); padding: clamp(2.5rem, 6vw, 4rem) 0 2rem; }
+  .filtro { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.5rem; }
+  .filtro .chip { cursor: pointer; font: inherit; font-size: .88rem; font-weight: 600; }
+  .filtro .chip.activo { background: var(--green-800); border-color: var(--green-800); color: var(--cream); }
+  .vacio { text-align: center; display: grid; justify-items: center; padding: 3rem 1.5rem; max-width: 620px; margin: 0 auto; }
+  .vacio h2 { font-size: 1.5rem; }
+  .vacio p { color: var(--muted); }
+  .galeria { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  .item { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .item[hidden] { display: none; }
+  .abrir { position: relative; display: block; width: 100%; padding: 0; border: 0; cursor: zoom-in; background: var(--cream); }
+  .abrir :global(img) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: transform .35s; }
+  .abrir:hover :global(img) { transform: scale(1.03); }
+  .badge { position: absolute; top: .75rem; left: .75rem; background: var(--accent); color: var(--accent-ink); font-size: .75rem; font-weight: 700; padding: .25rem .6rem; border-radius: 999px; }
+  .item-info { padding: 1rem 1.2rem 1.2rem; }
+  .item-info h2 { font-size: 1.05rem; margin: .2rem 0; }
+  .item-info p { margin: 0; color: var(--muted); font-size: .88rem; }
+  .servicio { font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--green-600); }
+  .dialogo { width: min(1100px, 100% - 24px); max-height: calc(100% - 24px); padding: 0; border: 0; border-radius: var(--radius); background: var(--white); }
+  .dialogo::backdrop { background: rgba(4, 32, 26, .8); }
+  .cerrar { position: absolute; top: .75rem; right: .75rem; z-index: 2; width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 50%; background: var(--white); cursor: pointer; box-shadow: var(--shadow-sm); }
+  .cerrar :global(svg) { width: 22px; height: 22px; }
+  .fotos { display: grid; background: var(--ink); }
+  .fotos.doble { grid-template-columns: 1fr 1fr; }
+  .fotos figure { margin: 0; position: relative; }
+  .fotos img { width: 100%; max-height: 70vh; object-fit: contain; }
+  .fotos figcaption { position: absolute; bottom: .75rem; left: .75rem; background: rgba(4, 32, 26, .85); color: var(--cream); font-size: .8rem; font-weight: 700; padding: .25rem .7rem; border-radius: 999px; }
+  .dialogo-texto { padding: 1.25rem 1.5rem 1.5rem; }
+  .dialogo-texto h3 { margin: .25rem 0; }
+  .meta { color: var(--muted); font-size: .9rem; }
+  @media (max-width: 960px) { .galeria { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .galeria, .fotos.doble { grid-template-columns: 1fr; } }
+</style>

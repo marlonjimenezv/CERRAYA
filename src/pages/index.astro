@@ -1,0 +1,346 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import FondoVivo from '../components/FondoVivo.astro';
+import Icon from '../components/Icon.astro';
+import ProductoCard from '../components/ProductoCard.astro';
+import Resenas from '../components/Resenas.astro';
+import Faq from '../components/Faq.astro';
+import CtaFinal from '../components/CtaFinal.astro';
+import { empresa, tel, whatsapp } from '../data/empresa';
+import { serviciosPopulares, servicios } from '../data/servicios';
+import { productos } from '../data/cerraduras';
+import { marcasCarro } from '../data/llaves';
+import { promocionesActivas } from '../data/promociones';
+
+const destacados = [
+  'yale-kit-yale-connect-con-cerradura-digital-ymf30',
+  'yale-manija-digital-biometrica-bari-negra',
+  'schlage-cerrojo-doble-cilindro-satin-cromo',
+  'yale-cerradura-de-sobreponer-987-70-mm-llave-multipunto',
+]
+  .map((id) => productos.find((p) => p.id === id))
+  .filter((p) => p !== undefined);
+
+const trabajos = (await getCollection('trabajos'))
+  .sort((a, b) => Number(b.data.destacado) - Number(a.data.destacado) || b.data.fecha.getTime() - a.data.fecha.getTime())
+  .slice(0, 3);
+
+const enlaceServicio = (slug: string, titulo: string) =>
+  slug === 'llaves-de-carro' ? '/llaves-de-carro' : slug === 'mantenimiento' ? '/mantenimiento' : whatsapp(`Hola Cerraya, necesito: ${titulo.toLowerCase()}`);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Locksmith',
+  name: empresa.nombre,
+  url: empresa.sitio,
+  logo: `${empresa.sitio}/img/logo-cerraya.png`,
+  image: `${empresa.sitio}/img/og-cerraya.png`,
+  telephone: `+${empresa.telefono}`,
+  areaServed: { '@type': 'City', name: 'Bogotá' },
+  address: { '@type': 'PostalAddress', addressLocality: 'Bogotá', addressRegion: 'Bogotá D.C.', addressCountry: 'CO' },
+  openingHours: 'Mo-Su 00:00-23:59',
+};
+
+const preguntas = [
+  { p: '¿Cuánto cuesta un servicio de cerrajería?', r: 'Depende del servicio, la cerradura y la hora. Al llamar te damos un valor estimado; si al llegar el trabajo resulta distinto, te lo explicamos y tú decides antes de seguir.' },
+  { p: '¿Cuánto se demoran en llegar?', r: 'Salimos de inmediato. Al llamar te decimos el tiempo exacto de llegada según tu ubicación en Bogotá.' },
+  { p: '¿Cómo funciona una cotización?', r: 'Nos escribes qué necesitas y en minutos te enviamos una cotización formal en PDF por WhatsApp, con producto, instalación y garantía.' },
+  { p: '¿Dan garantía?', r: 'Sí. Todo trabajo de instalación queda con garantía y te entregamos soporte del servicio.' },
+];
+---
+<Base
+  title="Cerraya | Cerrajería de confianza en Bogotá 24/7"
+  description={`Cerrajeros con más de ${empresa.experiencia} años de experiencia en Bogotá. Aperturas domiciliarias sin daños, cambio de guardas, llaves de carro y venta e instalación de cerraduras. Urgencias 24/7.`}
+  schema={schema}
+>
+  <section class="hero con-fondo">
+    <FondoVivo />
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <a class="rating-pill" href={empresa.enlacePerfilGoogle} target="_blank" rel="noopener">
+          <span class="stars" aria-hidden="true">★★★★★</span><strong>{empresa.resenas.calificacion}</strong> en Google
+        </a>
+        <h1>Cerrajería de confianza en <span>Bogotá</span></h1>
+        <p class="lead">Aperturas domiciliarias sin daños, cambio de guardas, llaves de carro y venta e instalación de cerraduras. Cerrajeros con más de {empresa.experiencia} años de experiencia.</p>
+        <ul class="hero-points">
+          <li><Icon name="reloj" />Urgencias 24/7</li>
+          <li><Icon name="precio" />Sin sorpresas en el precio</li>
+          <li><Icon name="garantia" />Garantía en cada trabajo</li>
+        </ul>
+      </div>
+
+      <div class="paths" aria-label="¿Qué necesitas?">
+        <article class="path path-urgent">
+          <div class="path-head">
+            <span class="path-icon"><Icon name="rayo" /></span>
+            <div>
+              <h2>Necesito un cerrajero ya</h2>
+              <p>Puerta cerrada, llave partida, chapa dañada o robo.</p>
+            </div>
+          </div>
+          <div class="actions">
+            <a href={tel} class="btn btn-accent btn-lg"><Icon name="telefono" />Llamar ahora</a>
+            <a href={whatsapp()} target="_blank" rel="noopener" class="btn btn-wa btn-lg"><Icon name="whatsapp" />WhatsApp</a>
+          </div>
+        </article>
+        <article class="path">
+          <div class="path-head">
+            <span class="path-icon"><Icon name="documento" /></span>
+            <div>
+              <h2>Quiero una cotización</h2>
+              <p>Escríbenos qué necesitas y en minutos recibes tu PDF.</p>
+            </div>
+          </div>
+          <a href="/cotizar" class="btn btn-cream btn-lg btn-block">Pedir cotización<Icon name="flecha" /></a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="trust" aria-label="Por qué confiar en Cerraya">
+    <div class="container trust-grid">
+      <div><strong>+{empresa.experiencia} años</strong><span>de experiencia</span></div>
+      <div><strong>24/7</strong><span>urgencias todos los días</span></div>
+      <div><strong>Sin sorpresas</strong><span>nada se cobra sin tu aprobación</span></div>
+      <div><strong>Garantía</strong><span>en cada trabajo</span></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head split">
+        <div>
+          <span class="eyebrow">Lo que más nos piden</span>
+          <h2>¿En qué te ayudamos hoy?</h2>
+        </div>
+        <a href="/servicios" class="btn btn-outline">Ver los {servicios.length} servicios<Icon name="flecha" /></a>
+      </div>
+      <div class="grid grid-3">
+        {serviciosPopulares.map((s) => {
+          const href = enlaceServicio(s.slug, s.titulo);
+          const externo = href.startsWith('https://wa.me');
+          return (
+            <a class="card feature servicio" href={href} target={externo ? '_blank' : undefined} rel={externo ? 'noopener' : undefined}>
+              <span class="icon-badge"><Icon name={s.icono} /></span>
+              <h3>{s.titulo}</h3>
+              <p>{s.texto}</p>
+              <span class="servicio-link">{externo ? 'Pedir por WhatsApp' : 'Ver más'}<Icon name="flecha" /></span>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  {promocionesActivas.length > 0 && (
+    <section class="promos">
+      <div class="container">
+        <div class="promos-head">
+          <h2>Promociones</h2>
+          <a href="/promociones">Ver todas y sus condiciones<Icon name="flecha" /></a>
+        </div>
+        <div class="grid grid-3">
+          {promocionesActivas.slice(0, 3).map((p) => (
+            <a class="promo" href={`/promociones#${p.id}`}>
+              <span class="promo-etiqueta">{p.etiqueta}</span>
+              <strong>{p.titulo}</strong>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head split">
+        <div>
+          <span class="eyebrow">Tienda Cerraya</span>
+          <h2>Cerraduras que vendemos e instalamos</h2>
+          <p class="lead">Yale, Schlage, Kwikset, Philips y más. Agrégalas a tu cotización y te las llevamos instaladas.</p>
+        </div>
+        <a href="/cerraduras" class="btn btn-green">Ir a la tienda<Icon name="flecha" /></a>
+      </div>
+      <div class="productos">
+        {destacados.map((p) => <ProductoCard producto={p} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-green">
+    <div class="container llaves">
+      <div>
+        <span class="eyebrow">Llaves de carro</span>
+        <h2>Duplicado y fabricación de llaves de carro</h2>
+        <p class="lead">Con chip, navaja o control, aunque hayas perdido la original. Vamos hasta donde está tu carro.</p>
+        <div class="actions">
+          <a class="btn btn-accent btn-lg" href="/llaves-de-carro">Cotizar mi llave<Icon name="flecha" /></a>
+        </div>
+      </div>
+      <ul class="marcas-carro">
+        {marcasCarro.filter((m) => m.modelos.length).map((m) => <li>{m.marca}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Por qué Cerraya</span>
+        <h2>Le abres la puerta a alguien de confianza</h2>
+      </div>
+      <div class="grid grid-3 pillars">
+        <div class="pillar">
+          <span class="pillar-num">01</span>
+          <h3>Prestigio</h3>
+          <p>Cerrajeros con más de {empresa.experiencia} años en el oficio. Conocemos cada cerradura del mercado y cómo resolverla sin daños.</p>
+        </div>
+        <div class="pillar">
+          <span class="pillar-num">02</span>
+          <h3>Confianza</h3>
+          <p>Cerrajero identificado, ningún cobro sin tu aprobación y verificación de la propiedad antes de cualquier apertura.</p>
+        </div>
+        <div class="pillar">
+          <span class="pillar-num">03</span>
+          <h3>Eficacia</h3>
+          <p>Salimos de inmediato, resolvemos en la primera visita y dejamos todo funcionando mejor que antes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-cream">
+    <div class="container mant">
+      <div>
+        <span class="eyebrow">Mantenimiento preventivo</span>
+        <h2>Que tus cerraduras nunca te dejen por fuera</h2>
+        <p class="lead">Planes para hogares, conjuntos y empresas. La primera visita de diagnóstico es gratis.</p>
+      </div>
+      <a class="btn btn-green btn-lg" href="/mantenimiento">Ver planes<Icon name="flecha" /></a>
+    </div>
+  </section>
+
+  {trabajos.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-head split">
+          <div>
+            <span class="eyebrow">Trabajos recientes</span>
+            <h2>Así dejamos cada puerta</h2>
+          </div>
+          <a href="/trabajos" class="btn btn-outline">Ver todos los trabajos<Icon name="flecha" /></a>
+        </div>
+        <div class="grid grid-3">
+          {trabajos.map((t) => (
+            <a class="trabajo" href="/trabajos">
+              <Image src={t.data.foto} alt={t.data.titulo} widths={[400, 800]} sizes="(max-width: 680px) 100vw, 33vw" />
+              <span class="trabajo-texto"><strong>{t.data.titulo}</strong>{t.data.localidad && <span>{t.data.localidad}</span>}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <Resenas />
+
+  <section class="section">
+    <div class="narrow">
+      <div class="section-head">
+        <span class="eyebrow">Preguntas frecuentes</span>
+        <h2>Lo que nos preguntan antes de llamar</h2>
+      </div>
+      <Faq preguntas={preguntas} />
+    </div>
+  </section>
+
+  <CtaFinal />
+</Base>
+
+<style>
+  .hero {
+    background:
+      radial-gradient(900px 480px at 90% -10%, rgba(242, 179, 61, .14), transparent 60%),
+      linear-gradient(180deg, var(--green-800), var(--green-900));
+    color: var(--on-green);
+    padding: clamp(2.5rem, 7vw, 5rem) 0;
+  }
+  .hero-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
+  .hero h1 { color: var(--cream); }
+  .hero h1 span { color: var(--accent); }
+  .hero .lead { color: var(--on-green-muted); }
+  .rating-pill { display: inline-flex; gap: .45rem; align-items: center; margin-bottom: 1.25rem; padding: .35rem .9rem; border: 1px solid rgba(247, 245, 232, .25); border-radius: 999px; font-size: .88rem; color: var(--cream); text-decoration: none; }
+  .rating-pill:hover { border-color: var(--accent); }
+  .hero-points { list-style: none; padding: 0; margin: 1.6rem 0 0; display: flex; flex-wrap: wrap; gap: .6rem 1.5rem; font-size: .93rem; color: var(--cream); }
+  .hero-points li { display: inline-flex; align-items: center; gap: .45rem; }
+  .hero-points :global(svg) { width: 20px; height: 20px; color: var(--accent); }
+
+  .paths { display: grid; gap: 1rem; }
+  .path { background: rgba(247, 245, 232, .06); border: 1px solid rgba(247, 245, 232, .16); border-radius: var(--radius); padding: 1.5rem; display: grid; gap: 1.2rem; }
+  .path-urgent { background: rgba(242, 179, 61, .08); border-color: rgba(242, 179, 61, .55); }
+  .path-head { display: flex; gap: 1rem; align-items: flex-start; }
+  .path-icon { display: grid; place-items: center; flex: none; width: 48px; height: 48px; border-radius: 12px; background: var(--cream); color: var(--green-800); }
+  .path-urgent .path-icon { background: var(--accent); color: var(--accent-ink); }
+  .path-icon :global(svg) { width: 26px; height: 26px; }
+  .path h2 { font-size: 1.3rem; margin: 0 0 .25rem; color: var(--cream); }
+  .path p { margin: 0; color: var(--on-green-muted); font-size: .95rem; }
+  .path .actions .btn { flex: 1; }
+
+  .trust { background: var(--cream-2); border-bottom: 1px solid var(--line); }
+  .trust-grid { display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; }
+  .trust-grid div { padding: 1.3rem .5rem; }
+  .trust-grid div + div { border-left: 1px solid var(--line); }
+  .trust-grid strong { display: block; font-family: var(--display); font-weight: 800; font-size: 1.45rem; color: var(--green-800); line-height: 1.2; }
+  .trust-grid span { font-size: .85rem; color: var(--muted); }
+
+  .split { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem; flex-wrap: wrap; }
+  .split h2 { margin-bottom: 0; }
+  .split .lead { margin: .75rem 0 0; }
+
+  .servicio { text-decoration: none; display: flex; flex-direction: column; transition: border-color .18s, box-shadow .18s, transform .18s; }
+  .servicio:hover { border-color: var(--green-600); box-shadow: var(--shadow-sm); transform: translateY(-2px); }
+  .servicio-link { margin-top: auto; padding-top: 1rem; display: inline-flex; align-items: center; gap: .35rem; font-family: var(--display); font-weight: 700; font-size: .9rem; color: var(--green-600); }
+  .servicio-link :global(svg) { width: 18px; height: 18px; }
+
+  .promos { background: var(--accent); padding: 2rem 0; }
+  .promos-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .promos h2 { margin: 0; font-size: 1.5rem; color: var(--accent-ink); }
+  .promos-head a { display: inline-flex; align-items: center; gap: .3rem; color: var(--accent-ink); font-weight: 700; font-size: .92rem; }
+  .promos-head :global(svg) { width: 18px; height: 18px; }
+  .promo { display: grid; gap: .5rem; align-content: start; padding: 1.1rem 1.25rem; border-radius: var(--radius-sm); background: var(--white); color: var(--ink); text-decoration: none; transition: transform .18s; }
+  .promo:hover { transform: translateY(-2px); }
+  .promo-etiqueta { justify-self: start; font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: .2rem .6rem; border-radius: 999px; background: var(--green-800); color: var(--cream); }
+  .promo strong { font-family: var(--display); line-height: 1.3; }
+
+  .productos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+
+  .llaves { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2.5rem; align-items: center; }
+  .marcas-carro { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+  .marcas-carro li { padding: .5rem 1rem; border-radius: 999px; border: 1px solid rgba(247, 245, 232, .25); font-family: var(--display); font-weight: 700; color: var(--cream); font-size: .92rem; }
+
+  .pillar { border-top: 2px solid var(--accent); padding-top: 1.4rem; }
+  .pillar-num { font-family: var(--display); font-weight: 800; color: var(--accent); }
+  .pillar h3 { font-size: 1.6rem; margin: .35rem 0 .5rem; }
+  .pillar p { color: var(--muted); margin: 0; }
+
+  .mant { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .mant h2 { margin-bottom: .3rem; }
+  .mant .lead { margin: 0; }
+
+  .trabajo { display: block; border-radius: var(--radius); overflow: hidden; background: var(--white); border: 1px solid var(--line); text-decoration: none; }
+  .trabajo :global(img) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  .trabajo-texto { padding: 1rem 1.2rem; display: grid; gap: .15rem; }
+  .trabajo-texto span { color: var(--muted); font-size: .9rem; }
+
+  @media (max-width: 1080px) { .productos { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 960px) { .hero-grid, .llaves { grid-template-columns: 1fr; } }
+  @media (max-width: 680px) {
+    .trust-grid { grid-template-columns: repeat(2, 1fr); }
+    .trust-grid div:nth-child(3) { border-left: 0; }
+    .trust-grid div:nth-child(n + 3) { border-top: 1px solid var(--line); }
+    .path .actions .btn { flex: 1 1 100%; }
+    .productos { gap: .7rem; }
+  }
+</style>

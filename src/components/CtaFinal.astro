@@ -1,0 +1,33 @@
+---
+import Icon from './Icon.astro';
+import FondoVivo from './FondoVivo.astro';
+import { empresa, tel, whatsapp } from '../data/empresa';
+interface Props {
+  titulo?: string;
+  texto?: string;
+}
+const {
+  titulo = '¿Te quedaste por fuera? Vamos en camino.',
+  texto = 'Llámanos o escríbenos: en minutos tienes un valor estimado y el tiempo de llegada.',
+} = Astro.props;
+---
+<section class="section section-green cta-final con-fondo">
+    <FondoVivo />
+  <div class="container">
+    <h2>{titulo}</h2>
+    <p class="lead">{texto}</p>
+    <div class="actions">
+      <a href={tel} class="btn btn-accent btn-lg"><Icon name="telefono" />Llamar · {empresa.telefonoVisible}</a>
+      <a href={whatsapp()} target="_blank" rel="noopener" class="btn btn-ghost btn-lg"><Icon name="whatsapp" />Escribir por WhatsApp</a>
+    </div>
+    <p class="cta-alt">¿Es un proyecto y no una urgencia? <a href="/cotizar">Pide tu cotización en PDF</a></p>
+  </div>
+</section>
+
+<style>
+  .cta-final { text-align: center; }
+  .cta-final h2, .cta-final .lead { margin-inline: auto; }
+  .cta-final .actions { justify-content: center; margin-top: 1.5rem; }
+  .cta-alt { margin: 1.5rem 0 0; color: var(--on-green-muted); font-size: .95rem; }
+  .cta-alt a { color: var(--cream); }
+</style>

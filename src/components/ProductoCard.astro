@@ -1,0 +1,64 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import Ilustracion from './Ilustracion.astro';
+import { pesos, type Producto } from '../data/cerraduras';
+import { promociones } from '../data/promociones';
+
+// Foto real del producto si existe src/assets/cerraduras/<id>.(jpg|png|webp); si no, la ilustración del tipo.
+const fotos = import.meta.glob<{ default: ImageMetadata }>('/src/assets/cerraduras/*.{jpg,jpeg,png,webp}', { eager: true });
+const fotoDe = (id: string) => Object.entries(fotos).find(([ruta]) => ruta.split('/').pop()!.replace(/\.\w+$/, '') === id)?.[1].default;
+
+interface Props {
+  producto: Producto;
+  mostrarTipo?: boolean;
+}
+const { producto: p, mostrarTipo = true } = Astro.props;
+const foto = fotoDe(p.id);
+const instalacionIncluida = p.tipo === 'digitales' && promociones.some((x) => x.id === 'instalacion-incluida' && x.activa);
+---
+<article class="producto" data-tipo={p.tipo} data-marca={p.marca} data-precio={p.precio} data-seguridad={p.seguridad}>
+  <a class="producto-img" href={`/cerraduras/${p.tipo}`} tabindex="-1" aria-hidden="true">
+    {foto ? <Image src={foto} alt="" widths={[320, 560]} sizes="(max-width: 600px) 50vw, 280px" /> : <Ilustracion tipo={p.tipo} />}
+  </a>
+  <div class="producto-info">
+    <span class="producto-marca">{p.marca}</span>
+    <h3>{p.nombre}</h3>
+    {mostrarTipo && <span class="producto-tipo">{p.tipoNombre}</span>}
+    <p class="producto-precio">
+      {pesos(p.precio)}
+      {instalacionIncluida ? <small class="incluida">Instalación incluida</small> : <small>Producto · instalación aparte</small>}
+    </p>
+  </div>
+  <button
+    type="button"
+    class="btn btn-agregar"
+    data-agregar
+    data-id={p.id}
+    data-nombre={p.nombre}
+    data-marca={p.marca}
+    data-tipo={p.tipoNombre}
+    data-precio={p.precio}
+  >
+    <Icon name="lista" /><span data-texto>Agregar a mi cotización</span>
+  </button>
+</article>
+
+<style>
+  .producto { display: flex; flex-direction: column; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; transition: box-shadow .2s, transform .2s, border-color .2s; }
+  .producto:hover { box-shadow: var(--shadow-sm); transform: translateY(-2px); border-color: #cfd9d2; }
+  .producto[hidden] { display: none; }
+  .producto-img { display: grid; place-items: center; aspect-ratio: 4 / 3; padding: 1rem 1.5rem; background: radial-gradient(circle at 50% 40%, var(--white), var(--cream) 75%); }
+  .producto-img :global(img) { width: 100%; height: 100%; object-fit: contain; }
+  .producto-info { padding: 1rem 1.1rem .5rem; display: grid; gap: .2rem; flex: 1; align-content: start; }
+  .producto-marca { font-family: var(--display); font-size: .75rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--green-600); }
+  .producto h3 { font-family: var(--sans); font-size: .98rem; font-weight: 600; line-height: 1.35; margin: 0; color: var(--ink); }
+  .producto-tipo { font-size: .8rem; color: var(--muted); }
+  .producto-precio { margin: .45rem 0 0; font-family: var(--display); font-weight: 800; font-size: 1.2rem; color: var(--ink); display: grid; }
+  .producto-precio small { font-family: var(--sans); font-weight: 500; font-size: .75rem; color: var(--muted); }
+  .producto-precio .incluida { justify-self: start; margin-top: .2rem; padding: .1rem .5rem; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+  .btn-agregar { margin: .5rem 1.1rem 1.1rem; min-height: 44px; padding: .55rem .8rem; font-size: .86rem; background: var(--green-800); color: var(--cream); }
+  .btn-agregar:hover { background: var(--green-700); }
+  .btn-agregar :global(svg) { width: 18px; height: 18px; }
+  .btn-agregar:global(.en-carrito) { background: var(--green-100); color: var(--green-800); border-color: var(--green-800); }
+</style>

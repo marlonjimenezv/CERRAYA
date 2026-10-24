@@ -1,0 +1,178 @@
+---
+import Base from '../layouts/Base.astro';
+import FondoVivo from '../components/FondoVivo.astro';
+import Icon from '../components/Icon.astro';
+import Faq from '../components/Faq.astro';
+import CtaFinal from '../components/CtaFinal.astro';
+import { empresa, tel } from '../data/empresa';
+import { marcasCarro, tiposLlave, serviciosLlave } from '../data/llaves';
+
+const anioActual = new Date().getFullYear();
+const preguntas = [
+  { p: '¿Pueden hacer una llave si perdí todas?', r: 'Sí. Fabricamos la llave sin la original y la programamos en tu carro. Necesitamos ver la tarjeta de propiedad y tu documento.' },
+  { p: '¿Tengo que llevar el carro a algún lado?', r: 'No. Vamos hasta donde está el carro en Bogotá con el equipo para cortar y programar la llave.' },
+  { p: '¿Cuánto cuesta una llave de carro?', r: 'Depende de la marca, el modelo, el año y el tipo de llave. Cuéntanos esos datos y te damos un valor estimado antes de ir.' },
+  { p: '¿Qué necesito para que me hagan la llave?', r: 'La tarjeta de propiedad a tu nombre (o una autorización del propietario) y tu documento de identidad.' },
+];
+---
+<Base
+  title="Llaves de carro en Bogotá: duplicado y fabricación"
+  description="Duplicado y fabricación de llaves de carro con chip, navaja y control en Bogotá, aunque hayas perdido la original. Chevrolet, Renault, Mazda, Kia, Toyota, Nissan y más. Vamos hasta tu carro."
+>
+  <section class="hero-llaves con-fondo">
+    <FondoVivo />
+    <div class="container hero-llaves-grid">
+      <div>
+        <span class="eyebrow">Llaves de carro</span>
+        <h1>Duplicado y fabricación de llaves de carro</h1>
+        <p class="lead">Llaves con chip, navaja y control para las marcas más comunes en Colombia, aunque hayas perdido la original. Vamos hasta donde está tu carro.</p>
+        <ul class="hero-points">
+          <li><Icon name="mapa" />Vamos a tu ubicación en Bogotá</li>
+          <li><Icon name="llave" />Sin la llave original</li>
+          <li><Icon name="garantia" />Más de {empresa.experiencia} años de experiencia</li>
+        </ul>
+      </div>
+
+      <form class="buscador card" id="buscador" aria-labelledby="buscadorTitulo">
+        <h2 id="buscadorTitulo">Cotiza tu llave en 1 minuto</h2>
+        <div class="form-row">
+          <div class="field">
+            <label for="marca">Marca</label>
+            <select id="marca" name="marca" required>
+              <option value="">Elige la marca</option>
+              {marcasCarro.map((m) => <option value={m.marca} data-modelos={m.modelos.join('|')}>{m.marca}</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label for="modelo">Modelo</label>
+            <input id="modelo" name="modelo" list="modelos" placeholder="Ej: Spark GT" required />
+            <datalist id="modelos"></datalist>
+          </div>
+        </div>
+        <div class="field">
+          <label for="anio">Año</label>
+          <input id="anio" name="anio" type="number" inputmode="numeric" min="1980" max={anioActual + 1} placeholder={String(anioActual - 6)} />
+        </div>
+        <div class="field">
+          <fieldset>
+            <legend>¿Cómo es tu llave?</legend>
+            <div class="tipos">
+              {tiposLlave.map((t, i) => (
+                <label class="tipo-llave">
+                  <input type="radio" name="tipo" value={t.nombre} checked={i === 1} />
+                  <span><strong>{t.nombre}</strong><small>{t.texto}</small></span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        </div>
+        <div class="field">
+          <fieldset>
+            <legend>¿Tienes una llave que funcione?</legend>
+            <div class="options">
+              <label class="option"><input type="radio" name="servicio" value="Duplicado (tengo una llave)" checked /><span>Sí, quiero una copia</span></label>
+              <label class="option"><input type="radio" name="servicio" value="Fabricación (perdí todas las llaves)" /><span>No, las perdí todas</span></label>
+            </div>
+          </fieldset>
+        </div>
+        <button class="btn btn-wa btn-lg btn-block" type="submit"><Icon name="whatsapp" />Pedir precio por WhatsApp</button>
+        <a class="btn btn-outline btn-block" href={tel}><Icon name="telefono" />O llámanos: {empresa.telefonoVisible}</a>
+      </form>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Servicios</span>
+        <h2>Todo para las llaves de tu vehículo</h2>
+      </div>
+      <div class="grid grid-3">
+        {serviciosLlave.map((s) => (
+          <article class="card feature">
+            <span class="icon-badge"><Icon name="carro" /></span>
+            <h3>{s.titulo}</h3>
+            <p>{s.texto}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-cream">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Marcas</span>
+        <h2>Las marcas más comunes en Colombia</h2>
+        <p class="lead">¿Tu carro no está en la lista? Escríbenos igual: trabajamos con muchas más marcas y modelos.</p>
+      </div>
+      <div class="marcas-grid">
+        {marcasCarro.filter((m) => m.modelos.length).map((m) => (
+          <div class="marca-card">
+            <h3>{m.marca}</h3>
+            <p>{m.modelos.join(' · ')}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="narrow">
+      <div class="section-head">
+        <span class="eyebrow">Preguntas frecuentes</span>
+        <h2>Sobre las llaves de carro</h2>
+      </div>
+      <Faq preguntas={preguntas} />
+    </div>
+  </section>
+
+  <CtaFinal titulo="¿Perdiste las llaves del carro?" texto="Llámanos o escríbenos con la marca, el modelo y el año, y te damos un valor estimado antes de ir." />
+</Base>
+
+<script>
+  import { whatsapp } from '../data/empresa';
+
+  const form = document.getElementById('buscador') as HTMLFormElement;
+  const marca = document.getElementById('marca') as HTMLSelectElement;
+  const lista = document.getElementById('modelos')!;
+
+  marca.addEventListener('change', () => {
+    const modelos = marca.selectedOptions[0]?.dataset.modelos?.split('|').filter(Boolean) ?? [];
+    lista.innerHTML = '';
+    modelos.forEach((m) => lista.append(new Option(m, m)));
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const d = new FormData(form);
+    const carro = [d.get('marca'), d.get('modelo'), d.get('anio')].filter(Boolean).join(' ');
+    const texto = `Hola Cerraya, necesito una llave para mi carro:\n• Carro: ${carro}\n• Tipo de llave: ${d.get('tipo')}\n• Servicio: ${d.get('servicio')}`;
+    window.open(whatsapp(texto), '_blank', 'noopener');
+  });
+</script>
+
+<style>
+  .hero-llaves { background: linear-gradient(180deg, var(--green-800), var(--green-900)); color: var(--on-green); padding: clamp(2.5rem, 6vw, 4.5rem) 0; }
+  .hero-llaves-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+  .hero-llaves h1 { color: var(--cream); }
+  .hero-llaves .eyebrow { color: var(--accent); }
+  .hero-llaves .lead { color: var(--on-green-muted); }
+  .hero-points { list-style: none; padding: 0; margin: 1.5rem 0 0; display: grid; gap: .7rem; color: var(--cream); font-size: .95rem; }
+  .hero-points li { display: flex; align-items: center; gap: .55rem; }
+  .hero-points :global(svg) { width: 20px; height: 20px; color: var(--accent); }
+  .buscador { display: grid; gap: 1rem; box-shadow: var(--shadow); padding: clamp(1.25rem, 3vw, 1.75rem); }
+  .buscador h2 { font-size: 1.35rem; margin: 0; }
+  .tipos { display: grid; gap: .5rem; margin-top: .35rem; }
+  .tipo-llave { position: relative; display: block; cursor: pointer; }
+  .tipo-llave input { position: absolute; opacity: 0; }
+  .tipo-llave span { display: grid; gap: .1rem; padding: .7rem .9rem; border: 1.5px solid var(--line); border-radius: var(--radius-sm); transition: border-color .15s, background-color .15s; }
+  .tipo-llave small { color: var(--muted); font-size: .84rem; line-height: 1.4; }
+  .tipo-llave input:checked + span { border-color: var(--green-800); background: var(--green-100); }
+  .tipo-llave input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .marcas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1rem; }
+  .marca-card { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 1.1rem 1.25rem; }
+  .marca-card h3 { margin: 0 0 .3rem; color: var(--green-800); }
+  .marca-card p { margin: 0; font-size: .9rem; color: var(--muted); }
+  @media (max-width: 960px) { .hero-llaves-grid { grid-template-columns: 1fr; } }
+</style>

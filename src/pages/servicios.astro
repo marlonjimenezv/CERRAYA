@@ -1,0 +1,85 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import CtaFinal from '../components/CtaFinal.astro';
+import { empresa, whatsapp } from '../data/empresa';
+import { servicios, gruposServicio } from '../data/servicios';
+---
+<Base
+  title="Servicios de cerrajería en Bogotá"
+  description={`Aperturas domiciliarias, cambio de guardas, copias y llaves de carro, cerraduras digitales, cajas fuertes, llave maestra y más. Cerrajeros con más de ${empresa.experiencia} años de experiencia en Bogotá.`}
+>
+  <section class="hero-serv">
+    <div class="container">
+      <span class="eyebrow">Servicios</span>
+      <h1>Todos nuestros servicios de cerrajería</h1>
+      <p class="lead">{servicios.length} servicios para tu casa, tu carro, tu conjunto o tu empresa. Los más pedidos van primero.</p>
+      <div class="filtro" role="group" aria-label="Filtrar servicios">
+        <button type="button" class="chip activo" data-grupo="">Todos</button>
+        {gruposServicio.map((g) => <button type="button" class="chip" data-grupo={g}>{g}</button>)}
+        <button type="button" class="chip" data-grupo="urgencia">Urgencias 24/7</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-tight">
+    <div class="container grid grid-3" id="lista">
+      {servicios.map((s, i) => (
+        <article class="card servicio" id={s.slug} data-grupo={s.grupo} data-urgencia={String(s.urgencia)}>
+          <div class="servicio-top">
+            <span class="icon-badge"><Icon name={s.icono} /></span>
+            {i < 6 && <span class="tag">Más pedido</span>}
+            {s.urgencia && <span class="tag tag-urg">24/7</span>}
+          </div>
+          <h2>{s.titulo}</h2>
+          <p>{s.texto}</p>
+          <ul>{s.incluye.map((x) => <li>{x}</li>)}</ul>
+          <div class="servicio-cta">
+            {s.slug === 'llaves-de-carro' ? (
+              <a class="btn btn-green" href="/llaves-de-carro">Cotizar mi llave<Icon name="flecha" /></a>
+            ) : s.slug === 'mantenimiento' ? (
+              <a class="btn btn-green" href="/mantenimiento">Ver planes<Icon name="flecha" /></a>
+            ) : (
+              <a class="btn btn-green" href={whatsapp(`Hola Cerraya, necesito: ${s.titulo.toLowerCase()}`)} target="_blank" rel="noopener"><Icon name="whatsapp" />Pedir este servicio</a>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <CtaFinal titulo="¿No encuentras lo que necesitas?" texto="Escríbenos y cuéntanos qué pasa: casi siempre tenemos la solución." />
+</Base>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('.filtro .chip');
+  const tarjetas = document.querySelectorAll<HTMLElement>('.servicio');
+  chips.forEach((c) =>
+    c.addEventListener('click', () => {
+      chips.forEach((x) => x.classList.toggle('activo', x === c));
+      const g = c.dataset.grupo;
+      tarjetas.forEach((t) => {
+        t.hidden = !!g && (g === 'urgencia' ? t.dataset.urgencia !== 'true' : t.dataset.grupo !== g);
+      });
+    }),
+  );
+</script>
+
+<style>
+  .hero-serv { background: var(--cream); padding: clamp(2.5rem, 6vw, 4rem) 0 2rem; }
+  .filtro { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.5rem; }
+  .filtro .chip { cursor: pointer; font: inherit; font-size: .9rem; font-weight: 600; }
+  .filtro .chip.activo { background: var(--green-800); border-color: var(--green-800); color: var(--cream); }
+  .servicio { display: flex; flex-direction: column; }
+  .servicio[hidden] { display: none; }
+  .servicio-top { display: flex; align-items: flex-start; gap: .4rem; }
+  .servicio-top .icon-badge { margin-right: auto; }
+  .tag { font-size: .72rem; font-weight: 700; letter-spacing: .04em; padding: .2rem .55rem; border-radius: 999px; background: var(--green-100); color: var(--green-800); }
+  .tag-urg { background: var(--accent); color: var(--accent-ink); }
+  .servicio h2 { font-size: 1.2rem; margin: 0 0 .4rem; }
+  .servicio p { color: var(--muted); font-size: .95rem; }
+  .servicio ul { margin: 0 0 1.25rem; padding-left: 1.1rem; font-size: .9rem; color: var(--text); display: grid; gap: .2rem; }
+  .servicio ul li::marker { color: var(--green-600); }
+  .servicio-cta { margin-top: auto; }
+  .servicio-cta .btn { width: 100%; }
+</style>

@@ -1,0 +1,479 @@
+---
+import Base from '../layouts/Base.astro';
+import Logo from '../components/Logo.astro';
+import Icon from '../components/Icon.astro';
+import { tiposCerradura, precioVenta } from '../data/cerraduras';
+
+// Herramienta interna: arma una cotización y genera el PDF en el navegador.
+// Todo se guarda en este dispositivo (localStorage); nada sale a un servidor.
+const manoDeObra = [
+  'Instalación de cerradura digital',
+  'Instalación de cerrojo de seguridad',
+  'Instalación de cerradura de sobreponer',
+  'Instalación de cerradura de embutir o multipunto',
+  'Instalación de cerradura de manija o pomo',
+  'Cambio de guardas (cilindro)',
+  'Instalación de cerradura eléctrica',
+  'Anclaje e instalación de caja fuerte',
+  'Apertura de puerta sin daños',
+  'Visita técnica',
+  'Transporte',
+  'Recargo nocturno o festivo',
+];
+const catalogo = tiposCerradura.map((t) => ({
+  grupo: t.nombre,
+  modelos: t.modelos.map((m) => ({ descripcion: `${m.nombre} · ${m.marca}`, valor: precioVenta(m.precio, t.slug), etiqueta: `${m.marca} · ${m.nombre}` })),
+}));
+---
+<Base title="Cotizador" description="Herramienta interna de cotizaciones de Cerraya." noindex sinMarco>
+  <header class="barra">
+    <div class="contenedor barra-inner">
+      <a href="/" class="barra-logo" aria-label="Ir al sitio"><Logo /></a>
+      <span class="barra-titulo">Cotizador</span>
+      <button type="button" class="btn btn-ghost btn-sm" id="nueva"><Icon name="mas" />Nueva</button>
+    </div>
+  </header>
+
+  <div class="contenedor layout">
+    <form class="editor" id="editor" autocomplete="off">
+      <section class="panel">
+        <h2>Cotización</h2>
+        <div class="fila-4">
+          <div class="field"><label for="numero">Número</label><input id="numero" data-campo="numero" /></div>
+          <div class="field"><label for="fecha">Fecha</label><input id="fecha" type="date" data-campo="fecha" /></div>
+          <div class="field"><label for="validez">Validez (días)</label><input id="validez" type="number" min="1" data-campo="validezDias" data-num /></div>
+          <div class="field"><label for="atendido">Atendido por</label><input id="atendido" data-campo="atendidoPor" placeholder="Tu nombre" /></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Cliente</h2>
+        <div class="fila-2">
+          <div class="field"><label for="c-nombre">Nombre o razón social *</label><input id="c-nombre" data-campo="cliente.nombre" required /></div>
+          <div class="field"><label for="c-doc">Cédula / NIT</label><input id="c-doc" data-campo="cliente.documento" /></div>
+          <div class="field"><label for="c-tel">Celular</label><input id="c-tel" type="tel" inputmode="tel" data-campo="cliente.telefono" /></div>
+          <div class="field"><label for="c-email">Correo</label><input id="c-email" type="email" data-campo="cliente.email" /></div>
+          <div class="field"><label for="c-dir">Dirección o barrio</label><input id="c-dir" data-campo="cliente.direccion" /></div>
+          <div class="field">
+            <label for="c-tipo">Tipo de cliente</label>
+            <select id="c-tipo" data-campo="cliente.tipo"><option>Hogar</option><option>Conjunto o edificio</option><option>Empresa o local</option></select>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Ítems</h2>
+          <span class="ayuda">Los precios de mano de obra que escribas se recuerdan para la próxima.</span>
+        </div>
+        <div class="agregar">
+          <select id="addCatalogo" aria-label="Agregar producto del catálogo">
+            <option value="">+ Producto del catálogo</option>
+            {catalogo.map((g, gi) => (
+              <optgroup label={g.grupo}>
+                {g.modelos.map((m, mi) => <option value={`${gi}-${mi}`}>{m.etiqueta}</option>)}
+              </optgroup>
+            ))}
+          </select>
+          <select id="addManoObra" aria-label="Agregar mano de obra">
+            <option value="">+ Mano de obra</option>
+            {manoDeObra.map((x) => <option>{x}</option>)}
+          </select>
+          <button type="button" class="btn btn-outline btn-sm" id="addLibre"><Icon name="mas" />Ítem libre</button>
+        </div>
+        <div class="items-wrap">
+          <table class="items">
+            <thead><tr><th>Descripción</th><th>Tipo</th><th class="num">Cant.</th><th class="num">Valor unit.</th><th class="num">Total</th><th><span class="sr-only">Quitar</span></th></tr></thead>
+            <tbody id="items"></tbody>
+          </table>
+          <p class="vacio" id="itemsVacio">Agrega productos del catálogo, mano de obra o ítems libres.</p>
+        </div>
+        <div class="fila-2 ajustes">
+          <div class="field"><label for="descuento">Descuento (%)</label><input id="descuento" type="number" min="0" max="100" step="0.5" data-campo="descuentoPct" data-num /></div>
+          <label class="consent iva"><input type="checkbox" id="iva" data-campo="iva" /><span>Sumar IVA del 19%</span></label>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Condiciones</h2>
+        <div class="field"><label for="pago">Forma de pago</label><textarea id="pago" rows="2" data-campo="formaPago"></textarea></div>
+        <div class="field"><label for="tiempo">Tiempo de ejecución</label><textarea id="tiempo" rows="2" data-campo="tiempoEjecucion"></textarea></div>
+        <div class="field"><label for="garantia">Garantía</label><textarea id="garantia" rows="2" data-campo="garantia"></textarea></div>
+        <div class="field"><label for="notas">Observaciones</label><textarea id="notas" rows="3" data-campo="notas"></textarea></div>
+      </section>
+    </form>
+
+    <aside class="lateral">
+      <div class="panel resumen">
+        <h2>Resumen</h2>
+        <dl id="totales"></dl>
+        <button type="button" class="btn btn-accent btn-lg btn-block" id="descargar"><Icon name="descargar" />Descargar PDF</button>
+        <button type="button" class="btn btn-green btn-block" id="compartir"><Icon name="compartir" />Compartir PDF</button>
+        <button type="button" class="btn btn-wa btn-block" id="whatsapp"><Icon name="whatsapp" />Abrir chat del cliente</button>
+        <p class="estado" id="estado" role="status"></p>
+      </div>
+      <div class="panel">
+        <h2>Historial</h2>
+        <ul class="historial" id="historial"></ul>
+      </div>
+    </aside>
+  </div>
+
+  <script is:inline type="application/json" id="catalogo" set:html={JSON.stringify(catalogo)}></script>
+</Base>
+
+<script>
+  import { crearPdf, totales, pesos, type Cotizacion, type Item } from '../scripts/cotizador-pdf';
+
+  type Catalogo = { grupo: string; modelos: { descripcion: string; valor: number; etiqueta: string }[] }[];
+  const catalogo: Catalogo = JSON.parse(document.getElementById('catalogo')!.textContent!);
+
+  const CLAVE = {
+    borrador: 'cerraya.cotizador.borrador',
+    historial: 'cerraya.cotizador.historial',
+    consecutivo: 'cerraya.cotizador.consecutivo',
+    precios: 'cerraya.cotizador.precios',
+    preferencias: 'cerraya.cotizador.preferencias',
+  };
+  const leer = <T,>(clave: string, defecto: T): T => {
+    try {
+      const v = localStorage.getItem(clave);
+      return v ? (JSON.parse(v) as T) : defecto;
+    } catch {
+      return defecto;
+    }
+  };
+  const guardar = (clave: string, valor: unknown) => {
+    try {
+      localStorage.setItem(clave, JSON.stringify(valor));
+    } catch {
+      /* almacenamiento no disponible */
+    }
+  };
+
+  // CONFIRMAR: condiciones por defecto de Cerraya. Al editarlas quedan guardadas para las siguientes.
+  const preferenciasBase = {
+    atendidoPor: '',
+    validezDias: 15,
+    formaPago: '50% de anticipo para la compra de materiales y 50% al terminar la instalación.',
+    tiempoEjecucion: 'Instalación en 1 día hábil después de aprobada la cotización, sujeto a disponibilidad del producto.',
+    garantia: 'Mano de obra garantizada por 6 meses. Productos con la garantía del fabricante.',
+  };
+  type Preferencias = typeof preferenciasBase;
+
+  const hoy = () => {
+    const d = new Date();
+    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  };
+  const numeroDe = (n: number) => `COT-${new Date().getFullYear()}-${String(n).padStart(4, '0')}`;
+  const consecutivoDe = (numero: string) => Number(numero.match(/(\d+)$/)?.[1] ?? 0);
+
+  function nueva(): Cotizacion {
+    const p = { ...preferenciasBase, ...leer<Partial<Preferencias>>(CLAVE.preferencias, {}) };
+    return {
+      numero: numeroDe(leer(CLAVE.consecutivo, 0) + 1),
+      fecha: hoy(),
+      validezDias: p.validezDias,
+      atendidoPor: p.atendidoPor,
+      cliente: { nombre: '', documento: '', telefono: '', email: '', direccion: '', tipo: 'Hogar' },
+      items: [],
+      descuentoPct: 0,
+      iva: false,
+      formaPago: p.formaPago,
+      tiempoEjecucion: p.tiempoEjecucion,
+      garantia: p.garantia,
+      notas: '',
+    };
+  }
+
+  let cot: Cotizacion = leer<Cotizacion | null>(CLAVE.borrador, null) ?? nueva();
+
+  // Datos que llegan por enlace: /cotizador?nombre=...&telefono=...&localidad=...&producto=...&detalle=...
+  const params = new URLSearchParams(location.search);
+  if (params.get('nombre') || params.get('telefono')) {
+    cot = nueva();
+    cot.cliente.nombre = params.get('nombre') ?? '';
+    cot.cliente.telefono = params.get('telefono') ?? '';
+    cot.cliente.email = params.get('email') ?? '';
+    cot.cliente.direccion = params.get('localidad') ?? params.get('direccion') ?? '';
+    cot.notas = params.get('detalle') ?? '';
+    const producto = params.get('producto');
+    if (producto) cot.items.push({ descripcion: producto, tipo: 'Producto', cantidad: Number(params.get('puertas')) || 1, valor: 0 });
+    history.replaceState(null, '', location.pathname);
+  }
+
+  const editor = document.getElementById('editor') as HTMLFormElement;
+  const cuerpo = document.getElementById('items')!;
+  const vacio = document.getElementById('itemsVacio')!;
+  const estado = document.getElementById('estado')!;
+
+  const obtener = (ruta: string) => ruta.split('.').reduce<any>((o, k) => o?.[k], cot);
+  const asignar = (ruta: string, valor: unknown) => {
+    const partes = ruta.split('.');
+    const ultimo = partes.pop()!;
+    const destino = partes.reduce<any>((o, k) => o[k], cot);
+    destino[ultimo] = valor;
+  };
+
+  function pintarCampos() {
+    editor.querySelectorAll<HTMLInputElement>('[data-campo]').forEach((el) => {
+      const v = obtener(el.dataset.campo!);
+      if (el.type === 'checkbox') el.checked = Boolean(v);
+      else el.value = v ?? '';
+    });
+  }
+
+  function pintarItems() {
+    cuerpo.innerHTML = '';
+    cot.items.forEach((item, i) => {
+      const fila = document.createElement('tr');
+      fila.innerHTML = `
+        <td><input data-i="${i}" data-k="descripcion" aria-label="Descripción" /></td>
+        <td><select data-i="${i}" data-k="tipo" aria-label="Tipo"><option>Producto</option><option>Mano de obra</option><option>Otro</option></select></td>
+        <td class="num"><input data-i="${i}" data-k="cantidad" type="number" min="0" step="1" inputmode="numeric" aria-label="Cantidad" /></td>
+        <td class="num"><input data-i="${i}" data-k="valor" type="number" min="0" step="100" inputmode="numeric" aria-label="Valor unitario" /></td>
+        <td class="num total-fila"></td>
+        <td><button type="button" class="quitar" data-quitar="${i}" aria-label="Quitar ítem">×</button></td>`;
+      (fila.querySelector('[data-k="descripcion"]') as HTMLInputElement).value = item.descripcion;
+      (fila.querySelector('[data-k="tipo"]') as HTMLSelectElement).value = item.tipo;
+      (fila.querySelector('[data-k="cantidad"]') as HTMLInputElement).value = String(item.cantidad);
+      (fila.querySelector('[data-k="valor"]') as HTMLInputElement).value = String(item.valor);
+      fila.querySelector('.total-fila')!.textContent = pesos(item.cantidad * item.valor);
+      if (!item.valor) fila.classList.add('sin-precio');
+      cuerpo.append(fila);
+    });
+    vacio.hidden = cot.items.length > 0;
+  }
+
+  function pintarTotales() {
+    const t = totales(cot);
+    const filas: [string, string, string?][] = [['Subtotal', pesos(t.subtotal)]];
+    if (t.descuento) filas.push([`Descuento ${cot.descuentoPct}%`, `- ${pesos(t.descuento)}`]);
+    if (cot.iva) filas.push(['IVA 19%', pesos(t.iva)]);
+    filas.push(['Total', pesos(t.total), 'total']);
+    document.getElementById('totales')!.innerHTML = filas
+      .map(([e, v, c]) => `<div class="${c ?? ''}"><dt>${e}</dt><dd>${v}</dd></div>`)
+      .join('');
+  }
+
+  function pintarHistorial() {
+    const lista = leer<Cotizacion[]>(CLAVE.historial, []);
+    const ul = document.getElementById('historial')!;
+    ul.innerHTML = lista.length ? '' : '<li class="vacio">Aquí aparecen las cotizaciones que descargues.</li>';
+    lista.forEach((c, i) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<button type="button" data-abrir="${i}"><strong></strong><span></span></button>`;
+      li.querySelector('strong')!.textContent = `${c.numero} · ${pesos(totales(c).total)}`;
+      li.querySelector('span')!.textContent = `${c.cliente.nombre || 'Sin nombre'} · ${c.fecha}`;
+      ul.append(li);
+    });
+  }
+
+  const persistir = () => guardar(CLAVE.borrador, cot);
+  const refrescar = () => {
+    pintarItems();
+    pintarTotales();
+    persistir();
+  };
+
+  editor.addEventListener('input', (e) => {
+    const el = e.target as HTMLInputElement;
+    if (el.dataset.campo) {
+      const valor = el.type === 'checkbox' ? el.checked : el.dataset.num !== undefined ? Number(el.value) || 0 : el.value;
+      asignar(el.dataset.campo, valor);
+      if (['atendidoPor', 'validezDias', 'formaPago', 'tiempoEjecucion', 'garantia'].includes(el.dataset.campo)) {
+        guardar(CLAVE.preferencias, { ...leer(CLAVE.preferencias, {}), [el.dataset.campo]: valor });
+      }
+      pintarTotales();
+      persistir();
+      return;
+    }
+    if (el.dataset.i !== undefined) {
+      const item = cot.items[Number(el.dataset.i)];
+      const k = el.dataset.k as keyof Item;
+      (item as any)[k] = k === 'cantidad' || k === 'valor' ? Number(el.value) || 0 : el.value;
+      if (k === 'valor' && item.tipo === 'Mano de obra' && item.valor > 0) {
+        guardar(CLAVE.precios, { ...leer<Record<string, number>>(CLAVE.precios, {}), [item.descripcion]: item.valor });
+      }
+      const fila = el.closest('tr')!;
+      fila.querySelector('.total-fila')!.textContent = pesos(item.cantidad * item.valor);
+      fila.classList.toggle('sin-precio', !item.valor);
+      pintarTotales();
+      persistir();
+    }
+  });
+
+  cuerpo.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('[data-quitar]');
+    if (!b) return;
+    cot.items.splice(Number(b.dataset.quitar), 1);
+    refrescar();
+  });
+
+  const agregar = (item: Item) => {
+    cot.items.push(item);
+    refrescar();
+    const filas = cuerpo.querySelectorAll('tr');
+    (filas[filas.length - 1]?.querySelector('[data-k="valor"]') as HTMLInputElement | null)?.focus();
+  };
+
+  const selCatalogo = document.getElementById('addCatalogo') as HTMLSelectElement;
+  selCatalogo.addEventListener('change', () => {
+    if (!selCatalogo.value) return;
+    const [g, m] = selCatalogo.value.split('-').map(Number);
+    const modelo = catalogo[g].modelos[m];
+    agregar({ descripcion: modelo.descripcion, tipo: 'Producto', cantidad: 1, valor: modelo.valor });
+    selCatalogo.value = '';
+  });
+
+  const selManoObra = document.getElementById('addManoObra') as HTMLSelectElement;
+  selManoObra.addEventListener('change', () => {
+    if (!selManoObra.value) return;
+    const precios = leer<Record<string, number>>(CLAVE.precios, {});
+    agregar({ descripcion: selManoObra.value, tipo: 'Mano de obra', cantidad: 1, valor: precios[selManoObra.value] ?? 0 });
+    selManoObra.value = '';
+  });
+
+  document.getElementById('addLibre')!.addEventListener('click', () => agregar({ descripcion: '', tipo: 'Otro', cantidad: 1, valor: 0 }));
+
+  document.getElementById('nueva')!.addEventListener('click', () => {
+    if (cot.items.length && !confirm('¿Empezar una cotización nueva? La actual sigue en el historial si ya la descargaste.')) return;
+    cot = nueva();
+    pintarCampos();
+    refrescar();
+    estado.textContent = '';
+  });
+
+  function validar() {
+    if (!cot.cliente.nombre.trim()) {
+      estado.textContent = 'Falta el nombre del cliente.';
+      (document.getElementById('c-nombre') as HTMLInputElement).focus();
+      return false;
+    }
+    if (!cot.items.length) {
+      estado.textContent = 'Agrega al menos un ítem.';
+      return false;
+    }
+    if (cot.items.some((i) => !i.valor) && !confirm('Hay ítems con valor $0. ¿Generar el PDF así?')) return false;
+    return true;
+  }
+
+  function registrarEnHistorial() {
+    const lista = leer<Cotizacion[]>(CLAVE.historial, []).filter((c) => c.numero !== cot.numero);
+    guardar(CLAVE.historial, [structuredClone(cot), ...lista].slice(0, 40));
+    guardar(CLAVE.consecutivo, Math.max(leer(CLAVE.consecutivo, 0), consecutivoDe(cot.numero)));
+    pintarHistorial();
+  }
+
+  const nombreArchivo = () => `Cotizacion-${cot.numero}-${cot.cliente.nombre.trim().replace(/[^\p{L}\p{N}]+/gu, '-')}.pdf`;
+
+  document.getElementById('descargar')!.addEventListener('click', async () => {
+    if (!validar()) return;
+    estado.textContent = 'Generando PDF...';
+    const doc = await crearPdf(cot);
+    doc.save(nombreArchivo());
+    registrarEnHistorial();
+    estado.textContent = `Listo: ${nombreArchivo()}`;
+  });
+
+  document.getElementById('compartir')!.addEventListener('click', async () => {
+    if (!validar()) return;
+    estado.textContent = 'Generando PDF...';
+    const doc = await crearPdf(cot);
+    const archivo = new File([doc.output('blob')], nombreArchivo(), { type: 'application/pdf' });
+    registrarEnHistorial();
+    if (navigator.canShare?.({ files: [archivo] })) {
+      try {
+        await navigator.share({ files: [archivo], title: `Cotización ${cot.numero}`, text: `Cotización ${cot.numero} de Cerraya` });
+        estado.textContent = 'Compartido.';
+      } catch {
+        estado.textContent = '';
+      }
+    } else {
+      doc.save(nombreArchivo());
+      estado.textContent = 'Este navegador no permite compartir archivos: el PDF se descargó para que lo adjuntes.';
+    }
+  });
+
+  document.getElementById('whatsapp')!.addEventListener('click', () => {
+    let tel = cot.cliente.telefono.replace(/\D/g, '');
+    if (tel.length === 10 && tel.startsWith('3')) tel = `57${tel}`;
+    const saludo = cot.cliente.nombre.trim() ? `Hola ${cot.cliente.nombre.trim().split(' ')[0]}` : 'Hola';
+    const texto = `${saludo}, te comparto la cotización ${cot.numero} de Cerraya por ${pesos(totales(cot).total)}. Va adjunta en PDF. Cualquier duda, aquí estamos.`;
+    window.open(`https://wa.me/${tel}?text=${encodeURIComponent(texto)}`, '_blank', 'noopener');
+  });
+
+  document.getElementById('historial')!.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('[data-abrir]');
+    if (!b) return;
+    cot = structuredClone(leer<Cotizacion[]>(CLAVE.historial, [])[Number(b.dataset.abrir)]);
+    pintarCampos();
+    refrescar();
+    estado.textContent = `Abriste ${cot.numero}.`;
+  });
+
+  pintarCampos();
+  refrescar();
+  pintarHistorial();
+</script>
+
+<style>
+  :global(body) { background: var(--cream); }
+  .contenedor { width: min(1320px, 100% - 32px); margin-inline: auto; }
+  .barra { background: var(--green-800); color: var(--cream); position: sticky; top: 0; z-index: 20; }
+  .barra-inner { display: flex; align-items: center; gap: 1rem; min-height: 60px; }
+  .barra-logo { text-decoration: none; color: var(--cream); font-size: .95rem; }
+  .barra-titulo { font-family: var(--display); font-weight: 700; color: var(--accent); padding-left: 1rem; border-left: 1px solid rgba(247, 245, 232, .25); }
+  .barra .btn { margin-left: auto; }
+  .btn-sm { min-height: 40px; padding: .45rem .95rem; font-size: .88rem; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 1.5rem; padding: 1.5rem 0 3rem; align-items: start; }
+  .layout > * { min-width: 0; }
+  .editor { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+  .panel { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem 1.4rem; }
+  .panel h2 { font-size: 1.05rem; margin: 0 0 1rem; }
+  .panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+  .ayuda { font-size: .82rem; color: var(--muted); }
+  .panel .field { margin-bottom: .9rem; }
+  .fila-4 { display: grid; grid-template-columns: 1fr 1fr .7fr 1.3fr; gap: .9rem; }
+  .fila-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 .9rem; }
+  .agregar { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+  .agregar select { min-height: 40px; max-width: 100%; padding: .4rem .8rem; border: 1.5px solid var(--green-800); border-radius: 999px; font: inherit; font-size: .88rem; font-weight: 600; color: var(--green-800); background: var(--white); }
+  .items-wrap { position: relative; overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-sm); }
+  .items { min-width: 720px; }
+  .items th { padding: .6rem .5rem; }
+  .items td { padding: .35rem .35rem; vertical-align: middle; }
+  .items input, .items select { width: 100%; min-height: 40px; padding: .4rem .55rem; border: 1px solid var(--line); border-radius: 8px; font: inherit; font-size: .92rem; background: var(--white); }
+  .items td.num input { text-align: right; }
+  .items td:nth-child(1) { min-width: 260px; }
+  .items td:nth-child(2) { width: 130px; }
+  .items td:nth-child(3) { width: 70px; }
+  .items td:nth-child(4) { width: 125px; }
+  .items td:nth-child(5) { width: 115px; font-weight: 700; white-space: nowrap; }
+  .items tr.sin-precio input[data-k='valor'] { border-color: var(--accent); background: #fff8e8; }
+  .quitar { width: 34px; height: 34px; border: 0; border-radius: 50%; background: none; font-size: 1.4rem; line-height: 1; color: var(--muted); cursor: pointer; }
+  .quitar:hover { background: #fde8e8; color: #b42318; }
+  .vacio { padding: 1.25rem; margin: 0; text-align: center; color: var(--muted); font-size: .92rem; }
+  .ajustes { margin-top: 1rem; align-items: end; }
+  .iva { align-self: center; color: var(--text); font-size: .95rem; }
+  .lateral { position: sticky; top: 76px; display: grid; gap: 1.25rem; }
+  .resumen { display: grid; gap: .6rem; }
+  .resumen dl { margin: 0 0 .5rem; display: grid; gap: .45rem; }
+  .resumen dl :global(div) { display: flex; justify-content: space-between; gap: 1rem; color: var(--muted); }
+  .resumen dl :global(dd) { margin: 0; color: var(--ink); font-weight: 600; }
+  .resumen dl :global(.total) { margin-top: .35rem; padding-top: .7rem; border-top: 1px solid var(--line); font-family: var(--display); font-weight: 800; font-size: 1.25rem; color: var(--ink); }
+  .resumen dl :global(.total dd) { color: var(--green-800); font-weight: 800; }
+  .estado { margin: .25rem 0 0; min-height: 1.2em; font-size: .88rem; color: var(--green-600); }
+  .historial { list-style: none; margin: 0; padding: 0; display: grid; gap: .4rem; max-height: 360px; overflow-y: auto; }
+  .historial :global(button) { width: 100%; text-align: left; display: grid; gap: .1rem; padding: .6rem .75rem; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); font: inherit; cursor: pointer; }
+  .historial :global(button:hover) { border-color: var(--green-600); }
+  .historial :global(strong) { font-size: .9rem; color: var(--ink); }
+  .historial :global(span) { font-size: .8rem; color: var(--muted); }
+  .historial :global(.vacio) { padding: .5rem 0; text-align: left; }
+  @media (max-width: 1000px) {
+    .layout { grid-template-columns: minmax(0, 1fr); }
+    .lateral { position: static; }
+    .fila-4 { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) { .fila-2, .fila-4 { grid-template-columns: 1fr; } }
+  @media (max-width: 420px) { .barra-logo :global(.logo-text) { display: none; } }
+</style>

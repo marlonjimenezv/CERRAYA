@@ -1,0 +1,139 @@
+---
+// Formulario único de cotización. Obligatorio: qué necesita y a dónde enviarle la cotización.
+// Todo lo demás es opcional y le sirve al automatizador para cotizar más rápido.
+// Lo usan /cotizar y /mi-cotizacion con los mismos campos (Netlify lo registra como "cotizacion").
+import Icon from './Icon.astro';
+import { empresa, localidades } from '../data/empresa';
+
+interface Props {
+  boton?: string;
+  placeholder?: string;
+}
+const {
+  boton = 'Pedir mi cotización',
+  placeholder = 'Ej: Quiero cambiar la chapa de la puerta principal por una digital con huella. Es una puerta de madera.',
+} = Astro.props;
+
+const tiposServicio = ['Cerradura nueva', 'Cerradura digital', 'Cambio de guardas', 'Llaves de carro', 'Copias de llaves', 'Caja fuerte', 'Mantenimiento', 'Otro'];
+const para = ['Casa o apartamento', 'Conjunto o edificio', 'Empresa o local', 'Vehículo'];
+---
+<form
+  class="form form-cot"
+  name="cotizacion"
+  method="POST"
+  action="/gracias/cotizacion"
+  enctype="multipart/form-data"
+  data-netlify="true"
+  netlify-honeypot="bot-field"
+  data-form-cotizacion
+>
+  <input type="hidden" name="form-name" value="cotizacion" />
+  <input type="hidden" name="productos" value="" data-productos />
+  <p class="hidden-field"><label>No llenar: <input name="bot-field" /></label></p>
+
+  <div class="field">
+    <label for="necesidad">Cuéntanos qué necesitas</label>
+    <textarea id="necesidad" name="necesidad" rows="5" required placeholder={placeholder}></textarea>
+    <p class="hint">Con tus palabras, corto o largo. Es lo único obligatorio junto con tu WhatsApp.</p>
+  </div>
+
+  <div class="form-row">
+    <div class="field">
+      <label for="telefono">Tu WhatsApp</label>
+      <input id="telefono" name="telefono" type="tel" autocomplete="tel" inputmode="tel" required placeholder="300 123 4567" />
+      <p class="hint">Ahí te enviamos la cotización.</p>
+    </div>
+    <div class="field">
+      <label for="nombre">Tu nombre <span class="opcional">(opcional)</span></label>
+      <input id="nombre" name="nombre" autocomplete="name" />
+    </div>
+  </div>
+
+  <fieldset class="opcionales">
+    <legend>Si quieres, ayúdanos con esto <span class="opcional">(todo opcional)</span></legend>
+
+    <div class="field">
+      <span class="sub">¿Qué tipo de servicio?</span>
+      <div class="options">
+        {tiposServicio.map((s) => <label class="option"><input type="radio" name="servicio" value={s} /><span>{s}</span></label>)}
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="sub">¿Para dónde es?</span>
+      <div class="options">
+        {para.map((p) => <label class="option"><input type="radio" name="para" value={p} /><span>{p}</span></label>)}
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="field">
+        <label for="localidad" class="sub">Barrio o localidad</label>
+        <input id="localidad" name="localidad" list="lista-localidades" />
+        <datalist id="lista-localidades">{localidades.map((l) => <option value={l} />)}</datalist>
+      </div>
+      <div class="field">
+        <label for="puertas" class="sub">¿Cuántas puertas o cerraduras?</label>
+        <input id="puertas" name="puertas" type="number" min="1" inputmode="numeric" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="fotos" class="sub"><Icon name="foto" />Una foto de la puerta o la cerradura</label>
+      <input id="fotos" name="fotos" type="file" accept="image/*" />
+    </div>
+  </fieldset>
+
+  <label class="consent">
+    <input type="checkbox" name="autoriza_datos" value="si" required />
+    <span>Autorizo a {empresa.nombre} a usar mis datos para responder esta solicitud, según la <a href="/privacidad" target="_blank">política de tratamiento de datos</a>.</span>
+  </label>
+
+  <button class="btn btn-green btn-lg btn-block" type="submit">{boton}<Icon name="flecha" /></button>
+  <button class="btn btn-outline btn-block" type="button" data-cotizar-whatsapp><Icon name="whatsapp" />Prefiero enviarlo por WhatsApp</button>
+</form>
+
+<script>
+  import { whatsapp } from '../data/empresa';
+
+  document.querySelectorAll<HTMLFormElement>('[data-form-cotizacion]').forEach((form) => {
+    // Un segundo toque en una opción ya marcada la desmarca (todo es opcional).
+    form.querySelectorAll<HTMLInputElement>('.opcionales input[type="radio"]').forEach((radio) => {
+      let marcado = false;
+      radio.addEventListener('pointerdown', () => (marcado = radio.checked));
+      radio.addEventListener('click', () => {
+        if (marcado) radio.checked = false;
+      });
+    });
+
+    form.querySelector('[data-cotizar-whatsapp]')!.addEventListener('click', () => {
+      const d = new FormData(form);
+      const valor = (k: string) => String(d.get(k) ?? '').trim();
+      const detalles = [
+        ['Servicio', valor('servicio')],
+        ['Para', valor('para')],
+        ['Barrio', valor('localidad')],
+        ['Cantidad', valor('puertas')],
+      ]
+        .filter(([, v]) => v)
+        .map(([k, v]) => `• ${k}: ${v}`);
+      const partes = [
+        'Hola Cerraya, quiero una cotización:',
+        valor('productos'),
+        valor('necesidad'),
+        detalles.join('\n'),
+        valor('nombre') ? `Soy ${valor('nombre')}.` : '',
+      ].filter(Boolean);
+      window.open(whatsapp(partes.join('\n\n')), '_blank', 'noopener');
+    });
+  });
+</script>
+
+<style>
+  .opcional { font-weight: 400; color: var(--muted); font-size: .85rem; }
+  .opcionales { border: 1px dashed var(--line); border-radius: var(--radius-sm); padding: 1rem 1.1rem .4rem; margin: 0; display: grid; gap: .9rem; background: var(--paper); }
+  .opcionales legend { padding: 0 .4rem; font-family: var(--display); font-weight: 700; font-size: .95rem; color: var(--ink); }
+  .sub { display: inline-flex; align-items: center; gap: .4rem; font-size: .88rem; font-weight: 600; color: var(--text); }
+  .sub :global(svg) { width: 18px; height: 18px; color: var(--green-600); }
+  .opcionales .option span { min-height: 38px; padding: .4rem .85rem; font-size: .88rem; }
+</style>

@@ -1,0 +1,127 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { empresa, tel } from '../data/empresa';
+
+const enlaces = [
+  { href: '/urgencias', texto: 'Urgencias 24/7' },
+  { href: '/servicios', texto: 'Servicios' },
+  { href: '/llaves-de-carro', texto: 'Llaves de carro' },
+  { href: '/cerraduras', texto: 'Cerraduras' },
+  { href: '/trabajos', texto: 'Trabajos' },
+];
+const actual = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="brand" aria-label="Cerraya, inicio"><Logo /></a>
+    <nav class="nav" id="nav" aria-label="Principal">
+      {enlaces.map((e) => (
+        <a href={e.href} aria-current={actual.startsWith(e.href) ? 'page' : undefined}>{e.texto}</a>
+      ))}
+      <a href="/cotizar" class="nav-cotizar" aria-current={actual.startsWith('/cotizar') ? 'page' : undefined}>Cotizar</a>
+      <a href="/aliados" class="nav-secundario" aria-current={actual.startsWith('/aliados') ? 'page' : undefined}>Trabaja con nosotros</a>
+    </nav>
+    <a href="/mi-cotizacion" class="carrito-link" data-carrito-link aria-label="Mi cotización">
+      <Icon name="lista" />
+      <span class="carrito-badge" data-carrito-contador hidden>0</span>
+    </a>
+    <a class="btn btn-accent header-cta" href={tel}>
+      <Icon name="telefono" />
+      <span>{empresa.telefonoVisible}</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(9, 50, 38, .96);
+    backdrop-filter: blur(10px);
+    color: var(--cream);
+    border-bottom: 1px solid rgba(247, 245, 232, .1);
+  }
+  .header-inner { display: flex; align-items: center; gap: 1.5rem; min-height: var(--header-h); }
+  .brand { text-decoration: none; font-size: 1.05rem; flex: none; }
+  .nav { display: flex; align-items: center; gap: 1.35rem; margin-left: auto; }
+  .nav a { text-decoration: none; font-family: var(--display); font-weight: 600; font-size: .9rem; color: var(--on-green-muted); transition: color .15s, border-color .15s; white-space: nowrap; }
+  .nav a:hover, .nav a[aria-current='page'] { color: var(--cream); }
+  .nav a[aria-current='page']:not(.nav-cotizar) { text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 8px; }
+  .nav .nav-cotizar { padding: .5rem 1rem; border: 1.5px solid rgba(247, 245, 232, .45); border-radius: 999px; color: var(--cream); }
+  .nav .nav-cotizar:hover, .nav .nav-cotizar[aria-current='page'] { border-color: var(--cream); }
+  .nav-secundario { display: none; }
+  .nav-toggle { display: none; }
+  .carrito-link { position: relative; display: grid; place-items: center; width: 44px; height: 44px; flex: none; border-radius: 50%; color: var(--cream); border: 1.5px solid rgba(247, 245, 232, .3); transition: border-color .15s; }
+  .carrito-link:hover { border-color: var(--cream); }
+  .carrito-link :global(svg) { width: 22px; height: 22px; }
+  .carrito-badge { position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-size: .72rem; font-weight: 800; display: grid; place-items: center; }
+  .carrito-badge[hidden] { display: none; }
+  :global(.pulso) { animation: pulso-carrito .5s ease; }
+  @keyframes pulso-carrito { 40% { transform: scale(1.18); } }
+
+  @media (max-width: 1100px) {
+    .header-cta span { display: none; }
+    .header-cta { padding: .7rem; min-height: 44px; width: 44px; }
+    .carrito-link { margin-left: auto; }
+    .nav-toggle {
+      display: grid;
+      gap: 5px;
+      padding: 10px;
+      margin-right: -10px;
+      background: none;
+      border: 0;
+      cursor: pointer;
+    }
+    .nav-toggle span { display: block; width: 24px; height: 2px; background: var(--cream); transition: transform .2s, opacity .2s; }
+    .nav-toggle[aria-expanded='true'] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle[aria-expanded='true'] span:nth-child(2) { opacity: 0; }
+    .nav-toggle[aria-expanded='true'] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .nav {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      margin: 0;
+      background: var(--green-900);
+      border-bottom: 1px solid rgba(247, 245, 232, .12);
+      box-shadow: var(--shadow);
+    }
+    .nav.open { display: flex; }
+    .nav a { padding: 1.05rem 16px; font-size: 1rem; color: var(--cream); border-top: 1px solid rgba(247, 245, 232, .07); }
+    .nav a[aria-current='page']:not(.nav-cotizar) { text-decoration: none; color: var(--accent); }
+    .nav .nav-cotizar { border: 0; border-top: 1px solid rgba(247, 245, 232, .07); border-radius: 0; padding: 1.05rem 16px; color: var(--accent); }
+    .nav-secundario { display: block; }
+  }
+
+  @media (max-width: 480px) {
+    .header-inner { gap: .55rem; }
+    .brand { font-size: .9rem; }
+    .carrito-link, .header-cta { width: 42px; height: 42px; min-height: 42px; }
+  }
+</style>
+
+<script>
+  const boton = document.getElementById('navToggle')!;
+  const nav = document.getElementById('nav')!;
+  const cerrar = () => {
+    nav.classList.remove('open');
+    boton.setAttribute('aria-expanded', 'false');
+    boton.setAttribute('aria-label', 'Abrir menú');
+  };
+  boton.addEventListener('click', () => {
+    const abierto = nav.classList.toggle('open');
+    boton.setAttribute('aria-expanded', String(abierto));
+    boton.setAttribute('aria-label', abierto ? 'Cerrar menú' : 'Abrir menú');
+  });
+  nav.querySelectorAll('a').forEach((a) => a.addEventListener('click', cerrar));
+  document.addEventListener('keydown', (e) => e.key === 'Escape' && cerrar());
+</script>

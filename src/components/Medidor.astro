@@ -1,0 +1,18 @@
+---
+interface Props {
+  nivel: number;
+}
+const { nivel } = Astro.props;
+const etiquetas = ['', 'Básica', 'Media-baja', 'Media', 'Alta', 'Muy alta'];
+---
+<span class="medidor">
+  <span class="meter" role="img" aria-label={`Seguridad ${etiquetas[nivel].toLowerCase()}: ${nivel} de 5`}>
+    {[1, 2, 3, 4, 5].map((n) => <i class={n <= nivel ? 'on' : undefined}></i>)}
+  </span>
+  <span class="medidor-texto">Seguridad {etiquetas[nivel].toLowerCase()}</span>
+</span>
+
+<style>
+  .medidor { display: inline-flex; align-items: center; gap: .6rem; }
+  .medidor-texto { font-size: .82rem; color: var(--muted); font-weight: 600; }
+</style>

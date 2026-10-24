@@ -1,0 +1,73 @@
+---
+import '@fontsource-variable/montserrat';
+import '@fontsource-variable/inter';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileBar from '../components/MobileBar.astro';
+import { empresa, medicion } from '../data/empresa';
+
+interface Props {
+  title: string;
+  description: string;
+  noindex?: boolean;
+  image?: string;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+  barraMovil?: boolean;
+  sinMarco?: boolean;
+}
+
+const { title, description, noindex = false, image = '/img/og-cerraya.png', schema, barraMovil = true, sinMarco = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const imagen = new URL(image, Astro.site);
+const tituloCompleto = title.includes('Cerraya') ? title : `${title} | Cerraya`;
+const idsGoogle = [medicion.googleAdsId, medicion.ga4Id].filter(Boolean);
+---
+<!doctype html>
+<html lang="es-CO">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content="#093226" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/img/logo-cerraya.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:site_name" content={empresa.nombre} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={tituloCompleto} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={imagen} />
+    <meta name="twitter:card" content="summary_large_image" />
+    {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+    {idsGoogle.length > 0 && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${idsGoogle[0]}`}></script>
+        <script is:inline define:vars={{ idsGoogle }}>
+          window.dataLayer = window.dataLayer || [];
+          window.gtag = function () { window.dataLayer.push(arguments); };
+          window.gtag('js', new Date());
+          idsGoogle.forEach((id) => window.gtag('config', id));
+        </script>
+      </>
+    )}
+  </head>
+  <body>
+    {!sinMarco && <Header />}
+    <main id="contenido">
+      <slot />
+    </main>
+    {!sinMarco && <Footer />}
+    {!sinMarco && barraMovil && <MobileBar />}
+    <script>
+      import { escucharClics } from '../scripts/medicion';
+      import { iniciarCarrito } from '../scripts/carrito';
+      escucharClics();
+      iniciarCarrito();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,128 @@
+---
+import Base from '../layouts/Base.astro';
+import FondoVivo from '../components/FondoVivo.astro';
+import Icon from '../components/Icon.astro';
+import Faq from '../components/Faq.astro';
+import FormCotizacion from '../components/FormCotizacion.astro';
+import { empresa } from '../data/empresa';
+
+// CONFIRMAR: frecuencias y alcance de cada plan.
+const planes = [
+  {
+    nombre: 'Plan Hogar',
+    para: 'Casas y apartamentos',
+    frecuencia: '2 visitas al año',
+    incluye: ['Revisión de todas las cerraduras', 'Lubricación y ajuste', 'Alineación de puertas y pestillos', 'Cambio de baterías de cerraduras digitales', 'Informe con recomendaciones'],
+  },
+  {
+    nombre: 'Plan Conjunto',
+    para: 'Conjuntos y edificios',
+    frecuencia: '4 visitas al año',
+    destacado: true,
+    incluye: ['Porterías y cerraduras eléctricas', 'Cierrapuertas y puertas de emergencia', 'Cuartos técnicos, shuts y depósitos', 'Atención prioritaria de urgencias', 'Informe para la administración'],
+  },
+  {
+    nombre: 'Plan Empresa',
+    para: 'Oficinas, locales y colegios',
+    frecuencia: 'Mensual o trimestral',
+    incluye: ['Cerraduras, cajas fuertes y lockers', 'Control y registro de llaves', 'Mantenimiento de llave maestra', 'Atención prioritaria de urgencias', 'Informe de estado y riesgos'],
+  },
+];
+
+const preguntas = [
+  { p: '¿Cada cuánto necesitan mantenimiento las cerraduras?', r: 'En una casa, una o dos veces al año. En conjuntos y empresas, donde las puertas se usan cientos de veces al día, cada tres meses.' },
+  { p: '¿Qué pasa si encontramos algo dañado?', r: 'Te lo informamos con fotos y te enviamos la cotización del arreglo. Nada se cambia sin tu aprobación.' },
+  { p: '¿El plan incluye repuestos?', r: 'El plan cubre la revisión y el ajuste. Repuestos y cerraduras nuevas se cotizan aparte, con precio preferencial para clientes con plan.' },
+];
+---
+<Base
+  title="Mantenimiento preventivo de cerraduras en Bogotá"
+  description={`Planes de mantenimiento preventivo de cerraduras para hogares, conjuntos y empresas en Bogotá. Evita quedarte por fuera y alarga la vida de tus cerraduras. Más de ${empresa.experiencia} años de experiencia.`}
+>
+  <section class="hero-mant con-fondo">
+    <FondoVivo />
+    <div class="container">
+      <span class="eyebrow">Mantenimiento preventivo</span>
+      <h1>Que tus cerraduras nunca te dejen por fuera</h1>
+      <p class="lead">Revisamos, lubricamos y ajustamos tus cerraduras antes de que fallen. Más barato que una urgencia y más seguro para tu casa, tu conjunto o tu empresa.</p>
+      <ul class="razones">
+        <li><Icon name="check" />Evita quedarte por fuera</li>
+        <li><Icon name="check" />Alarga la vida de tus cerraduras</li>
+        <li><Icon name="check" />Detecta fallas antes de un robo</li>
+        <li><Icon name="check" />Baterías siempre cargadas</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head center">
+        <span class="eyebrow">Planes</span>
+        <h2>Elige el plan para tu caso</h2>
+        <p class="lead">La primera visita de diagnóstico es gratis al tomar tu plan.</p>
+      </div>
+      <div class="grid grid-3 planes">
+        {planes.map((p) => (
+          <article class:list={['card plan', { destacado: p.destacado }]}>
+            {p.destacado && <span class="plan-tag">El más pedido</span>}
+            <h3>{p.nombre}</h3>
+            <p class="plan-para">{p.para}</p>
+            <p class="plan-frec"><Icon name="reloj" />{p.frecuencia}</p>
+            <ul class="check-list">{p.incluye.map((x) => <li>{x}</li>)}</ul>
+            <a class:list={['btn btn-block', p.destacado ? 'btn-accent' : 'btn-green']} href="#cotizar-plan" data-plan={p.nombre}>Cotizar {p.nombre}</a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-cream" id="cotizar-plan">
+    <div class="narrow">
+      <div class="section-head">
+        <span class="eyebrow">Cotiza tu plan</span>
+        <h2>Cuéntanos qué quieres mantener</h2>
+      </div>
+      <div class="card"><FormCotizacion boton="Cotizar mi plan" placeholder="Ej: Somos un conjunto de 120 apartamentos con 2 porterías y 6 torres. Queremos mantenimiento de cerraduras y puertas de emergencia." /></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="narrow">
+      <div class="section-head">
+        <span class="eyebrow">Preguntas frecuentes</span>
+        <h2>Sobre el mantenimiento</h2>
+      </div>
+      <Faq preguntas={preguntas} />
+    </div>
+  </section>
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('[data-plan]').forEach((a) =>
+    a.addEventListener('click', () => {
+      const texto = document.getElementById('necesidad') as HTMLTextAreaElement;
+      if (!texto.value.trim()) texto.value = `Quiero cotizar el ${a.dataset.plan}. `;
+      setTimeout(() => texto.focus(), 400);
+    }),
+  );
+</script>
+
+<style>
+  .hero-mant { background: linear-gradient(180deg, var(--green-800), var(--green-900)); color: var(--on-green); padding: clamp(2.5rem, 6vw, 4.5rem) 0; }
+  .hero-mant h1 { color: var(--cream); }
+  .hero-mant .eyebrow { color: var(--accent); }
+  .hero-mant .lead { color: var(--on-green-muted); }
+  .razones { list-style: none; padding: 0; margin: 1.5rem 0 0; display: flex; flex-wrap: wrap; gap: .6rem 1.6rem; color: var(--cream); }
+  .razones li { display: inline-flex; align-items: center; gap: .4rem; }
+  .razones :global(svg) { width: 20px; height: 20px; color: var(--accent); }
+  .planes { align-items: stretch; }
+  .plan { position: relative; display: flex; flex-direction: column; gap: .5rem; }
+  .plan.destacado { border: 2px solid var(--accent); box-shadow: var(--shadow); }
+  .plan-tag { position: absolute; top: -12px; left: 1.6rem; background: var(--accent); color: var(--accent-ink); font-size: .72rem; font-weight: 800; padding: .25rem .7rem; border-radius: 999px; }
+  .plan h3 { font-size: 1.4rem; margin: 0; }
+  .plan-para { color: var(--muted); margin: 0; }
+  .plan-frec { display: inline-flex; align-items: center; gap: .4rem; font-weight: 700; color: var(--green-800); margin: .25rem 0 .75rem; }
+  .plan-frec :global(svg) { width: 18px; height: 18px; }
+  .plan .check-list { margin-bottom: 1.25rem; font-size: .95rem; }
+  .plan .btn { margin-top: auto; }
+</style>

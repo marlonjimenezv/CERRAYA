@@ -1,0 +1,156 @@
+---
+import Base from '../../layouts/Base.astro';
+import Medidor from '../../components/Medidor.astro';
+import Ilustracion from '../../components/Ilustracion.astro';
+import ProductoCard from '../../components/ProductoCard.astro';
+import CtaFinal from '../../components/CtaFinal.astro';
+import { empresa } from '../../data/empresa';
+import { tiposCerradura, productos, rangoPrecios, pesos, type TipoCerradura } from '../../data/cerraduras';
+
+export function getStaticPaths() {
+  return tiposCerradura.map((tipo) => ({ params: { slug: tipo.slug }, props: { tipo } }));
+}
+
+const { tipo } = Astro.props as { tipo: TipoCerradura };
+const r = rangoPrecios(tipo);
+const lista = productos.filter((p) => p.tipo === tipo.slug);
+const marcas = [...new Set(lista.map((p) => p.marca))];
+const otros = tiposCerradura.filter((t) => t.slug !== tipo.slug).slice(0, 3);
+const cotizar = `/cotizar?${new URLSearchParams({ producto: `${tipo.nombre} con instalación` })}`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: empresa.sitio },
+    { '@type': 'ListItem', position: 2, name: 'Cerraduras', item: `${empresa.sitio}/cerraduras` },
+    { '@type': 'ListItem', position: 3, name: tipo.nombre, item: `${empresa.sitio}/cerraduras/${tipo.slug}` },
+  ],
+};
+---
+<Base
+  title={`${tipo.nombre} con instalación en Bogotá`}
+  description={`${tipo.resumen} ${marcas.slice(0, 4).join(', ')} y más, desde ${pesos(r.desde)}. Te la vendemos e instalamos con garantía en Bogotá.`}
+  schema={schema}
+>
+  <section class="hero-tipo">
+    <div class="container">
+      <nav class="migas" aria-label="Ruta"><a href="/">Inicio</a><span>/</span><a href="/cerraduras">Tienda</a><span>/</span><span aria-current="page">{tipo.nombre}</span></nav>
+      <div class="hero-tipo-grid">
+        <div>
+          <h1>{tipo.nombre}</h1>
+          <p class="lead">{tipo.descripcion}</p>
+          <dl class="datos">
+            <div><dt>Seguridad</dt><dd><Medidor nivel={tipo.seguridad} /></dd></div>
+            <div><dt>Producto desde</dt><dd>{pesos(r.desde)}</dd></div>
+            <div><dt>Marcas</dt><dd>{marcas.join(', ')}</dd></div>
+          </dl>
+          <div class="actions">
+            <a class="btn btn-green btn-lg" href="#modelos">Ver {lista.length} modelos</a>
+            <a class="btn btn-outline btn-lg" href={cotizar}>Pedir asesoría</a>
+          </div>
+        </div>
+        <div class="hero-ilu"><Ilustracion tipo={tipo.slug} /></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-tight" id="modelos">
+    <div class="container">
+      <div class="modelos-head">
+        <h2>Modelos que te instalamos</h2>
+        {marcas.length > 1 && (
+          <div class="marca-filtro" role="group" aria-label="Filtrar por marca">
+            <button type="button" class="chip activo" data-marca="">Todas</button>
+            {marcas.map((m) => <button type="button" class="chip" data-marca={m}>{m}</button>)}
+          </div>
+        )}
+      </div>
+      <div class="productos">
+        {lista.map((p) => <ProductoCard producto={p} mostrarTipo={false} />)}
+      </div>
+      <p class="nota">Precios del producto, sin instalación y sujetos a disponibilidad. En tu cotización te confirmamos el total instalado con garantía.</p>
+    </div>
+  </section>
+
+  <section class="section section-cream">
+    <div class="container grid grid-3">
+      <div class="card">
+        <h2 class="mini-h">Ideal para</h2>
+        <ul class="check-list">{tipo.usoIdeal.map((x) => <li>{x}</li>)}</ul>
+      </div>
+      <div class="card">
+        <h2 class="mini-h">A favor</h2>
+        <ul class="check-list">{tipo.aFavor.map((x) => <li>{x}</li>)}</ul>
+      </div>
+      <div class="card">
+        <h2 class="mini-h">Ten en cuenta</h2>
+        <ul class="lista-aviso">{tipo.tenerEnCuenta.map((x) => <li>{x}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Sigue comparando</span>
+        <h2>Otros tipos de cerradura</h2>
+      </div>
+      <div class="grid grid-3">
+        {otros.map((t) => (
+          <a class="card otro" href={`/cerraduras/${t.slug}`}>
+            <span class="otro-ilu"><Ilustracion tipo={t.slug} /></span>
+            <div>
+              <h3>{t.nombre}</h3>
+              <span>Desde {pesos(rangoPrecios(t).desde)}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CtaFinal titulo={`¿Quieres instalar ${tipo.nombre.toLowerCase()}?`} texto="Te asesoramos, te llevamos el producto y lo instalamos con garantía." />
+</Base>
+
+<script>
+  const botones = document.querySelectorAll<HTMLButtonElement>('.marca-filtro .chip');
+  const tarjetas = document.querySelectorAll<HTMLElement>('.productos .producto');
+  botones.forEach((b) =>
+    b.addEventListener('click', () => {
+      botones.forEach((x) => x.classList.toggle('activo', x === b));
+      tarjetas.forEach((t) => (t.hidden = !!b.dataset.marca && t.dataset.marca !== b.dataset.marca));
+    }),
+  );
+</script>
+
+<style>
+  .hero-tipo { background: var(--cream); padding: 2rem 0 clamp(2.5rem, 5vw, 3.5rem); }
+  .migas { display: flex; flex-wrap: wrap; gap: .5rem; font-size: .88rem; color: var(--muted); margin-bottom: 1.5rem; }
+  .migas a { color: var(--green-600); }
+  .hero-tipo-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+  .hero-tipo h1 { font-size: clamp(2rem, 4.5vw, 3.2rem); }
+  .datos { display: flex; flex-wrap: wrap; gap: 1rem 2rem; margin: 1.25rem 0 0; }
+  .datos dt { font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .datos dd { margin: .2rem 0 0; font-family: var(--display); font-weight: 700; color: var(--ink); }
+  .hero-tipo .actions { margin-top: 1.5rem; }
+  .hero-ilu { background: radial-gradient(circle at 50% 45%, var(--white), transparent 70%); padding: 1rem; }
+  .modelos-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .modelos-head h2 { margin: 0; font-size: clamp(1.4rem, 3vw, 1.9rem); }
+  .marca-filtro { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .marca-filtro .chip { cursor: pointer; font: inherit; font-size: .85rem; font-weight: 600; }
+  .marca-filtro .chip.activo { background: var(--green-800); border-color: var(--green-800); color: var(--cream); }
+  .productos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  .nota { margin-top: 1rem; font-size: .85rem; color: var(--muted); }
+  .mini-h { font-size: 1.1rem; margin-bottom: 1rem; }
+  .lista-aviso { margin: 0; padding-left: 1.2rem; display: grid; gap: .6rem; }
+  .lista-aviso li::marker { color: var(--accent); }
+  .otro { text-decoration: none; display: flex; gap: 1rem; align-items: center; transition: border-color .18s, transform .18s; }
+  .otro:hover { border-color: var(--green-600); transform: translateY(-2px); }
+  .otro-ilu { flex: none; width: 88px; padding: .4rem; border-radius: var(--radius-sm); background: var(--cream); }
+  .otro h3 { margin: 0 0 .2rem; font-size: 1rem; }
+  .otro span { font-family: var(--display); font-weight: 700; color: var(--green-600); font-size: .9rem; }
+  @media (max-width: 1080px) { .productos { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 860px) { .hero-tipo-grid { grid-template-columns: 1fr; } .hero-ilu { max-width: 320px; } }
+  @media (max-width: 760px) { .productos { grid-template-columns: repeat(2, 1fr); gap: .7rem; } }
+</style>

@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import CtaFinal from '../components/CtaFinal.astro';
+import { whatsapp } from '../data/empresa';
+import { promocionesActivas } from '../data/promociones';
+---
+<Base
+  title="Promociones de cerrajería en Bogotá"
+  description="Instalación gratis en cerraduras digitales, descuentos para vecinos del mismo conjunto, combos de seguridad y más promociones de Cerraya en Bogotá."
+>
+  <section class="hero-promo">
+    <div class="container">
+      <span class="eyebrow">Promociones</span>
+      <h1>Más seguridad, mejor precio</h1>
+      <p class="lead">Promociones reales, con condiciones claras. Pídela por WhatsApp y la aplicamos en tu cotización.</p>
+    </div>
+  </section>
+
+  <section class="section section-tight">
+    <div class="container grid grid-3">
+      {promocionesActivas.map((p) => (
+        <article class="card promo" id={p.id}>
+          <div class="promo-top">
+            <span class="icon-badge"><Icon name={p.icono} /></span>
+            <span class="promo-etiqueta">{p.etiqueta}</span>
+          </div>
+          <h2>{p.titulo}</h2>
+          <p>{p.texto}</p>
+          <details>
+            <summary>Condiciones</summary>
+            <p>{p.condiciones}</p>
+          </details>
+          <p class="vigencia">{p.vigencia}</p>
+          <a class="btn btn-green" href={whatsapp(`Hola Cerraya, quiero la promoción "${p.etiqueta}": ${p.titulo}`)} target="_blank" rel="noopener"><Icon name="whatsapp" />Quiero esta promoción</a>
+        </article>
+      ))}
+    </div>
+    <p class="container legal">Promociones no acumulables entre sí. Aplican en Bogotá, sujetas a disponibilidad de producto y a las condiciones de cada una.</p>
+  </section>
+
+  <CtaFinal />
+</Base>
+
+<style>
+  .hero-promo { background: var(--accent); color: var(--accent-ink); padding: clamp(2.5rem, 6vw, 4rem) 0; }
+  .hero-promo h1 { color: var(--accent-ink); }
+  .hero-promo .eyebrow { color: var(--accent-ink); opacity: .75; }
+  .hero-promo .lead { color: var(--accent-ink); opacity: .85; }
+  .promo { display: flex; flex-direction: column; gap: .6rem; }
+  .promo-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .promo-top .icon-badge { margin-bottom: 0; }
+  .promo-etiqueta { font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: .25rem .65rem; border-radius: 999px; background: var(--accent); color: var(--accent-ink); }
+  .promo h2 { font-size: 1.15rem; margin: .4rem 0 0; }
+  .promo > p { color: var(--muted); font-size: .95rem; margin: 0; }
+  .promo details summary { cursor: pointer; font-size: .88rem; font-weight: 600; color: var(--green-800); }
+  .promo details p { font-size: .85rem; color: var(--muted); margin: .4rem 0 0; }
+  .vigencia { font-size: .8rem !important; font-weight: 600; color: var(--green-600) !important; }
+  .promo .btn { margin-top: auto; }
+  .legal { margin-top: 1.5rem; font-size: .82rem; color: var(--muted); }
+</style>

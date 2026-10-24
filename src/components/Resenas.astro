@@ -1,0 +1,42 @@
+---
+import { empresa } from '../data/empresa';
+---
+<section class="section section-cream">
+  <div class="container resenas">
+    <a class="score-card" href={empresa.enlacePerfilGoogle} target="_blank" rel="noopener">
+      <span class="score">{empresa.resenas.calificacion}</span>
+      <span class="stars" aria-hidden="true">★★★★★</span>
+      <span class="score-sub">Calificación en Google</span>
+    </a>
+    <div>
+      <span class="eyebrow">Opiniones</span>
+      <h2>Lo que dicen nuestros clientes</h2>
+      <p class="lead">Nuestros clientes nos califican con 5 estrellas en Google. Léelos tú mismo o, si ya te atendimos, cuéntanos cómo te fue.</p>
+      <div class="actions">
+        <a class="btn btn-green" href={empresa.enlacePerfilGoogle} target="_blank" rel="noopener">Ver opiniones en Google</a>
+        <a class="btn btn-outline" href="/resena">Calificar mi servicio</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .resenas { display: grid; grid-template-columns: auto 1fr; gap: clamp(2rem, 6vw, 5rem); align-items: center; }
+  .score-card {
+    display: grid;
+    justify-items: center;
+    gap: .35rem;
+    padding: 2rem 2.5rem;
+    border-radius: var(--radius);
+    background: var(--green-800);
+    color: var(--cream);
+    text-decoration: none;
+    box-shadow: var(--shadow);
+    transition: transform .2s;
+  }
+  .score-card:hover { transform: translateY(-3px); }
+  .score { font-family: var(--display); font-weight: 800; font-size: 4rem; line-height: 1; }
+  .score-card .stars { font-size: 1.4rem; }
+  .score-sub { font-size: .9rem; color: var(--on-green-muted); }
+  @media (max-width: 760px) { .resenas { grid-template-columns: 1fr; } .score-card { justify-self: start; } }
+</style>
