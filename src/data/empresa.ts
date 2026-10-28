@@ -1,8 +1,8 @@
 // Datos del negocio: única fuente para todo el sitio y para los PDF de cotización.
 // Lo marcado con CONFIRMAR es provisional.
 
-const telefono = '573216552205'; // con 57 y sin espacios: se usa para llamadas y WhatsApp
-const telefonoVisible = '321 655 2205';
+const telefono = '573001833765'; // con 57 y sin espacios: se usa para llamadas y WhatsApp
+const telefonoVisible = '300 183 3765';
 
 export const empresa = {
   nombre: 'Cerraya',

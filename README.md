@@ -106,7 +106,7 @@ Abre http://localhost:4321. `npm run build` genera el sitio en `dist/` y `npm ru
 
 ## Pendientes antes de lanzar
 
-- [x] Teléfono y WhatsApp reales: 321 655 2205.
+- [x] Teléfono y WhatsApp reales: 300 183 3765.
 - [ ] Enlace "Pedir reseñas" del Perfil de Empresa en Google (el perfil ya está enlazado por su CID).
 - [ ] Correo, NIT y razón social para el PDF de cotización.
 - [ ] Confirmar servicios, horario 24/7, localidades y respuestas de las preguntas frecuentes.
