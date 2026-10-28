@@ -1,8 +1,8 @@
 // Datos del negocio: única fuente para todo el sitio y para los PDF de cotización.
 // Lo marcado con CONFIRMAR es provisional.
 
-const telefono = '573000000000'; // CONFIRMAR: número real, con 57 y sin espacios
-const telefonoVisible = '300 000 0000'; // CONFIRMAR
+const telefono = '573216552205'; // con 57 y sin espacios: se usa para llamadas y WhatsApp
+const telefonoVisible = '321 655 2205';
 
 export const empresa = {
   nombre: 'Cerraya',
@@ -15,12 +15,13 @@ export const empresa = {
   sitio: 'https://cerraya.com',
   telefono,
   telefonoVisible,
-  horario: 'Atención 24/7, todos los días', // CONFIRMAR
+  horario: 'Atención 24/7, todos los días',
   experiencia: 25, // años de experiencia de los cerrajeros: es el dato principal de confianza
   resenas: { calificacion: '5.0', total: 54 }, // el total no se muestra: son pocas todavía
-  // CONFIRMAR: enlace "Pedir reseñas" del Perfil de Empresa en Google (g.page/r/...)
-  enlaceResenaGoogle: 'https://www.google.com/maps/search/?api=1&query=Cerraya+cerrajer%C3%ADa+Bogot%C3%A1',
-  enlacePerfilGoogle: 'https://www.google.com/maps/search/?api=1&query=Cerraya+cerrajer%C3%ADa+Bogot%C3%A1',
+  // Perfil de Empresa en Google (CID de la ficha CERRAYA en Google Maps).
+  enlacePerfilGoogle: 'https://maps.google.com/?cid=13926752197872837465',
+  // CONFIRMAR: cambiar por el enlace "Pedir reseñas" del Perfil de Empresa (g.page/r/...), que abre directo el formulario.
+  enlaceResenaGoogle: 'https://maps.google.com/?cid=13926752197872837465',
 };
 
 export const tel = `tel:+${telefono}`;

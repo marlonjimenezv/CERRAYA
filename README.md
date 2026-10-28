@@ -106,8 +106,8 @@ Abre http://localhost:4321. `npm run build` genera el sitio en `dist/` y `npm ru
 
 ## Pendientes antes de lanzar
 
-- [ ] Teléfono y WhatsApp reales (`empresa.ts`; hoy dice `300 000 0000`).
-- [ ] Enlace "Pedir reseñas" del Perfil de Empresa en Google.
+- [x] Teléfono y WhatsApp reales: 321 655 2205.
+- [ ] Enlace "Pedir reseñas" del Perfil de Empresa en Google (el perfil ya está enlazado por su CID).
 - [ ] Correo, NIT y razón social para el PDF de cotización.
 - [ ] Confirmar servicios, horario 24/7, localidades y respuestas de las preguntas frecuentes.
 - [ ] Decidir margen (`ajustePrecioPct`) e instalación incluida en digitales (`instalacionIncluida`).
