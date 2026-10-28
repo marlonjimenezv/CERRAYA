@@ -1,0 +1,55 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import CtaFinal from '../../components/CtaFinal.astro';
+import { empresa, tel } from '../../data/empresa';
+import { localidadesBogota } from '../../data/localidades';
+import { negocioLocal, migas } from '../../data/schema';
+
+const schema = [
+  negocioLocal(),
+  migas([
+    { nombre: 'Inicio', url: empresa.sitio },
+    { nombre: 'Cobertura', url: `${empresa.sitio}/cerrajero-en` },
+  ]),
+];
+---
+<Base
+  title="Cerrajero 24 horas en todas las localidades de Bogotá | Cerraya"
+  description={`Cerrajería 24/7 en las ${localidadesBogota.length} localidades urbanas de Bogotá: Usaquén, Chapinero, Suba, Engativá, Kennedy, Bosa y más. Llama al ${empresa.telefonoVisible}.`}
+  schema={schema}
+>
+  <section class="hero-cob">
+    <div class="container">
+      <span class="eyebrow">Cobertura</span>
+      <h1>Cerrajero 24/7 en toda Bogotá</h1>
+      <p class="lead">Atendemos las {localidadesBogota.length} localidades urbanas de la ciudad. Elige la tuya o llámanos y salimos de inmediato.</p>
+      <a class="btn btn-accent btn-lg" href={tel}><Icon name="telefono" />Llamar · {empresa.telefonoVisible}</a>
+    </div>
+  </section>
+
+  <section class="section section-tight">
+    <div class="container grid grid-3">
+      {localidadesBogota.map((l) => (
+        <a class="card loc" href={`/cerrajero-en/${l.slug}`}>
+          <h2>Cerrajero en {l.nombre}</h2>
+          <p>{l.barrios.slice(0, 4).join(' · ')}</p>
+          <span class="ver">Ver cobertura<Icon name="flecha" /></span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <CtaFinal />
+</Base>
+
+<style>
+  .hero-cob { background: var(--cream); padding: clamp(2.5rem, 6vw, 4rem) 0 2rem; }
+  .hero-cob .btn { margin-top: .5rem; }
+  .loc { text-decoration: none; display: grid; gap: .35rem; transition: border-color .18s, transform .18s; }
+  .loc:hover { border-color: var(--green-600); transform: translateY(-2px); }
+  .loc h2 { font-size: 1.1rem; margin: 0; }
+  .loc p { margin: 0; color: var(--muted); font-size: .9rem; }
+  .ver { display: inline-flex; align-items: center; gap: .3rem; font-family: var(--display); font-weight: 700; font-size: .88rem; color: var(--green-600); }
+  .ver :global(svg) { width: 16px; height: 16px; }
+</style>

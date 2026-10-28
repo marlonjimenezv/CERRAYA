@@ -9,11 +9,12 @@ import Resenas from '../components/Resenas.astro';
 import Faq from '../components/Faq.astro';
 import CtaFinal from '../components/CtaFinal.astro';
 import { empresa, tel, whatsapp } from '../data/empresa';
-import { serviciosPopulares, servicios } from '../data/servicios';
+import { serviciosPopulares, servicios, urlServicio } from '../data/servicios';
 import { productos } from '../data/cerraduras';
 import { marcasCarro } from '../data/llaves';
 import { promocionesActivas } from '../data/promociones';
 import { fotoTipo } from '../data/fotos';
+import { negocioLocal } from '../data/schema';
 
 const fotoLlave = fotoTipo('llave-carro');
 
@@ -34,21 +35,8 @@ const consejos = (await getCollection('consejos'))
   .sort((a, b) => Number(b.data.destacado) - Number(a.data.destacado) || b.data.fecha.getTime() - a.data.fecha.getTime())
   .slice(0, 3);
 
-const enlaceServicio = (slug: string, titulo: string) =>
-  slug === 'llaves-de-carro' ? '/llaves-de-carro' : slug === 'mantenimiento' ? '/mantenimiento' : whatsapp(`Hola Cerraya, necesito: ${titulo.toLowerCase()}`);
 
-const schema = {
-  '@context': 'https://schema.org',
-  '@type': 'Locksmith',
-  name: empresa.nombre,
-  url: empresa.sitio,
-  logo: `${empresa.sitio}/img/logo-cerraya.png`,
-  image: `${empresa.sitio}/img/og-cerraya.png`,
-  telephone: `+${empresa.telefono}`,
-  areaServed: { '@type': 'City', name: 'Bogotá' },
-  address: { '@type': 'PostalAddress', addressLocality: 'Bogotá', addressRegion: 'Bogotá D.C.', addressCountry: 'CO' },
-  openingHours: 'Mo-Su 00:00-23:59',
-};
+const schema = negocioLocal();
 
 const preguntas = [
   { p: '¿Cuánto cuesta un servicio de cerrajería?', r: 'Depende del servicio, la cerradura y la hora. Al llamar te damos un valor estimado; si al llegar el trabajo resulta distinto, te lo explicamos y tú decides antes de seguir.' },
@@ -126,14 +114,12 @@ const preguntas = [
       </div>
       <div class="grid grid-3">
         {serviciosPopulares.map((s) => {
-          const href = enlaceServicio(s.slug, s.titulo);
-          const externo = href.startsWith('https://wa.me');
           return (
-            <a class="card feature servicio" href={href} target={externo ? '_blank' : undefined} rel={externo ? 'noopener' : undefined}>
+            <a class="card feature servicio" href={urlServicio(s.slug)}>
               <span class="icon-badge"><Icon name={s.icono} /></span>
               <h3>{s.titulo}</h3>
               <p>{s.texto}</p>
-              <span class="servicio-link">{externo ? 'Pedir por WhatsApp' : 'Ver más'}<Icon name="flecha" /></span>
+              <span class="servicio-link">Ver servicio<Icon name="flecha" /></span>
             </a>
           );
         })}

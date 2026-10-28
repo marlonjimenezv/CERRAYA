@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import CtaFinal from '../components/CtaFinal.astro';
 import { empresa, whatsapp } from '../data/empresa';
-import { servicios, gruposServicio } from '../data/servicios';
+import { servicios, gruposServicio, urlServicio } from '../data/servicios';
 ---
 <Base
   title="Servicios de cerrajería en Bogotá"
@@ -31,17 +31,12 @@ import { servicios, gruposServicio } from '../data/servicios';
             {i < 6 && <span class="tag">Más pedido</span>}
             {s.urgencia && <span class="tag tag-urg">24/7</span>}
           </div>
-          <h2>{s.titulo}</h2>
+          <h2><a href={urlServicio(s.slug)}>{s.titulo}</a></h2>
           <p>{s.texto}</p>
           <ul>{s.incluye.map((x) => <li>{x}</li>)}</ul>
           <div class="servicio-cta">
-            {s.slug === 'llaves-de-carro' ? (
-              <a class="btn btn-green" href="/llaves-de-carro">Cotizar mi llave<Icon name="flecha" /></a>
-            ) : s.slug === 'mantenimiento' ? (
-              <a class="btn btn-green" href="/mantenimiento">Ver planes<Icon name="flecha" /></a>
-            ) : (
-              <a class="btn btn-green" href={whatsapp(`Hola Cerraya, necesito: ${s.titulo.toLowerCase()}`)} target="_blank" rel="noopener"><Icon name="whatsapp" />Pedir este servicio</a>
-            )}
+            <a class="btn btn-green" href={urlServicio(s.slug)}>Ver servicio<Icon name="flecha" /></a>
+            <a class="btn btn-outline" href={whatsapp(`Hola Cerraya, necesito: ${s.titulo.toLowerCase()}`)} target="_blank" rel="noopener"><Icon name="whatsapp" />Pedir por WhatsApp</a>
           </div>
         </article>
       ))}
@@ -77,9 +72,11 @@ import { servicios, gruposServicio } from '../data/servicios';
   .tag { font-size: .72rem; font-weight: 700; letter-spacing: .04em; padding: .2rem .55rem; border-radius: 999px; background: var(--green-100); color: var(--green-800); }
   .tag-urg { background: var(--accent); color: var(--accent-ink); }
   .servicio h2 { font-size: 1.2rem; margin: 0 0 .4rem; }
+  .servicio h2 a { text-decoration: none; }
+  .servicio h2 a:hover { color: var(--green-600); }
   .servicio p { color: var(--muted); font-size: .95rem; }
   .servicio ul { margin: 0 0 1.25rem; padding-left: 1.1rem; font-size: .9rem; color: var(--text); display: grid; gap: .2rem; }
   .servicio ul li::marker { color: var(--green-600); }
-  .servicio-cta { margin-top: auto; }
+  .servicio-cta { margin-top: auto; display: grid; gap: .5rem; }
   .servicio-cta .btn { width: 100%; }
 </style>

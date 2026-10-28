@@ -1,0 +1,140 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Faq from '../../components/Faq.astro';
+import FondoVivo from '../../components/FondoVivo.astro';
+import CtaFinal from '../../components/CtaFinal.astro';
+import { empresa, tel, whatsapp } from '../../data/empresa';
+import { servicios, serviciosConPagina, urlServicio, type Servicio } from '../../data/servicios';
+import { detalleServicios } from '../../data/servicios-detalle';
+import { localidadesBogota } from '../../data/localidades';
+import { negocioLocal, migas } from '../../data/schema';
+
+export function getStaticPaths() {
+  return serviciosConPagina.map((servicio) => ({ params: { slug: servicio.slug }, props: { servicio } }));
+}
+
+const { servicio } = Astro.props as { servicio: Servicio };
+const d = detalleServicios[servicio.slug];
+const relacionados = servicios.filter((s) => s.slug !== servicio.slug && s.grupo === servicio.grupo).slice(0, 3);
+const mensaje = `Hola Cerraya, necesito: ${servicio.titulo.toLowerCase()}`;
+const url = `${empresa.sitio}/servicios/${servicio.slug}`;
+
+const schema = [
+  negocioLocal(),
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: d.tituloSeo,
+    serviceType: servicio.titulo,
+    description: d.intro,
+    provider: { '@id': `${empresa.sitio}/#negocio` },
+    areaServed: { '@type': 'City', name: 'Bogotá' },
+    url,
+  },
+  migas([
+    { nombre: 'Inicio', url: empresa.sitio },
+    { nombre: 'Servicios', url: `${empresa.sitio}/servicios` },
+    { nombre: servicio.titulo, url },
+  ]),
+];
+---
+<Base title={`${d.tituloSeo} | Cerraya`} description={`${servicio.texto} Cerrajeros con más de ${empresa.experiencia} años de experiencia en Bogotá. Llama al ${empresa.telefonoVisible}.`} schema={schema}>
+  <section class="hero-serv con-fondo">
+    <FondoVivo />
+    <div class="container">
+      <nav class="migas" aria-label="Ruta"><a href="/">Inicio</a><span>/</span><a href="/servicios">Servicios</a><span>/</span><span aria-current="page">{servicio.titulo}</span></nav>
+      {servicio.urgencia && <span class="tag-urg">Urgencias 24/7</span>}
+      <h1>{d.tituloSeo}</h1>
+      <p class="lead">{d.intro}</p>
+      <div class="actions">
+        <a href={tel} class="btn btn-accent btn-lg"><Icon name="telefono" />Llamar · {empresa.telefonoVisible}</a>
+        <a href={whatsapp(mensaje)} target="_blank" rel="noopener" class="btn btn-wa btn-lg"><Icon name="whatsapp" />WhatsApp</a>
+      </div>
+      <ul class="hero-points">
+        <li><Icon name="garantia" />Más de {empresa.experiencia} años de experiencia</li>
+        <li><Icon name="precio" />Sin sorpresas en el precio</li>
+        <li><Icon name="mapa" />Toda Bogotá</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid-2 detalle">
+      <div class="card">
+        <span class="icon-badge"><Icon name={servicio.icono} /></span>
+        <h2>Qué incluye</h2>
+        <ul class="check-list">{servicio.incluye.map((x) => <li>{x}</li>)}</ul>
+      </div>
+      <div class="card">
+        <h2>Cómo funciona</h2>
+        <ol class="pasos">
+          <li><strong>Nos escribes o llamas</strong> y nos cuentas qué pasa.</li>
+          <li><strong>Te damos un valor estimado</strong> y el tiempo de llegada.</li>
+          <li><strong>Llega un cerrajero identificado</strong> con la herramienta para tu caso.</li>
+          <li><strong>Pagas al terminar</strong>, cuando todo quedó funcionando.</li>
+        </ol>
+        <a class="btn btn-green btn-block" href={`/cotizar?producto=${encodeURIComponent(servicio.titulo)}`}>Pedir cotización<Icon name="flecha" /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-cream">
+    <div class="narrow">
+      <div class="section-head">
+        <span class="eyebrow">Preguntas frecuentes</span>
+        <h2>Sobre {servicio.titulo.toLowerCase()}</h2>
+      </div>
+      <Faq preguntas={d.faq} />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Cobertura</span>
+        <h2>{servicio.titulo} en todas las localidades de Bogotá</h2>
+      </div>
+      <ul class="chips enlaces">{localidadesBogota.map((l) => <li><a href={`/cerrajero-en/${l.slug}`}>{l.nombre}</a></li>)}</ul>
+      {relacionados.length > 0 && (
+        <>
+          <h2 class="rel-h">Otros servicios</h2>
+          <div class="grid grid-3">
+            {relacionados.map((s) => (
+              <a class="card rel" href={urlServicio(s.slug)}>
+                <span class="icon-badge"><Icon name={s.icono} /></span>
+                <h3>{s.titulo}</h3>
+                <p>{s.texto}</p>
+              </a>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  </section>
+
+  <CtaFinal />
+</Base>
+
+<style>
+  .hero-serv { background: linear-gradient(180deg, var(--green-800), var(--green-900)); color: var(--on-green); padding: 2rem 0 clamp(2.5rem, 6vw, 4rem); }
+  .hero-serv h1 { color: var(--cream); max-width: 22ch; }
+  .hero-serv .lead { color: var(--on-green-muted); max-width: 62ch; }
+  .hero-serv .actions { margin-top: 1.5rem; }
+  .migas { display: flex; flex-wrap: wrap; gap: .5rem; font-size: .88rem; color: var(--on-green-muted); margin-bottom: 1.25rem; }
+  .migas a { color: var(--cream); }
+  .tag-urg { display: inline-block; margin-bottom: .9rem; padding: .25rem .75rem; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-size: .78rem; font-weight: 800; }
+  .hero-points { list-style: none; padding: 0; margin: 1.5rem 0 0; display: flex; flex-wrap: wrap; gap: .6rem 1.5rem; font-size: .93rem; color: var(--cream); }
+  .hero-points li { display: inline-flex; align-items: center; gap: .45rem; }
+  .hero-points :global(svg) { width: 20px; height: 20px; color: var(--accent); }
+  .detalle { align-items: start; }
+  .detalle h2 { font-size: 1.3rem; }
+  .pasos { margin: 0 0 1.25rem; padding-left: 1.2rem; display: grid; gap: .6rem; }
+  .pasos li::marker { font-family: var(--display); font-weight: 800; color: var(--green-600); }
+  .enlaces a { text-decoration: none; color: var(--green-800); font-weight: 600; }
+  .enlaces li:hover { border-color: var(--green-600); }
+  .rel-h { margin-top: 3rem; font-size: 1.4rem; }
+  .rel { text-decoration: none; transition: border-color .18s, transform .18s; }
+  .rel:hover { border-color: var(--green-600); transform: translateY(-2px); }
+  .rel p { color: var(--muted); font-size: .93rem; margin: 0; }
+</style>

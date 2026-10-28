@@ -171,3 +171,8 @@ export const servicios: Servicio[] = [
 export const serviciosPopulares = servicios.slice(0, 6);
 export const serviciosUrgencia = servicios.filter((s) => s.urgencia);
 export const gruposServicio = ['Hogar', 'Vehículos', 'Seguridad', 'Conjuntos y empresas'] as const;
+
+// Página de cada servicio. Llaves de carro y mantenimiento ya tienen su página propia.
+const paginasPropias: Record<string, string> = { 'llaves-de-carro': '/llaves-de-carro', mantenimiento: '/mantenimiento' };
+export const urlServicio = (slug: string) => paginasPropias[slug] ?? `/servicios/${slug}`;
+export const serviciosConPagina = servicios.filter((s) => !paginasPropias[s.slug]);

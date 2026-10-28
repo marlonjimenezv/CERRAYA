@@ -1,0 +1,120 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Faq from '../../components/Faq.astro';
+import FondoVivo from '../../components/FondoVivo.astro';
+import CtaFinal from '../../components/CtaFinal.astro';
+import { empresa, tel, whatsapp } from '../../data/empresa';
+import { serviciosPopulares, servicios, urlServicio } from '../../data/servicios';
+import { localidadesBogota, type Localidad } from '../../data/localidades';
+import { negocioLocal, migas } from '../../data/schema';
+
+export function getStaticPaths() {
+  return localidadesBogota.map((localidad, i) => ({ params: { localidad: localidad.slug }, props: { localidad, i } }));
+}
+
+const { localidad: l, i } = Astro.props as { localidad: Localidad; i: number };
+const barrios = l.barrios.slice(0, -1).join(', ') + ' y ' + l.barrios[l.barrios.length - 1];
+const vecinas = [-2, -1, 1, 2].map((d) => localidadesBogota[(i + d + localidadesBogota.length) % localidadesBogota.length]);
+const url = `${empresa.sitio}/cerrajero-en/${l.slug}`;
+
+const preguntas = [
+  { p: `¿Cuánto se demoran en llegar a ${l.nombre}?`, r: `Salimos de inmediato. Al llamar te decimos el tiempo exacto de llegada según tu barrio en ${l.nombre}.` },
+  { p: `¿Atienden en ${l.barrios[0]} y ${l.barrios[1]}?`, r: `Sí. Cubrimos todos los barrios de ${l.nombre}, entre ellos ${barrios}.` },
+  { p: '¿Atienden de noche, domingos y festivos?', r: 'Sí, atendemos 24 horas, todos los días del año.' },
+  { p: '¿Cuánto cuesta el servicio?', r: 'Depende del servicio, la cerradura y la hora. Por teléfono te damos un valor estimado y nada se cobra sin tu aprobación.' },
+];
+
+const schema = [
+  negocioLocal(),
+  migas([
+    { nombre: 'Inicio', url: empresa.sitio },
+    { nombre: 'Cobertura', url: `${empresa.sitio}/cerrajero-en` },
+    { nombre: `Cerrajero en ${l.nombre}`, url },
+  ]),
+];
+---
+<Base
+  title={`Cerrajero en ${l.nombre}, Bogotá 24/7 | Cerraya`}
+  description={`Cerrajero 24 horas en ${l.nombre}: aperturas domiciliarias sin daños, cambio de guardas, llaves de carro y cerraduras en ${barrios}. Llama al ${empresa.telefonoVisible}.`}
+  schema={schema}
+>
+  <section class="hero-loc con-fondo">
+    <FondoVivo />
+    <div class="container">
+      <nav class="migas" aria-label="Ruta"><a href="/">Inicio</a><span>/</span><a href="/cerrajero-en">Cobertura</a><span>/</span><span aria-current="page">{l.nombre}</span></nav>
+      <span class="live"><i></i>Cerrajeros disponibles en {l.nombre}</span>
+      <h1>Cerrajero en {l.nombre}, <span>24/7</span></h1>
+      <p class="lead">Atendemos urgencias e instalaciones de cerrajería en todo {l.nombre}, incluidos {barrios}. Cerrajeros con más de {empresa.experiencia} años de experiencia que salen de inmediato.</p>
+      <div class="actions">
+        <a href={tel} class="btn btn-accent btn-lg"><Icon name="telefono" />Llamar · {empresa.telefonoVisible}</a>
+        <a href={whatsapp(`Hola Cerraya, necesito un cerrajero en ${l.nombre}`)} target="_blank" rel="noopener" class="btn btn-wa btn-lg"><Icon name="whatsapp" />WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Servicios en {l.nombre}</span>
+        <h2>Lo que más nos piden en {l.nombre}</h2>
+      </div>
+      <div class="grid grid-3">
+        {serviciosPopulares.map((s) => (
+          <a class="card feature serv" href={urlServicio(s.slug)}>
+            <span class="icon-badge"><Icon name={s.icono} /></span>
+            <h3>{s.titulo}</h3>
+            <p>{s.texto}</p>
+          </a>
+        ))}
+      </div>
+      <p class="todos"><a href="/servicios">Ver los {servicios.length} servicios<Icon name="flecha" /></a></p>
+    </div>
+  </section>
+
+  <section class="section section-cream">
+    <div class="container grid grid-2 barrios-sec">
+      <div>
+        <span class="eyebrow">Barrios</span>
+        <h2>Llegamos a todo {l.nombre}</h2>
+        <ul class="chips">{l.barrios.map((b) => <li>{b}</li>)}</ul>
+        <p class="nota">¿Tu barrio no está en la lista? También lo cubrimos: escríbenos.</p>
+      </div>
+      <div>
+        <span class="eyebrow">Preguntas frecuentes</span>
+        <h2>Antes de llamar</h2>
+        <Faq preguntas={preguntas} />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-tight">
+    <div class="container">
+      <h2 class="vec-h">También atendemos cerca de {l.nombre}</h2>
+      <ul class="chips enlaces">{vecinas.map((v) => <li><a href={`/cerrajero-en/${v.slug}`}>Cerrajero en {v.nombre}</a></li>)}</ul>
+    </div>
+  </section>
+
+  <CtaFinal titulo={`¿Necesitas un cerrajero en ${l.nombre}?`} />
+</Base>
+
+<style>
+  .hero-loc { background: linear-gradient(180deg, var(--green-800), var(--green-900)); color: var(--on-green); padding: 2rem 0 clamp(2.5rem, 6vw, 4rem); }
+  .hero-loc h1 { color: var(--cream); }
+  .hero-loc h1 span { color: var(--accent); white-space: nowrap; }
+  .hero-loc .lead { color: var(--on-green-muted); max-width: 62ch; }
+  .hero-loc .actions { margin-top: 1.5rem; }
+  .migas { display: flex; flex-wrap: wrap; gap: .5rem; font-size: .88rem; color: var(--on-green-muted); margin-bottom: 1.25rem; }
+  .migas a { color: var(--cream); }
+  .live { display: inline-flex; align-items: center; gap: .55rem; margin-bottom: 1rem; font-size: .9rem; font-weight: 600; color: var(--cream); }
+  .live i { width: 10px; height: 10px; border-radius: 50%; background: #3ddc84; }
+  .serv { text-decoration: none; transition: border-color .18s, transform .18s; }
+  .serv:hover { border-color: var(--green-600); transform: translateY(-2px); }
+  .todos { margin-top: 1.5rem; }
+  .todos a { display: inline-flex; align-items: center; gap: .35rem; font-family: var(--display); font-weight: 700; color: var(--green-600); }
+  .todos :global(svg) { width: 18px; height: 18px; }
+  .barrios-sec { align-items: start; gap: 2.5rem; }
+  .nota { margin-top: 1rem; color: var(--muted); font-size: .92rem; }
+  .vec-h { font-size: 1.3rem; }
+  .enlaces a { text-decoration: none; color: var(--green-800); font-weight: 600; }
+</style>

@@ -5,20 +5,14 @@ import Icon from '../components/Icon.astro';
 import Resenas from '../components/Resenas.astro';
 import Faq from '../components/Faq.astro';
 import CtaFinal from '../components/CtaFinal.astro';
-import { empresa, tel, whatsapp, localidades } from '../data/empresa';
+import { empresa, tel, whatsapp } from '../data/empresa';
+import { localidadesBogota } from '../data/localidades';
 import { serviciosUrgencia } from '../data/servicios';
+import { negocioLocal } from '../data/schema';
 
 // Página de aterrizaje para Google Ads: una sola acción (llamar o escribir) y nada que distraiga.
 // CONFIRMAR: las promesas (foto del cerrajero, medios de pago) deben coincidir con la operación real.
-const schema = {
-  '@context': 'https://schema.org',
-  '@type': 'Locksmith',
-  name: `${empresa.nombre} · Cerrajería de urgencia`,
-  url: `${empresa.sitio}/urgencias`,
-  telephone: `+${empresa.telefono}`,
-  areaServed: { '@type': 'City', name: 'Bogotá' },
-  openingHours: 'Mo-Su 00:00-23:59',
-};
+const schema = negocioLocal();
 
 const preguntas = [
   { p: '¿Cuánto cuesta abrir una puerta?', r: 'Depende del tipo de cerradura y de la hora. Por teléfono te damos un valor estimado; si al llegar el trabajo es distinto, te lo explicamos y tú decides antes de seguir.' },
@@ -104,7 +98,7 @@ const preguntas = [
         <span class="eyebrow">Cobertura</span>
         <h2>Atendemos urgencias en toda Bogotá</h2>
       </div>
-      <ul class="chips">{localidades.map((l) => <li>{l}</li>)}</ul>
+      <ul class="chips cobertura">{localidadesBogota.map((l) => <li><a href={`/cerrajero-en/${l.slug}`}>{l.nombre}</a></li>)}</ul>
     </div>
   </section>
 
@@ -144,6 +138,7 @@ const preguntas = [
   .promesa li { color: var(--on-green-muted); font-size: .93rem; }
   .promesa strong { color: var(--cream); font-size: 1rem; }
   .promesa .check-list li::before { background-color: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4L18 8' fill='none' stroke='%23062a20' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+  .cobertura a { text-decoration: none; color: var(--green-800); font-weight: 600; }
   .urg-card { text-decoration: none; display: flex; flex-direction: column; transition: border-color .18s, box-shadow .18s, transform .18s; }
   .urg-card:hover { border-color: var(--green-600); box-shadow: var(--shadow-sm); transform: translateY(-2px); }
   .urg-link { margin-top: auto; padding-top: 1rem; display: inline-flex; align-items: center; gap: .4rem; font-family: var(--display); font-weight: 700; font-size: .9rem; color: var(--green-600); }
