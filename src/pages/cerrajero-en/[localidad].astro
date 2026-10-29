@@ -17,11 +17,23 @@ const { localidad: l, i } = Astro.props as { localidad: Localidad; i: number };
 const barrios = l.barrios.slice(0, -1).join(', ') + ' y ' + l.barrios[l.barrios.length - 1];
 const vecinas = [-2, -1, 1, 2].map((d) => localidadesBogota[(i + d + localidadesBogota.length) % localidadesBogota.length]);
 const url = `${empresa.sitio}/cerrajero-en/${l.slug}`;
+// Rota los barrios para que cada página nombre los suyos en las búsquedas largas ("cerrajero en Modelia de madrugada").
+const b = (n: number) => l.barrios[n % l.barrios.length];
+
+// Una tarjeta por intención de búsqueda: urgencia de noche, festivos, robo, precio, cercanía y vehículos.
+const casos = [
+  { titulo: 'De noche y en la madrugada', href: '/servicios/apertura-de-puertas', texto: `¿Te quedaste por fuera a las 2 de la mañana en ${b(0)} o en ${b(3)}? Hacemos aperturas domiciliarias de noche y en la madrugada en todo ${l.nombre}, sin dañar la puerta.` },
+  { titulo: 'Domingos y festivos', href: '/servicios/llave-partida', texto: `Trabajamos todos los días del año. Si se partió la llave o la cerradura no abre en ${b(1)}, llámanos sin esperar al lunes.` },
+  { titulo: 'Después de un robo', href: '/servicios/robo-o-forzamiento', texto: `Si forzaron tu puerta en ${b(2)} o en cualquier barrio de ${l.nombre}, cambiamos la cerradura o las guardas para que no pases la noche con la puerta insegura.` },
+  { titulo: 'Precio claro, sin sorpresas', href: '/consejos/cuanto-cuesta-un-cerrajero', texto: `¿Buscas un cerrajero económico en ${l.nombre}? Por teléfono te damos un valor estimado, con el recargo nocturno o festivo incluido si aplica. Si algo cambia, tú lo apruebas antes.` },
+  { titulo: 'Un cerrajero cerca de ti', href: '/urgencias', texto: `Atendemos ${b(4)}, ${b(5)}, ${b(6)} y el resto de ${l.nombre}. Escríbenos tu barrio por WhatsApp y te decimos cuánto tardamos en llegar.` },
+  { titulo: 'Carros y motos', href: '/servicios/apertura-de-vehiculos', texto: `¿Dejaste las llaves dentro del carro en ${b(7)}? Abrimos vehículos sin daños y hacemos llaves con chip en ${l.nombre}.` },
+];
 
 const preguntas = [
   { p: `¿Cuánto se demoran en llegar a ${l.nombre}?`, r: `Salimos de inmediato. Al llamar te decimos el tiempo exacto de llegada según tu barrio en ${l.nombre}.` },
   { p: `¿Atienden en ${l.barrios[0]} y ${l.barrios[1]}?`, r: `Sí. Cubrimos todos los barrios de ${l.nombre}, entre ellos ${barrios}.` },
-  { p: '¿Atienden de noche, domingos y festivos?', r: 'Sí, atendemos 24 horas, todos los días del año.' },
+  { p: `¿Hay cerrajero en ${l.nombre} en la madrugada, domingos y festivos?`, r: `Sí. Atendemos urgencias 24 horas, todos los días del año, en todo ${l.nombre}: el cerrajero sale de inmediato.` },
   { p: '¿Cuánto cuesta el servicio?', r: 'Depende del servicio, la cerradura y la hora. Por teléfono te damos un valor estimado y nada se cobra sin tu aprobación.' },
 ];
 
@@ -35,8 +47,8 @@ const schema = [
 ];
 ---
 <Base
-  title={`Cerrajero en ${l.nombre}, Bogotá 24/7 | Cerraya`}
-  description={`Cerrajero 24 horas en ${l.nombre}: aperturas domiciliarias sin daños, cambio de guardas, llaves de carro y cerraduras en ${barrios}. Llama al ${empresa.telefonoVisible}.`}
+  title={`Cerrajero urgente en ${l.nombre}, Bogotá 24 horas | Cerraya`}
+  description={`Cerrajero urgente en ${l.nombre} a domicilio: de día, de noche y en la madrugada, también festivos. Atendemos ${b(0)}, ${b(1)}, ${b(2)} y todo ${l.nombre}. Valor estimado antes de salir.`}
   schema={schema}
 >
   <section class="hero-loc con-fondo">
@@ -69,6 +81,23 @@ const schema = [
         ))}
       </div>
       <p class="todos"><a href="/servicios">Ver los {servicios.length} servicios<Icon name="flecha" /></a></p>
+    </div>
+  </section>
+
+  <section class="section section-tight">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Cuándo nos llaman</span>
+        <h2>Cerrajero urgente en {l.nombre}, a cualquier hora</h2>
+      </div>
+      <div class="grid grid-3">
+        {casos.map((c) => (
+          <a class="card feature serv" href={c.href}>
+            <h3>{c.titulo}</h3>
+            <p>{c.texto}</p>
+          </a>
+        ))}
+      </div>
     </div>
   </section>
 
