@@ -145,6 +145,7 @@ const preguntas = [
 
 <script>
   import { whatsapp } from '../data/empresa';
+  import { registrar } from '../scripts/medicion';
 
   const form = document.getElementById('buscador') as HTMLFormElement;
   const marca = document.getElementById('marca') as HTMLSelectElement;
@@ -161,6 +162,7 @@ const preguntas = [
     const d = new FormData(form);
     const carro = [d.get('marca'), d.get('modelo'), d.get('anio')].filter(Boolean).join(' ');
     const texto = `Hola Cerraya, necesito una llave para mi carro:\n• Carro: ${carro}\n• Tipo de llave: ${d.get('tipo')}\n• Servicio: ${d.get('servicio')}`;
+    registrar('whatsapp');
     window.open(whatsapp(texto), '_blank', 'noopener');
   });
 </script>

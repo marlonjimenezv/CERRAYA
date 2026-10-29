@@ -95,6 +95,7 @@ const para = ['Casa o apartamento', 'Conjunto o edificio', 'Empresa o local', 'V
 
 <script>
   import { whatsapp } from '../data/empresa';
+  import { registrar } from '../scripts/medicion';
 
   document.querySelectorAll<HTMLFormElement>('[data-form-cotizacion]').forEach((form) => {
     // Un segundo toque en una opción ya marcada la desmarca (todo es opcional).
@@ -124,6 +125,7 @@ const para = ['Casa o apartamento', 'Conjunto o edificio', 'Empresa o local', 'V
         detalles.join('\n'),
         valor('nombre') ? `Soy ${valor('nombre')}.` : '',
       ].filter(Boolean);
+      registrar('whatsapp');
       window.open(whatsapp(partes.join('\n\n')), '_blank', 'noopener');
     });
   });
