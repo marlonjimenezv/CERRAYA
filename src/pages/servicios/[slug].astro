@@ -19,6 +19,22 @@ const d = detalleServicios[servicio.slug];
 const relacionados = servicios.filter((s) => s.slug !== servicio.slug && s.grupo === servicio.grupo).slice(0, 3);
 const mensaje = `Hola Cerraya, necesito: ${servicio.titulo.toLowerCase()}`;
 const url = `${empresa.sitio}/servicios/${servicio.slug}`;
+const nombre = servicio.titulo.toLowerCase();
+
+// Variantes de búsqueda ("urgente", "madrugada", "cuánto cuesta", "cerca de mí") que cada servicio responde.
+const yaHablaDePrecio = d.faq.some((f) => /cuesta|precio|cobra/i.test(f.p));
+const preguntas = [
+  ...d.faq,
+  ...(servicio.urgencia ? [{ p: `¿Hacen ${nombre} en la madrugada, domingos y festivos?`, r: 'Sí. Atendemos urgencias 24 horas, todos los días del año, en toda Bogotá: el cerrajero sale de inmediato.' }] : []),
+  ...(yaHablaDePrecio ? [] : [{ p: `¿Cuánto cuesta ${nombre} en Bogotá?`, r: 'Depende de la cerradura, la puerta y la hora. Por teléfono o WhatsApp te damos un valor estimado y, si algo cambia al llegar, tú lo apruebas antes.' }]),
+  { p: `¿Tienen servicio de ${nombre} cerca de mí?`, r: `Sí. Vamos a domicilio a las ${localidadesBogota.length} localidades de Bogotá. Escríbenos tu barrio y te decimos cuánto tardamos en llegar.` },
+];
+const tituloPagina = servicio.urgencia
+  ? `${d.tituloSeo}${d.tituloSeo.includes(':') ? ',' : ':'} urgente y a domicilio`
+  : `${d.tituloSeo}, a domicilio`;
+const descripcion = servicio.urgencia
+  ? `${servicio.texto} Urgente, a domicilio en toda Bogotá: de día, de noche, en la madrugada y en festivos. Valor estimado antes de salir.`
+  : `${servicio.texto} A domicilio en toda Bogotá, con cerrajeros de más de ${empresa.experiencia} años de experiencia. Valor estimado antes de salir.`;
 
 const schema = [
   negocioLocal(),
@@ -39,7 +55,7 @@ const schema = [
   ]),
 ];
 ---
-<Base title={`${d.tituloSeo} | Cerraya`} description={`${servicio.texto} Cerrajeros con más de ${empresa.experiencia} años de experiencia en Bogotá. Llama al ${empresa.telefonoVisible}.`} schema={schema}>
+<Base title={`${tituloPagina} | Cerraya`} description={descripcion} schema={schema}>
   <section class="hero-serv con-fondo">
     <FondoVivo />
     <div class="container">
@@ -85,7 +101,7 @@ const schema = [
         <span class="eyebrow">Preguntas frecuentes</span>
         <h2>Sobre {servicio.titulo.toLowerCase()}</h2>
       </div>
-      <Faq preguntas={d.faq} />
+      <Faq preguntas={preguntas} />
     </div>
   </section>
 
@@ -95,7 +111,7 @@ const schema = [
         <span class="eyebrow">Cobertura</span>
         <h2>{servicio.titulo} en todas las localidades de Bogotá</h2>
       </div>
-      <ul class="chips enlaces">{localidadesBogota.map((l) => <li><a href={`/cerrajero-en/${l.slug}`}>{l.nombre}</a></li>)}</ul>
+      <ul class="chips enlaces">{localidadesBogota.map((l) => <li><a href={`/cerrajero-en/${l.slug}`}>{servicio.titulo} en {l.nombre}</a></li>)}</ul>
       {relacionados.length > 0 && (
         <>
           <h2 class="rel-h">Otros servicios</h2>
