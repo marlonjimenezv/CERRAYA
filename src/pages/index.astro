@@ -14,7 +14,7 @@ import { productos } from '../data/cerraduras';
 import { marcasCarro } from '../data/llaves';
 import { promocionesActivas } from '../data/promociones';
 import { fotoTipo } from '../data/fotos';
-import { negocioLocal } from '../data/schema';
+import { negocioLocal, sitioWeb } from '../data/schema';
 
 const fotoLlave = fotoTipo('llave-carro');
 
@@ -36,7 +36,7 @@ const consejos = (await getCollection('consejos'))
   .slice(0, 3);
 
 
-const schema = negocioLocal();
+const schema = [negocioLocal(), sitioWeb()];
 
 const preguntas = [
   { p: '¿Cuánto cuesta un servicio de cerrajería?', r: 'Depende del servicio, la cerradura y la hora. Al llamar te damos un valor estimado; si al llegar el trabajo resulta distinto, te lo explicamos y tú decides antes de seguir.' },

@@ -36,6 +36,17 @@ export function negocioLocal(extra: Record<string, unknown> = {}) {
   };
 }
 
+// Le dice a Google el nombre del sitio ("Cerraya") para mostrarlo en los resultados en vez de "cerraya.com".
+export function sitioWeb() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: empresa.nombre,
+    alternateName: ['CERRAYA', 'Cerraya Bogotá'],
+    url: `${empresa.sitio}/`,
+  };
+}
+
 export function migas(items: { nombre: string; url: string }[]) {
   return {
     '@context': 'https://schema.org',
