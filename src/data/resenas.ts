@@ -1,6 +1,6 @@
 // Reseñas reales de la ficha CERRAYA en Google Maps (todas de 5 estrellas), copiadas el 22 de noviembre de 2026.
 // Se muestran con el nombre y la inicial del apellido. Solo se corrigieron tildes y ortografía, sin cambiar lo que dijo el cliente.
-// Para actualizar: agrega las nuevas arriba y sube el total en src/data/empresa.ts (resenas.total).
+// Para actualizar: agrega las nuevas arriba. El número de reseñas no se muestra en el sitio, solo las 5 estrellas.
 // No incluir reseñas escritas desde cuentas del propio negocio.
 
 export type Resena = { nombre: string; texto: string; tema?: 'rapidez' | 'precio' | 'apertura' | 'cerraduras' };
@@ -32,4 +32,23 @@ export const resenas: Resena[] = [
   { nombre: 'Ney A.', texto: 'Muy cumplidos, me gustó mucho, los recomiendo.' },
   { nombre: 'Alicia J.', texto: 'Muy buena atención. Encontré todo lo que necesitaba.', tema: 'cerraduras' },
   { nombre: 'Mr Fred', texto: 'Lo mejor de lo mejor... Recomendado al 100.' },
+  { nombre: 'Mary B.', texto: 'Tuve un excelente servicio, tanto en servicio al cliente como respondiendo dudas. 5/5.' },
+  { nombre: 'Mileidy A.', texto: '💯 de 100. Hace algunos años conozco el trabajo de esta empresa y me han ayudado mucho con los servicios de cerrajería.' },
+  { nombre: 'Jorge David L.', texto: 'Muy buen servicio, recomendado 100%.' },
+  { nombre: 'Juank H.', texto: 'Lo recomiendo, muy buen servicio.' },
+  { nombre: 'Gina P.', texto: 'Excelente servicio, muy confiables. 100% recomendado.' },
+  { nombre: 'Natalia A.', texto: 'Excelente servicio. Recomendable.' },
+  { nombre: 'Gina C.', texto: 'Excelente servicio.' },
+  { nombre: 'Rubén E.', texto: 'Hoy me prestaron un servicio de cerrajería, fue excelente, muy rápido.', tema: 'rapidez' },
+  { nombre: 'Javier R.', texto: 'Buen servicio al cliente y calidad en el trabajo.' },
+  { nombre: 'Yulieth V.', texto: 'Ofrecen un muy buen servicio al cliente.' },
+  { nombre: 'Diana L.', texto: 'Excelente servicio, recomendado.' },
+  { nombre: 'Nicolás Á.', texto: 'Súper buena experiencia. 👌🏻' },
+  { nombre: 'Joel D.', texto: 'Me ayudaron bastante, los recomiendo.' },
+  { nombre: 'Daniel H.', texto: 'Gran servicio de cerrajería.' },
+  { nombre: 'Laura B.', texto: 'Muy buen servicio.' },
+  { nombre: 'Fredy V.', texto: 'Excelente servicio.' },
+  { nombre: 'Luz Kelly R.', texto: 'Buen servicio.' },
+  { nombre: 'Ledis R.', texto: 'Excelente servicio.' },
+  { nombre: 'María Cristina M.', texto: 'Excelente.' },
 ];

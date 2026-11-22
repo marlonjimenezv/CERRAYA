@@ -5,6 +5,7 @@ import Icon from '../components/Icon.astro';
 import Resenas from '../components/Resenas.astro';
 import Faq from '../components/Faq.astro';
 import CtaFinal from '../components/CtaFinal.astro';
+import Comerciales from '../components/Comerciales.astro';
 import { empresa, tel, whatsapp } from '../data/empresa';
 import { localidadesBogota } from '../data/localidades';
 import { serviciosUrgencia } from '../data/servicios';
@@ -111,6 +112,8 @@ const preguntas = [
       <Faq preguntas={preguntas} />
     </div>
   </section>
+
+  <Comerciales cuales={['cerrajero-ya']} titulo="Cerrajero YA, en toda Bogotá" />
 
   <CtaFinal />
 </Base>

@@ -1,23 +1,34 @@
 ---
+// Sección de opiniones del inicio: calificación, todas las reseñas pasando en tarjetas y fotos debajo.
+import { Image } from 'astro:assets';
+import ResenasBarra from './ResenasBarra.astro';
 import { empresa } from '../data/empresa';
-import { resenas } from '../data/resenas';
+import { fotoTipo } from '../data/fotos';
 
-// Una reseña por tema (llegada rápida, precio, apertura sin daños, cerraduras) y dos más.
-const temas = ['apertura', 'precio', 'rapidez', 'cerraduras'] as const;
-const elegidas = temas.map((t) => resenas.find((r) => r.tema === t)!).filter(Boolean);
-const destacadas = [...elegidas, ...resenas.filter((r) => !elegidas.includes(r))].slice(0, 6);
+// Fotos debajo de las opiniones: cada una lleva al servicio que muestra.
+// Son fotos de referencia; cambiarlas por fotos propias de trabajos en src/assets/cerraduras/tipos.
+const fotos = [
+  { foto: 'puerta-vidrio', texto: 'Puertas de vidrio', href: '/puertas-de-vidrio' },
+  { foto: 'digitales', texto: 'Cerraduras digitales', href: '/servicios/cerraduras-digitales' },
+  { foto: 'puerta-vidrio-local', texto: 'Locales comerciales', href: '/servicios/reparacion-puertas-de-vidrio' },
+  { foto: 'cerrojos', texto: 'Cambio de guardas', href: '/servicios/cambio-de-guardas' },
+  { foto: 'llave-carro', texto: 'Llaves de carro', href: '/llaves-de-carro' },
+  { foto: 'herraje-vidrio', texto: 'Herrajes para vidrio', href: '/servicios/herrajes-puertas-de-vidrio' },
+]
+  .map((f) => ({ ...f, img: fotoTipo(f.foto) }))
+  .filter((f) => f.img);
 ---
-<section class="section section-cream">
+<section class="section section-cream opiniones">
   <div class="container">
     <div class="resenas">
       <a class="score-card" href={empresa.enlacePerfilGoogle} target="_blank" rel="noopener">
         <span class="score">{empresa.resenas.calificacion}</span>
         <span class="stars" aria-hidden="true">★★★★★</span>
-        <span class="score-sub">{empresa.resenas.total} reseñas en Google</span>
+        <span class="score-sub">Calificación en Google</span>
       </a>
       <div>
         <span class="eyebrow">Opiniones</span>
-        <h2>{empresa.resenas.total} clientes, {empresa.resenas.total} veces 5 estrellas</h2>
+        <h2>5 estrellas en Google</h2>
         <p class="lead">Todas nuestras reseñas en Google son de 5 estrellas. Lo que más repiten: que llegamos rápido, que la puerta quedó intacta y que cobramos lo que dijimos.</p>
         <div class="actions">
           <a class="btn btn-green" href={empresa.enlacePerfilGoogle} target="_blank" rel="noopener">Leer todas en Google</a>
@@ -25,19 +36,27 @@ const destacadas = [...elegidas, ...resenas.filter((r) => !elegidas.includes(r))
         </div>
       </div>
     </div>
-    <ul class="tarjetas">
-      {destacadas.map((r) => (
+  </div>
+
+  <div class="tarjetas"><ResenasBarra /></div>
+
+  <div class="container">
+    <ul class="fotos">
+      {fotos.map((f) => (
         <li>
-          <span class="stars" aria-hidden="true">★★★★★</span>
-          <blockquote>“{r.texto}”</blockquote>
-          <span class="autor">{r.nombre} <small>· reseña en Google</small></span>
+          <a href={f.href}>
+            <Image src={f.img!} alt={f.texto} widths={[360, 600]} sizes="(max-width: 680px) 50vw, 16vw" />
+            <span>{f.texto}</span>
+          </a>
         </li>
       ))}
     </ul>
+    <p class="nota-fotos">Imágenes de referencia.</p>
   </div>
 </section>
 
 <style>
+  .opiniones { padding-bottom: clamp(2rem, 5vw, 3.5rem); }
   .resenas { display: grid; grid-template-columns: auto 1fr; gap: clamp(2rem, 6vw, 5rem); align-items: center; }
   .score-card {
     display: grid;
@@ -55,13 +74,18 @@ const destacadas = [...elegidas, ...resenas.filter((r) => !elegidas.includes(r))
   .score { font-family: var(--display); font-weight: 800; font-size: 4rem; line-height: 1; }
   .score-card .stars { font-size: 1.4rem; color: #f2b33d; }
   .score-sub { font-size: .9rem; color: var(--on-green-muted); }
-  .tarjetas { list-style: none; padding: 0; margin: 2.5rem 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-  .tarjetas li { display: flex; flex-direction: column; gap: .6rem; padding: 1.25rem; border-radius: var(--radius-sm); background: var(--white); border: 1px solid var(--line); }
-  .tarjetas .stars { color: #f2b33d; letter-spacing: .05em; }
-  .tarjetas blockquote { margin: 0; font-size: .97rem; line-height: 1.5; }
-  .autor { margin-top: auto; font-weight: 700; font-size: .9rem; color: var(--green-800); }
-  .autor small { font-weight: 500; color: var(--muted); }
-  @media (max-width: 900px) { .tarjetas { grid-template-columns: 1fr 1fr; } }
+
+  .tarjetas { margin-top: 2rem; }
+  .tarjetas :global(.resenas-barra) { background: transparent; border: 0; padding-top: 0; }
+  .tarjetas :global(.barra-head) { display: none; }
+
+  .fotos { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; grid-template-columns: repeat(6, 1fr); gap: .75rem; }
+  .fotos a { position: relative; display: block; border-radius: var(--radius-sm); overflow: hidden; text-decoration: none; }
+  .fotos :global(img) { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; transition: transform .3s; }
+  .fotos a:hover :global(img) { transform: scale(1.04); }
+  .fotos span { position: absolute; left: 0; right: 0; bottom: 0; padding: 1.5rem .75rem .6rem; background: linear-gradient(transparent, rgba(6, 42, 32, .85)); color: var(--cream); font-family: var(--display); font-weight: 700; font-size: .9rem; }
+  .nota-fotos { margin: .5rem 0 0; font-size: .75rem; color: var(--muted); }
+  @media (max-width: 960px) { .fotos { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 760px) { .resenas { grid-template-columns: 1fr; } .score-card { justify-self: start; } }
-  @media (max-width: 560px) { .tarjetas { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { .fotos { grid-template-columns: repeat(2, 1fr); } }
 </style>

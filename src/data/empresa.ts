@@ -17,7 +17,7 @@ export const empresa = {
   telefonoVisible,
   horario: 'Atención 24/7, todos los días',
   experiencia: 25, // años de experiencia de los cerrajeros: es el dato principal de confianza
-  resenas: { calificacion: '5,0', total: 52 }, // de la ficha de Google Maps; actualizar cuando lleguen más (ver src/data/resenas.ts)
+  resenas: { calificacion: '5,0' }, // de la ficha de Google Maps. El número de reseñas NO se muestra: solo las 5 estrellas.
   // Perfil de Empresa en Google (CID de la ficha CERRAYA en Google Maps).
   enlacePerfilGoogle: 'https://maps.google.com/?cid=13926752197872837465',
   // CONFIRMAR: cambiar por el enlace "Pedir reseñas" del Perfil de Empresa (g.page/r/...), que abre directo el formulario.

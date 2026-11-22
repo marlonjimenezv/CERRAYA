@@ -1,0 +1,49 @@
+---
+// Cinta delgada de reseñas de Google justo debajo del menú, en todas las páginas.
+// Pasan TODAS las reseñas, una detrás de otra. Se pausa al pasar el mouse o tocarla.
+// Sin animación para quien pidió movimiento reducido (ahí se desplaza con el dedo).
+import { empresa } from '../data/empresa';
+import { resenas } from '../data/resenas';
+
+const duracion = `${resenas.length * 7}s`;
+---
+<div class="cinta-resenas" aria-label="Opiniones de clientes en Google: 5 estrellas">
+  <a class="sello" href={empresa.enlacePerfilGoogle} target="_blank" rel="noopener">
+    <span class="estrellas" aria-hidden="true">★★★★★</span>
+    <span class="sello-txt">5 estrellas en Google</span>
+  </a>
+  <div class="riel" tabindex="0">
+    <ul class="pasan" style={`--dur: ${duracion}`}>
+      {[...resenas, ...resenas].map((r, i) => (
+        <li aria-hidden={i >= resenas.length ? 'true' : undefined}>
+          <span class="estrellas" aria-hidden="true">★★★★★</span>
+          <q>{r.texto}</q>
+          <span class="quien">{r.nombre}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>
+
+<style>
+  .cinta-resenas { display: flex; align-items: stretch; background: var(--cream-2); border-bottom: 1px solid var(--line); font-size: .9rem; overflow: hidden; }
+  .sello { flex: none; display: flex; align-items: center; gap: .5rem; padding: .55rem 1rem; background: var(--green-800); color: var(--cream); text-decoration: none; font-weight: 700; z-index: 1; }
+  .sello .estrellas { color: #f2b33d; letter-spacing: .04em; }
+  .riel { flex: 1; overflow: hidden; display: flex; align-items: center; mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent); }
+  .pasan { list-style: none; margin: 0; padding: 0; display: flex; width: max-content; animation: pasar var(--dur, 300s) linear infinite; }
+  .riel:hover .pasan, .riel:focus-within .pasan, .riel:active .pasan { animation-play-state: paused; }
+  @keyframes pasar { to { transform: translateX(-50%); } }
+  .pasan li { display: flex; align-items: center; gap: .5rem; padding: .55rem 1.75rem; white-space: nowrap; border-right: 1px solid var(--line); }
+  .pasan .estrellas { color: #e0a22f; font-size: .8rem; letter-spacing: .03em; }
+  .pasan q { color: var(--ink); quotes: '“' '”'; }
+  .quien { font-weight: 700; color: var(--green-800); }
+  @media (max-width: 560px) {
+    .sello-txt { display: none; }
+    .sello { padding: .5rem .75rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pasan { animation: none; }
+    .riel { overflow-x: auto; mask-image: none; }
+    .pasan li[aria-hidden='true'] { display: none; }
+  }
+</style>

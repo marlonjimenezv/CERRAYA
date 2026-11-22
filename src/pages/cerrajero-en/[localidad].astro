@@ -4,6 +4,7 @@ import Icon from '../../components/Icon.astro';
 import Faq from '../../components/Faq.astro';
 import FondoVivo from '../../components/FondoVivo.astro';
 import CtaFinal from '../../components/CtaFinal.astro';
+import Comerciales from '../../components/Comerciales.astro';
 import { empresa, tel, whatsapp } from '../../data/empresa';
 import { serviciosPopulares, servicios, serviciosVidrio, urlServicio } from '../../data/servicios';
 import { localidadesBogota, type Localidad } from '../../data/localidades';
@@ -137,6 +138,8 @@ const schema = [
       <ul class="chips enlaces">{vecinas.map((v) => <li><a href={`/cerrajero-en/${v.slug}`}>Cerrajero en {v.nombre}</a></li>)}</ul>
     </div>
   </section>
+
+  <Comerciales cuales={['cobertura']} titulo={`Llegamos a ${l.nombre}`} oscuro={false} />
 
   <CtaFinal titulo={`¿Necesitas un cerrajero en ${l.nombre}?`} />
 </Base>

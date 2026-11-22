@@ -6,12 +6,13 @@ import FondoVivo from '../components/FondoVivo.astro';
 import Icon from '../components/Icon.astro';
 import ProductoCard from '../components/ProductoCard.astro';
 import Resenas from '../components/Resenas.astro';
+import Comerciales from '../components/Comerciales.astro';
+import { schemaComerciales } from '../data/comerciales';
 import Faq from '../components/Faq.astro';
 import CtaFinal from '../components/CtaFinal.astro';
 import { empresa, tel, whatsapp } from '../data/empresa';
 import { serviciosPopulares, servicios, serviciosVidrio, urlServicio } from '../data/servicios';
 import { sintomasVidrio } from '../data/puertas-vidrio';
-import ResenasBarra from '../components/ResenasBarra.astro';
 import { productos } from '../data/cerraduras';
 import { marcasCarro } from '../data/llaves';
 import { promocionesActivas } from '../data/promociones';
@@ -35,7 +36,7 @@ const consejos = (await getCollection('consejos'))
   .slice(0, 3);
 
 
-const schema = [negocioLocal(), sitioWeb()];
+const schema = [negocioLocal(), sitioWeb(), ...schemaComerciales()];
 
 const preguntas = [
   { p: '¿Cuánto cuesta un servicio de cerrajería?', r: 'Depende del servicio, la cerradura y la hora. Al llamar te damos un valor estimado; si al llegar el trabajo resulta distinto, te lo explicamos y tú decides antes de seguir.' },
@@ -46,16 +47,15 @@ const preguntas = [
 ---
 <Base
   title="Cerraya | Cerrajero en Bogotá 24/7 y puertas de vidrio"
-  description={`Cerrajero en Bogotá 24/7: aperturas sin daños, cambio de guardas, puertas de vidrio, llaves de carro y cerraduras. ${empresa.resenas.calificacion} en Google con ${empresa.resenas.total} reseñas. Valor estimado antes de salir.`}
+  description={`Cerrajero en Bogotá 24/7: aperturas sin daños, cambio de guardas, puertas de vidrio, llaves de carro y cerraduras. 5 estrellas en Google. Valor estimado antes de salir.`}
   schema={schema}
-  barraResenas={false}
 >
   <section class="hero con-fondo">
     <FondoVivo />
     <div class="container hero-grid">
       <div class="hero-copy">
         <a class="rating-pill" href={empresa.enlacePerfilGoogle} target="_blank" rel="noopener">
-          <span class="stars" aria-hidden="true">★★★★★</span><strong>{empresa.resenas.calificacion}</strong> en Google · {empresa.resenas.total} reseñas
+          <span class="stars" aria-hidden="true">★★★★★</span><strong>{empresa.resenas.calificacion}</strong> en Google
         </a>
         <h1>Cerrajero en <span>Bogotá</span> que llega rápido y cobra lo que dijo</h1>
         <p class="lead">Aperturas sin daños, cambio de guardas, puertas de vidrio, llaves de carro y cerraduras. Te damos el valor antes de salir y nada se cobra sin tu aprobación. Más de {empresa.experiencia} años en el oficio.</p>
@@ -98,12 +98,14 @@ const preguntas = [
     <div class="container trust-grid">
       <div><strong>+{empresa.experiencia} años</strong><span>de experiencia</span></div>
       <div><strong>24/7</strong><span>urgencias todos los días</span></div>
-      <div><strong>{empresa.resenas.calificacion} ★</strong><span>{empresa.resenas.total} reseñas en Google</span></div>
+      <div><strong>5 estrellas</strong><span>en Google</span></div>
       <div><strong>Garantía</strong><span>en cada trabajo</span></div>
     </div>
   </section>
 
-  <ResenasBarra />
+  <Resenas />
+
+  <Comerciales />
 
   <section class="section">
     <div class="container">
@@ -266,7 +268,6 @@ const preguntas = [
     </section>
   )}
 
-  <Resenas />
 
   <section class="section">
     <div class="narrow">

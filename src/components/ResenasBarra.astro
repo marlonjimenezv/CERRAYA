@@ -8,18 +8,19 @@ interface Props {
   tono?: 'claro' | 'oscuro';
 }
 const { tono = 'claro' } = Astro.props;
+const duracion = `${resenas.length * 3.5}s`;
 ---
-<section class:list={['resenas-barra', tono]} aria-label={`Reseñas de clientes en Google: ${empresa.resenas.calificacion} de 5 con ${empresa.resenas.total} reseñas`}>
+<section class:list={['resenas-barra', tono]} aria-label="Reseñas de clientes en Google: 5 estrellas">
   <div class="container barra-head">
     <a class="barra-score" href={empresa.enlacePerfilGoogle} target="_blank" rel="noopener">
       <strong>{empresa.resenas.calificacion}</strong>
       <span class="stars" aria-hidden="true">★★★★★</span>
-      <span>{empresa.resenas.total} reseñas en Google</span>
+      <span>en Google</span>
     </a>
     <a class="barra-ver" href={empresa.enlacePerfilGoogle} target="_blank" rel="noopener">Ver todas en Google →</a>
   </div>
   <div class="pista" tabindex="0">
-    <ul class="cinta">
+    <ul class="cinta" style={`--dur: ${duracion}`}>
       {[...resenas, ...resenas].map((r, i) => (
         <li class="resena" aria-hidden={i >= resenas.length ? 'true' : undefined}>
           <span class="stars" aria-hidden="true">★★★★★</span>
@@ -44,7 +45,7 @@ const { tono = 'claro' } = Astro.props;
   .oscuro .barra-ver { color: var(--accent); }
 
   .pista { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
-  .cinta { list-style: none; margin: 0; padding: 0 0 .25rem; display: flex; gap: 1rem; width: max-content; animation: deslizar 140s linear infinite; }
+  .cinta { list-style: none; margin: 0; padding: 0 0 .25rem; display: flex; gap: 1rem; width: max-content; animation: deslizar var(--dur, 160s) linear infinite; }
   .pista:hover .cinta, .pista:focus-within .cinta, .pista:active .cinta { animation-play-state: paused; }
   @keyframes deslizar { to { transform: translateX(-50%); } }
 

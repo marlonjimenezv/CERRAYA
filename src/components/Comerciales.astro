@@ -1,0 +1,61 @@
+---
+// Los comerciales de Cerraya (videos verticales 9:16 en public/videos).
+// Se reproducen sin sonido cuando quedan a la vista y se pausan al salir; con los controles se activa el sonido.
+// No se descargan hasta que la persona llega a ellos (preload="none").
+import { comerciales } from '../data/comerciales';
+
+interface Props {
+  cuales?: string[]; // ids a mostrar; por defecto los dos
+  titulo?: string;
+  oscuro?: boolean;
+}
+const { cuales, titulo = 'Así trabajamos', oscuro = true } = Astro.props;
+const lista = cuales ? comerciales.filter((c) => cuales.includes(c.id)) : comerciales;
+---
+<section class:list={['section', 'comerciales', { 'section-green': oscuro }]}>
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow">Nuestros comerciales</span>
+      <h2>{titulo}</h2>
+    </div>
+    <div class:list={['videos', { uno: lista.length === 1 }]}>
+      {lista.map((c) => (
+        <figure>
+          <video src={c.video} poster={c.poster} muted loop playsinline controls preload="none" aria-label={c.titulo} data-auto></video>
+          <figcaption>{c.titulo}</figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-head.center { text-align: center; }
+  .section-head.center h2 { margin-inline: auto; }
+  .videos { display: grid; grid-template-columns: repeat(2, minmax(0, 320px)); justify-content: center; gap: clamp(1rem, 4vw, 2.5rem); }
+  .videos.uno { grid-template-columns: minmax(0, 340px); }
+  figure { margin: 0; display: grid; gap: .6rem; }
+  video { width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; border-radius: var(--radius); background: var(--green-900); box-shadow: var(--shadow); }
+  figcaption { text-align: center; font-family: var(--display); font-weight: 700; font-size: .95rem; }
+  .section-green figcaption { color: var(--cream); }
+  @media (max-width: 520px) { .videos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; } }
+</style>
+
+<script>
+  // Reproduce sin sonido el video que está a la vista y pausa el que sale de pantalla.
+  const videos = document.querySelectorAll<HTMLVideoElement>('video[data-auto]');
+  const quiereMovimiento = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (quiereMovimiento && 'IntersectionObserver' in window) {
+    const obs = new IntersectionObserver(
+      (entradas) => {
+        entradas.forEach((e) => {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting) v.play().catch(() => {});
+          else v.pause();
+        });
+      },
+      { threshold: 0.5 },
+    );
+    videos.forEach((v) => obs.observe(v));
+  }
+</script>
