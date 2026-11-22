@@ -1,0 +1,43 @@
+---
+// Bloque debajo de la portada: los comerciales a la izquierda y los principales servicios apilados a la derecha.
+import Icon from './Icon.astro';
+import Videos from './Videos.astro';
+import { serviciosPopulares, servicios, urlServicio, type Servicio } from '../data/servicios';
+
+interface Props {
+  cuales?: string[]; // comerciales a mostrar; por defecto los dos
+  lista?: Servicio[]; // servicios de la columna derecha
+}
+const { cuales, lista = serviciosPopulares } = Astro.props;
+---
+<section class="section vys">
+  <div class="container vys-grid">
+    <Videos cuales={cuales} />
+    <nav class="principales" aria-label="Principales servicios">
+      {lista.map((s) => (
+        <a href={urlServicio(s.slug)}>
+          <span class="icono"><Icon name={s.icono} /></span>
+          <span class="txt"><strong>{s.titulo}</strong><small>{s.incluye[0]}</small></span>
+          <Icon name="flecha" />
+        </a>
+      ))}
+      <a class="todos" href="/servicios">Ver los {servicios.length} servicios<Icon name="flecha" /></a>
+    </nav>
+  </div>
+</section>
+
+<style>
+  .vys { padding-block: clamp(1.75rem, 4vw, 3rem); }
+  .vys-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(1.25rem, 3vw, 2.5rem); align-items: start; }
+  .principales { display: grid; gap: .6rem; }
+  .principales a { display: flex; align-items: center; gap: .85rem; padding: .85rem 1rem; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--white); color: var(--ink); text-decoration: none; transition: border-color .15s, transform .15s; }
+  .principales a:hover { border-color: var(--green-600); transform: translateX(3px); }
+  .icono { display: grid; place-items: center; flex: none; width: 42px; height: 42px; border-radius: 10px; background: var(--cream-2); color: var(--green-800); }
+  .icono :global(svg) { width: 24px; height: 24px; }
+  .txt { flex: 1; display: grid; gap: .1rem; min-width: 0; }
+  .txt strong { font-family: var(--display); font-size: 1rem; line-height: 1.25; }
+  .txt small { color: var(--muted); font-size: .85rem; }
+  .principales a > :global(svg:last-child) { width: 18px; height: 18px; color: var(--green-600); flex: none; }
+  .principales .todos { justify-content: center; border-style: dashed; font-family: var(--display); font-weight: 700; color: var(--green-600); }
+  @media (max-width: 860px) { .vys-grid { grid-template-columns: 1fr; } }
+</style>

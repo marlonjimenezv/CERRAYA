@@ -5,6 +5,7 @@ import Icon from '../../components/Icon.astro';
 import Faq from '../../components/Faq.astro';
 import FondoVivo from '../../components/FondoVivo.astro';
 import CtaFinal from '../../components/CtaFinal.astro';
+import Videos from '../../components/Videos.astro';
 import { empresa, tel, whatsapp } from '../../data/empresa';
 import { servicios, serviciosConPagina, urlServicio, type Servicio } from '../../data/servicios';
 import { detalleServicios } from '../../data/servicios-detalle';
@@ -88,22 +89,14 @@ const schema = [
   </section>
 
   <section class="section">
-    <div class="container grid grid-2 detalle">
+    <div class="container detalle">
       <div class="card">
         <span class="icon-badge"><Icon name={servicio.icono} /></span>
         <h2>Qué incluye</h2>
         <ul class="check-list">{servicio.incluye.map((x) => <li>{x}</li>)}</ul>
-      </div>
-      <div class="card">
-        <h2>Cómo funciona</h2>
-        <ol class="pasos">
-          <li><strong>Nos escribes o llamas</strong> y nos cuentas qué pasa.</li>
-          <li><strong>Te damos un valor estimado</strong> y el tiempo de llegada.</li>
-          <li><strong>Llega un cerrajero identificado</strong> con la herramienta para tu caso.</li>
-          <li><strong>Pagas al terminar</strong>, cuando todo quedó funcionando.</li>
-        </ol>
         <a class="btn btn-green btn-block" href={`/cotizar?producto=${encodeURIComponent(servicio.titulo)}`}>Pedir cotización<Icon name="flecha" /></a>
       </div>
+      <Videos cuales={[servicio.urgencia ? 'cerrajero-ya' : 'cobertura']} />
     </div>
   </section>
 
@@ -160,10 +153,10 @@ const schema = [
   .hero-points { list-style: none; padding: 0; margin: 1.5rem 0 0; display: flex; flex-wrap: wrap; gap: .6rem 1.5rem; font-size: .93rem; color: var(--cream); }
   .hero-points li { display: inline-flex; align-items: center; gap: .45rem; }
   .hero-points :global(svg) { width: 20px; height: 20px; color: var(--accent); }
-  .detalle { align-items: start; }
+  .detalle { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: clamp(1.25rem, 3vw, 2.5rem); align-items: start; }
+  .detalle .check-list { margin-bottom: 1.25rem; }
+  @media (max-width: 760px) { .detalle { grid-template-columns: 1fr; } .detalle :global(.videos) { max-width: 320px; } }
   .detalle h2 { font-size: 1.3rem; }
-  .pasos { margin: 0 0 1.25rem; padding-left: 1.2rem; display: grid; gap: .6rem; }
-  .pasos li::marker { font-family: var(--display); font-weight: 800; color: var(--green-600); }
   .enlaces a { text-decoration: none; color: var(--green-800); font-weight: 600; }
   .enlaces li:hover { border-color: var(--green-600); }
   .rel-h { margin-top: 3rem; font-size: 1.4rem; }

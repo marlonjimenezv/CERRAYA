@@ -1,0 +1,40 @@
+---
+// Los comerciales, solos: sin títulos ni textos. Se reproducen sin sonido cuando quedan a la vista
+// y se pausan al salir; con los controles se activa el sonido. No se descargan antes (preload="none").
+import { comerciales } from '../data/comerciales';
+
+interface Props {
+  cuales?: string[]; // ids a mostrar; por defecto los dos
+}
+const { cuales } = Astro.props;
+const lista = cuales ? comerciales.filter((c) => cuales.includes(c.id)) : comerciales;
+---
+<div class:list={['videos', { uno: lista.length === 1 }]}>
+  {lista.map((c) => (
+    <video src={c.video} poster={c.poster} muted loop playsinline controls preload="none" aria-label={c.titulo} data-auto></video>
+  ))}
+</div>
+
+<style>
+  .videos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(.75rem, 2vw, 1.25rem); }
+  .videos.uno { grid-template-columns: minmax(0, 1fr); }
+  video { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; border-radius: var(--radius); background: var(--green-900); box-shadow: var(--shadow); }
+</style>
+
+<script>
+  const videos = document.querySelectorAll<HTMLVideoElement>('video[data-auto]');
+  const quiereMovimiento = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (quiereMovimiento && 'IntersectionObserver' in window) {
+    const obs = new IntersectionObserver(
+      (entradas) => {
+        entradas.forEach((e) => {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting) v.play().catch(() => {});
+          else v.pause();
+        });
+      },
+      { threshold: 0.5 },
+    );
+    videos.forEach((v) => obs.observe(v));
+  }
+</script>

@@ -6,12 +6,12 @@ import FondoVivo from '../components/FondoVivo.astro';
 import Icon from '../components/Icon.astro';
 import ProductoCard from '../components/ProductoCard.astro';
 import Resenas from '../components/Resenas.astro';
-import Comerciales from '../components/Comerciales.astro';
+import VideosYServicios from '../components/VideosYServicios.astro';
 import { schemaComerciales } from '../data/comerciales';
 import Faq from '../components/Faq.astro';
 import CtaFinal from '../components/CtaFinal.astro';
 import { empresa, tel, whatsapp } from '../data/empresa';
-import { serviciosPopulares, servicios, serviciosVidrio, urlServicio } from '../data/servicios';
+import { serviciosVidrio } from '../data/servicios';
 import { sintomasVidrio } from '../data/puertas-vidrio';
 import { productos } from '../data/cerraduras';
 import { marcasCarro } from '../data/llaves';
@@ -94,6 +94,8 @@ const preguntas = [
     </div>
   </section>
 
+  <VideosYServicios />
+
   <section class="trust" aria-label="Por qué confiar en Cerraya">
     <div class="container trust-grid">
       <div><strong>+{empresa.experiencia} años</strong><span>de experiencia</span></div>
@@ -105,31 +107,6 @@ const preguntas = [
 
   <Resenas />
 
-  <Comerciales />
-
-  <section class="section">
-    <div class="container">
-      <div class="section-head split">
-        <div>
-          <span class="eyebrow">Lo que más nos piden</span>
-          <h2>¿En qué te ayudamos hoy?</h2>
-        </div>
-        <a href="/servicios" class="btn btn-outline">Ver los {servicios.length} servicios<Icon name="flecha" /></a>
-      </div>
-      <div class="grid grid-3">
-        {serviciosPopulares.map((s) => {
-          return (
-            <a class="card feature servicio" href={urlServicio(s.slug)}>
-              <span class="icon-badge"><Icon name={s.icono} /></span>
-              <h3>{s.titulo}</h3>
-              <p>{s.texto}</p>
-              <span class="servicio-link">Ver servicio<Icon name="flecha" /></span>
-            </a>
-          );
-        })}
-      </div>
-    </div>
-  </section>
 
   {promocionesActivas.length > 0 && (
     <section class="promos">

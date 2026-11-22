@@ -5,7 +5,7 @@ import Icon from '../components/Icon.astro';
 import Resenas from '../components/Resenas.astro';
 import Faq from '../components/Faq.astro';
 import CtaFinal from '../components/CtaFinal.astro';
-import Comerciales from '../components/Comerciales.astro';
+import Videos from '../components/Videos.astro';
 import { empresa, tel, whatsapp } from '../data/empresa';
 import { localidadesBogota } from '../data/localidades';
 import { serviciosUrgencia } from '../data/servicios';
@@ -77,17 +77,8 @@ const preguntas = [
   </section>
 
   <section class="section section-green">
-    <div class="container">
-      <div class="section-head">
-        <span class="eyebrow">Cómo funciona</span>
-        <h2>De la llamada a la puerta abierta</h2>
-      </div>
-      <ol class="steps">
-        <li><strong>Llamas o escribes</strong><span>Cuéntanos qué pasó y en qué barrio estás.</span></li>
-        <li><strong>Valor estimado y tiempo</strong><span>Te decimos cuánto cuesta más o menos y cuánto tardamos.</span></li>
-        <li><strong>Llega tu cerrajero</strong><span>Identificado y con herramienta profesional.</span></li>
-        <li><strong>Pagas al terminar</strong><span>Cuando todo quedó funcionando.</span></li>
-      </ol>
+    <div class="container videos-urg">
+      <Videos />
     </div>
   </section>
 
@@ -112,8 +103,6 @@ const preguntas = [
       <Faq preguntas={preguntas} />
     </div>
   </section>
-
-  <Comerciales cuales={['cerrajero-ya']} titulo="Cerrajero YA, en toda Bogotá" />
 
   <CtaFinal />
 </Base>
@@ -147,4 +136,5 @@ const preguntas = [
   .urg-link { margin-top: auto; padding-top: 1rem; display: inline-flex; align-items: center; gap: .4rem; font-family: var(--display); font-weight: 700; font-size: .9rem; color: var(--green-600); }
   .urg-link :global(svg) { width: 18px; height: 18px; }
   @media (max-width: 960px) { .hero-urg-grid { grid-template-columns: 1fr; } }
+  .videos-urg { max-width: 720px; }
 </style>
