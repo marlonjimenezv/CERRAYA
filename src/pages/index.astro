@@ -18,6 +18,7 @@ import { marcasCarro } from '../data/llaves';
 import { promocionesActivas } from '../data/promociones';
 import { fotoTipo } from '../data/fotos';
 import { negocioLocal, sitioWeb } from '../data/schema';
+import personaje from '../assets/personaje/cerrajero-guino.png';
 
 const fotoLlave = fotoTipo('llave-carro');
 const fotoVidrio = fotoTipo('puerta-vidrio');
@@ -64,6 +65,9 @@ const preguntas = [
           <li><Icon name="precio" />Sin sorpresas en el precio</li>
           <li><Icon name="garantia" />Garantía en cada trabajo</li>
         </ul>
+        <div class="personaje" aria-hidden="true">
+          <Image src={personaje} alt="" widths={[240, 400, 560]} sizes="(max-width: 960px) 200px, 260px" loading="eager" />
+        </div>
       </div>
 
       <div class="paths" aria-label="¿Qué necesitas?">
@@ -278,6 +282,30 @@ const preguntas = [
   .hero-points :global(svg) { width: 20px; height: 20px; color: var(--accent); }
 
   .paths { display: grid; gap: 1rem; }
+
+  /* Personaje: en computador, de pie abajo a la derecha del texto, sobre un círculo amarillo y cortado por el borde de la portada.
+     En celular, avatar redondo junto al título. */
+  .hero-copy { position: relative; }
+  .personaje { position: absolute; z-index: 0; }
+  .personaje::before { content: ''; position: absolute; border-radius: 50%; background: radial-gradient(circle at 50% 35%, #f7c35c, #f2b33d 58%, #d9982a); }
+  .personaje :global(img) { position: relative; display: block; height: auto; }
+  .hero-copy > :not(.personaje) { position: relative; z-index: 1; }
+  @media (min-width: 961px) {
+    .hero-grid { align-items: stretch; }
+    .hero-grid > .paths { align-self: center; }
+    .hero-copy { display: flex; flex-direction: column; justify-content: center; }
+    .hero-copy .lead, .hero-points { max-width: calc(100% - var(--ancho-personaje) - 1rem); }
+    .hero-copy { --ancho-personaje: clamp(190px, 17vw, 250px); }
+    .personaje { right: 0; bottom: calc(-1 * clamp(2.5rem, 7vw, 5rem)); width: var(--ancho-personaje); }
+    .personaje::before { left: 4%; right: 4%; bottom: 0; aspect-ratio: 1; box-shadow: 0 0 0 10px rgba(242, 179, 61, .14); }
+    .personaje :global(img) { width: 100%; filter: drop-shadow(0 14px 22px rgba(0, 0, 0, .35)); }
+  }
+  @media (max-width: 960px) {
+    .hero-copy h1 { padding-right: 112px; }
+    .personaje { top: 2.6rem; right: 0; width: 100px; height: 100px; border-radius: 50%; overflow: hidden; border: 3px solid #f2b33d; box-shadow: 0 10px 24px -10px rgba(0, 0, 0, .5); }
+    .personaje::before { inset: 0; border-radius: 0; }
+    .personaje :global(img) { width: 190px; max-width: none; margin: 2px 0 0 -46px; }
+  }
   .path { background: rgba(247, 245, 232, .06); border: 1px solid rgba(247, 245, 232, .16); border-radius: var(--radius); padding: 1.5rem; display: grid; gap: 1.2rem; }
   .path-urgent { background: rgba(242, 179, 61, .08); border-color: rgba(242, 179, 61, .55); }
   .path-head { display: flex; gap: 1rem; align-items: flex-start; }
