@@ -26,4 +26,4 @@ Una llave que se parte casi siempre avisa: estaba torcida, gastada o había que 
 
 ---
 
-¿Se te partió la llave ahora? [Llámanos](/servicios/llave-partida): salimos de inmediato y te hacemos la copia en el momento.
+¿Se te partió la llave ahora? [Llámanos](/servicios/llave-partida): salimos de inmediato y te hacemos la copia.

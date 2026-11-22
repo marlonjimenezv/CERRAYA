@@ -21,7 +21,7 @@ export const detalleServicios: Record<string, DetalleServicio> = {
     intro: 'Cambiamos el cilindro de tu cerradura y te entregamos llaves nuevas para que nadie más pueda entrar. Es lo primero que recomendamos al mudarte, perder las llaves o después de un intento de robo. Trabajamos cilindros de puntos y multipunto, mucho más difíciles de copiar.',
     faq: [
       { p: '¿Hay que cambiar toda la cerradura?', r: 'Casi nunca. En la mayoría de casos basta con el cilindro. Si la cerradura está vieja o es de baja seguridad, te recomendamos cambiarla completa.' },
-      { p: '¿Cuánto se demora?', r: 'Un cambio de guardas suele tomar menos de una hora en sitio.' },
+      { p: '¿Cuánto se demora?', r: 'Depende de la cerradura y del cilindro. Te lo decimos antes de empezar.' },
     ],
   },
   'reparacion-puertas-de-vidrio': {
@@ -172,7 +172,7 @@ export const detalleServicios: Record<string, DetalleServicio> = {
   },
   'llave-partida': {
     tituloSeo: 'Llave partida o atascada en la chapa, Bogotá',
-    intro: 'Extraemos la llave partida del cilindro sin dañarlo y te hacemos una copia nueva en el momento. Atendemos llaves partidas en puertas, candados y vehículos.',
+    intro: 'Extraemos la llave partida del cilindro sin dañarlo y te hacemos una copia nueva. Atendemos llaves partidas en puertas, candados y vehículos.',
     faq: [
       { p: '¿Hay que cambiar la cerradura si se partió la llave adentro?', r: 'Normalmente no. Sacamos el pedazo y la cerradura sigue funcionando.' },
       { p: '¿Puedo sacarla yo?', r: 'Es mejor no intentarlo con pinzas o pegante: suele empujar el pedazo más adentro y dañar el cilindro.' },
@@ -188,7 +188,7 @@ export const detalleServicios: Record<string, DetalleServicio> = {
   },
   'robo-o-forzamiento': {
     tituloSeo: 'Cerrajero después de un robo en Bogotá',
-    intro: 'Si forzaron tu puerta o te robaron las llaves, salimos de inmediato a cambiar las guardas, reparar el marco y la chapa, y reforzar la puerta con un cerrojo de seguridad para que esa misma noche duermas tranquilo.',
+    intro: 'Si forzaron tu puerta o te robaron las llaves, salimos de inmediato a cambiar las guardas, reparar el marco y la chapa, y reforzar la puerta con un cerrojo de seguridad para que duermas tranquilo.',
     faq: [
       { p: '¿Qué hago primero después de un robo?', r: 'Llama a la Policía (123) y no toques la cerradura forzada hasta que se haga el registro. Después llámanos para asegurar la puerta.' },
       { p: '¿Pueden reforzar la puerta?', r: 'Sí, con cerrojos antitaladro, escudos de cilindro y cerraduras multipunto.' },
