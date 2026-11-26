@@ -13,14 +13,15 @@ export const fotoProducto = (id: string) => buscar(productos, id);
 export const fotoTipo = (slug: string) => buscar(tipos, slug);
 
 // Foto de referencia para la página de cada servicio (/servicios/<slug>).
+// Los servicios usan sus propias fotos (ref-*): las fotos reales del local son solo para la tienda de cerraduras.
 const fotoPorServicio: Record<string, string> = {
-  'apertura-de-puertas': 'sobreponer',
-  'cambio-de-guardas': 'cerrojos',
+  'apertura-de-puertas': 'ref-sobreponer',
+  'cambio-de-guardas': 'ref-cerrojos',
   'reparacion-puertas-de-vidrio': 'puerta-vidrio',
-  'duplicado-de-llaves': 'cerrojos',
-  'instalacion-de-cerraduras': 'embutir',
+  'duplicado-de-llaves': 'ref-cerrojos',
+  'instalacion-de-cerraduras': 'ref-embutir',
   'cerraduras-digitales': 'digitales',
-  'reparacion-de-cerraduras': 'manija-y-pomo',
+  'reparacion-de-cerraduras': 'ref-manija-y-pomo',
   'bisagras-hidraulicas': 'puerta-vidrio-lobby',
   'cerraduras-puertas-de-vidrio': 'herraje-vidrio',
   'apertura-puertas-de-vidrio': 'puerta-vidrio-local',
@@ -32,15 +33,21 @@ const fotoPorServicio: Record<string, string> = {
   'mantenimiento-puertas-de-vidrio': 'puerta-vidrio-oficina',
   'instalacion-puertas-de-vidrio': 'puerta-vidrio',
   'divisiones-de-bano': 'puerta-vidrio',
-  'llave-partida': 'sobreponer',
+  'llave-partida': 'ref-sobreponer',
   'apertura-de-vehiculos': 'llave-entrega',
-  'robo-o-forzamiento': 'cerrojos',
-  'cerrojos-de-seguridad': 'cerrojos',
+  'robo-o-forzamiento': 'ref-cerrojos',
+  'cerrojos-de-seguridad': 'ref-cerrojos',
   'cajas-fuertes': 'cajas-fuertes',
   'cerraduras-electricas': 'electricas',
-  'llave-maestra': 'cerrojos',
-  'candados-y-rejas': 'candados',
+  'llave-maestra': 'ref-cerrojos',
+  'candados-y-rejas': 'ref-candados',
   'muebles-y-buzones': 'muebles',
+  'instalacion-de-camaras-de-seguridad': 'camaras',
+  'camaras-wifi': 'camara-pared',
+  'camaras-para-negocios-y-conjuntos': 'camara-exterior',
+  'videoporteros-y-timbres-con-camara': 'videoportero',
+  'alarmas-y-sensores': 'alarma',
+  'revision-de-camaras': 'camara-exterior',
 };
 export const fotoServicio = (slug: string) => (fotoPorServicio[slug] ? fotoTipo(fotoPorServicio[slug]) : undefined);
 

@@ -3,7 +3,7 @@ titulo: "Llave maestra para conjuntos y edificios: cómo funciona"
 descripcion: Qué es un sistema de llave maestra, quién debe tener cada llave y cómo controlar las copias en un conjunto residencial, un edificio o una oficina.
 fecha: 2026-10-29
 categoria: Guías
-imagen: ../../assets/cerraduras/tipos/cerrojos.jpg
+imagen: ../../assets/cerraduras/tipos/ref-cerrojos.jpg
 ---
 
 En un conjunto o un edificio hay decenas de puertas: cuartos técnicos, depósitos, salón comunal, gimnasio, shut de basuras. Cargar una llave para cada una es imposible, y dejarlas todas con la misma llave es peligroso. Para eso existe el sistema de llave maestra, también llamado amaestramiento.

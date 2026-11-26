@@ -3,7 +3,7 @@ titulo: 5 señales de que debes cambiar las guardas de tu puerta
 descripcion: Mudanzas, llaves perdidas o un intento de robo. Cuándo conviene cambiar el cilindro y por qué no basta con "estar pendiente".
 fecha: 2026-10-24
 categoria: Seguridad
-imagen: ../../assets/cerraduras/tipos/cerrojos.jpg
+imagen: ../../assets/cerraduras/tipos/ref-cerrojos.jpg
 ---
 
 Cambiar las guardas (el cilindro donde entra la llave) es de los trabajos más rápidos y económicos de la cerrajería, y de los que más tranquilidad dan. Estas son las situaciones en las que lo recomendamos sin dudar.

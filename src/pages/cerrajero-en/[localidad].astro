@@ -8,6 +8,7 @@ import VideosYServicios from '../../components/VideosYServicios.astro';
 import { empresa, tel, whatsapp } from '../../data/empresa';
 import { serviciosVidrio, urlServicio } from '../../data/servicios';
 import { localidadesBogota, type Localidad } from '../../data/localidades';
+import { zonaDeLocalidad, urlZona } from '../../data/zonas';
 import { negocioLocal, migas } from '../../data/schema';
 
 export function getStaticPaths() {
@@ -15,6 +16,7 @@ export function getStaticPaths() {
 }
 
 const { localidad: l, i } = Astro.props as { localidad: Localidad; i: number };
+const zona = zonaDeLocalidad(l.slug);
 const barrios = l.barrios.slice(0, -1).join(', ') + ' y ' + l.barrios[l.barrios.length - 1];
 const vecinas = [-2, -1, 1, 2].map((d) => localidadesBogota[(i + d + localidadesBogota.length) % localidadesBogota.length]);
 const url = `${empresa.sitio}/cerrajero-en/${l.slug}`;
@@ -118,7 +120,10 @@ const schema = [
   <section class="section section-tight">
     <div class="container">
       <h2 class="vec-h">También atendemos cerca de {l.nombre}</h2>
-      <ul class="chips enlaces">{vecinas.map((v) => <li><a href={`/cerrajero-en/${v.slug}`}>Cerrajero en {v.nombre}</a></li>)}</ul>
+      <ul class="chips enlaces">
+        {zona && <li><a href={urlZona(zona)}>Cerrajero en el {zona.nombre} de Bogotá</a></li>}
+        {vecinas.map((v) => <li><a href={`/cerrajero-en/${v.slug}`}>Cerrajero en {v.nombre}</a></li>)}
+      </ul>
     </div>
   </section>
 

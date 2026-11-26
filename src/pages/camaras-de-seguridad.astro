@@ -1,0 +1,172 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Faq from '../components/Faq.astro';
+import FondoVivo from '../components/FondoVivo.astro';
+import CtaFinal from '../components/CtaFinal.astro';
+import { empresa, tel, whatsapp } from '../data/empresa';
+import { serviciosCamaras, urlServicio } from '../data/servicios';
+import { localidadesBogota } from '../data/localidades';
+import { fotoTipo } from '../data/fotos';
+import { negocioLocal, migas } from '../data/schema';
+
+const url = `${empresa.sitio}/camaras-de-seguridad`;
+const mensaje = 'Hola Cerraya, quiero cotizar cámaras de seguridad';
+const fotoHero = fotoTipo('camaras');
+const fotoA = fotoTipo('videoportero');
+const fotoB = fotoTipo('camara-exterior');
+
+const lugares = [
+  { titulo: 'Casas y apartamentos', texto: 'Entrada, sala, patio y parqueadero. Ves todo desde el celular y te llega una alerta si hay movimiento.' },
+  { titulo: 'Locales y oficinas', texto: 'Caja, vitrina, bodega y puerta. Grabación continua para revisar lo que pasó cuando no estabas.' },
+  { titulo: 'Conjuntos y edificios', texto: 'Porterías, parqueaderos, ascensores y zonas comunes, con monitor en la portería y acceso para la administración.' },
+  { titulo: 'Bodegas y empresas', texto: 'Sistemas de varias cámaras con grabador, junto con control de acceso y cerraduras de alta seguridad.' },
+];
+
+const preguntas = [
+  { p: '¿Cuánto cuesta instalar cámaras de seguridad?', r: 'Depende de cuántas cámaras necesitas, si son WiFi o con grabador y de cuánto cableado hace falta. Mándanos fotos del lugar por WhatsApp y te damos un valor estimado; si prefieres, vamos a cotizar en sitio.' },
+  { p: '¿Puedo ver las cámaras desde el celular?', r: 'Sí. Te dejamos la aplicación configurada en tu celular y en el de quien tú digas, con alertas y acceso a las grabaciones.' },
+  { p: '¿Instalan cámaras que yo ya compré?', r: 'Sí. Revisamos que el equipo sirva para lo que necesitas y lo instalamos y configuramos.' },
+  { p: '¿Por qué con un cerrajero?', r: 'Porque la seguridad de una puerta es la cerradura, el acceso y lo que se ve. Con un solo técnico dejas cámaras, cerraduras, videoportero y control de acceso funcionando juntos.' },
+  { p: '¿En qué zonas atienden?', r: `En las ${localidadesBogota.length} localidades de Bogotá.` },
+];
+
+const schema = [
+  negocioLocal(),
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: 'Instalación de cámaras de seguridad en Bogotá',
+    serviceType: 'Cámaras de seguridad, videoporteros y alarmas',
+    provider: { '@id': `${empresa.sitio}/#negocio` },
+    areaServed: { '@type': 'City', name: 'Bogotá' },
+    url,
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Cámaras y seguridad',
+      itemListElement: serviciosCamaras.map((s) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: s.titulo, url: `${empresa.sitio}${urlServicio(s.slug)}` },
+      })),
+    },
+  },
+  migas([
+    { nombre: 'Inicio', url: empresa.sitio },
+    { nombre: 'Cámaras de seguridad', url },
+  ]),
+];
+---
+<Base
+  title="Instalación de cámaras de seguridad en Bogotá: WiFi, videoporteros y alarmas | Cerraya"
+  description="Instalamos cámaras de seguridad en Bogotá para casas, apartamentos, locales, conjuntos y empresas: cámaras WiFi, sistemas con grabador, videoporteros y alarmas, configurados en tu celular."
+  schema={schema}
+>
+  <section class="hero-cam con-fondo">
+    <FondoVivo />
+    <div class="container hero-grid">
+      <div>
+        <nav class="migas" aria-label="Ruta"><a href="/">Inicio</a><span>/</span><span aria-current="page">Cámaras de seguridad</span></nav>
+        <h1>Cámaras de seguridad en <span>Bogotá</span></h1>
+        <p class="lead">Instalamos cámaras WiFi, sistemas con grabador, videoporteros y alarmas, y te dejamos todo funcionando en tu celular. Junto con tus cerraduras, con un solo técnico.</p>
+        <div class="actions">
+          <a href={whatsapp(mensaje)} target="_blank" rel="noopener" class="btn btn-wa btn-lg"><Icon name="whatsapp" />Cotizar por WhatsApp</a>
+          <a href={tel} class="btn btn-accent btn-lg"><Icon name="telefono" />Llamar · {empresa.telefonoVisible}</a>
+        </div>
+        <ul class="hero-points">
+          <li><Icon name="camara" />Casas, locales y conjuntos</li>
+          <li><Icon name="telefono" />Ves todo desde el celular</li>
+          <li><Icon name="garantia" />Garantía en la instalación</li>
+        </ul>
+      </div>
+      {fotoHero && (
+        <figure class="hero-foto">
+          <Image src={fotoHero} alt="Cámaras de seguridad instaladas en la esquina de un edificio" widths={[480, 800]} sizes="(max-width: 960px) 100vw, 40vw" loading="eager" />
+        </figure>
+      )}
+    </div>
+  </section>
+
+  <section class="section section-cream">
+    <div class="container">
+      <div class="grid grid-3">
+        {serviciosCamaras.map((s) => (
+          <a class="card feature serv" href={urlServicio(s.slug)}>
+            <span class="icon-badge"><Icon name={s.icono} /></span>
+            <h2>{s.titulo}</h2>
+            <p>{s.texto}</p>
+            <span class="ver">Ver servicio<Icon name="flecha" /></span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid-2 lugares">
+      <div>
+        <h2>Para cada lugar, las cámaras que sirven</h2>
+        <ul class="lista-lugares">
+          {lugares.map((l) => <li><strong>{l.titulo}</strong><span>{l.texto}</span></li>)}
+        </ul>
+      </div>
+      <div class="fotos-lado">
+        {fotoA && <Image src={fotoA} alt="Timbre con cámara instalado junto a una puerta" widths={[400, 700]} sizes="(max-width: 960px) 50vw, 25vw" />}
+        {fotoB && <Image src={fotoB} alt="Cámara de seguridad exterior en una pared de ladrillo" widths={[400, 700]} sizes="(max-width: 960px) 50vw, 25vw" />}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-green">
+    <div class="container empresas">
+      <div>
+        <h2>Conjuntos, edificios y empresas</h2>
+        <p class="lead">Visitamos, marcamos los puntos de cada cámara y te entregamos una propuesta clara. Lo puedes sumar a tu plan de mantenimiento de cerraduras y puertas de vidrio.</p>
+      </div>
+      <div class="actions">
+        <a class="btn btn-accent btn-lg" href={whatsapp('Hola Cerraya, quiero una visita para cotizar cámaras en mi conjunto/empresa')} target="_blank" rel="noopener"><Icon name="whatsapp" />Pedir visita</a>
+        <a class="btn btn-ghost btn-lg" href="/mantenimiento">Planes de mantenimiento<Icon name="flecha" /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-cream">
+    <div class="narrow">
+      <h2>Preguntas frecuentes</h2>
+      <Faq preguntas={preguntas} />
+    </div>
+  </section>
+
+  <CtaFinal titulo="¿Quieres poner cámaras?" texto="Mándanos fotos del lugar por WhatsApp y te decimos cuántas cámaras necesitas y cuánto cuesta." />
+</Base>
+
+<style>
+  .hero-cam { background: linear-gradient(180deg, var(--green-800), var(--green-900)); color: var(--on-green); padding: 2rem 0 clamp(2.5rem, 6vw, 4rem); }
+  .hero-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+  .hero-cam h1 { color: var(--cream); }
+  .hero-cam h1 span { color: var(--accent); }
+  .hero-cam .lead { color: var(--on-green-muted); max-width: 58ch; }
+  .hero-cam .actions { margin-top: 1.5rem; }
+  .hero-foto { margin: 0; }
+  .hero-foto :global(img) { width: 100%; height: auto; aspect-ratio: 4 / 5; max-height: 520px; object-fit: cover; border-radius: var(--radius); box-shadow: var(--shadow); }
+  .migas { display: flex; flex-wrap: wrap; gap: .5rem; font-size: .88rem; color: var(--on-green-muted); margin-bottom: 1.25rem; }
+  .migas a { color: var(--cream); }
+  .hero-points { list-style: none; padding: 0; margin: 1.5rem 0 0; display: flex; flex-wrap: wrap; gap: .6rem 1.5rem; font-size: .93rem; color: var(--cream); }
+  .hero-points li { display: inline-flex; align-items: center; gap: .45rem; }
+  .hero-points :global(svg) { width: 20px; height: 20px; color: var(--accent); }
+  .serv { text-decoration: none; display: flex; flex-direction: column; transition: border-color .18s, transform .18s; }
+  .serv:hover { border-color: var(--green-600); transform: translateY(-2px); }
+  .serv h2 { font-size: 1.2rem; margin: 0 0 .4rem; max-width: none; }
+  .serv p { color: var(--muted); }
+  .ver { margin-top: auto; padding-top: 1rem; display: inline-flex; align-items: center; gap: .35rem; font-family: var(--display); font-weight: 700; font-size: .9rem; color: var(--green-600); }
+  .ver :global(svg) { width: 18px; height: 18px; }
+  .lugares { align-items: center; gap: 2.5rem; }
+  .lista-lugares { list-style: none; padding: 0; margin: 1.25rem 0 0; display: grid; gap: 1rem; }
+  .lista-lugares li { display: grid; gap: .15rem; padding-left: 1rem; border-left: 3px solid var(--accent); }
+  .lista-lugares span { color: var(--muted); font-size: .95rem; }
+  .fotos-lado { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .fotos-lado :global(img) { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; border-radius: var(--radius); }
+  .empresas { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .empresas h2 { color: var(--cream); }
+  @media (max-width: 960px) { .hero-grid { grid-template-columns: 1fr; } .hero-foto :global(img) { aspect-ratio: 16 / 10; } }
+</style>

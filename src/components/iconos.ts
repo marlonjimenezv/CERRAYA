@@ -31,6 +31,10 @@ export const iconos = {
   lista: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9zM9 11h6M9 15h4"/>',
   mas: '<path d="M12 5v14M5 12h14"/>',
   basura: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+  lupa: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
+  camara: '<path d="M3 7.5l12-3.2 1.9 7-12 3.2z"/><path d="M16.9 11.3l3.6-1.3.9 3.2-3.8.6"/><path d="M8.5 13.6l1 3.4H4.5M4.5 14.5V21"/><circle cx="7" cy="9.3" r=".6"/>',
+  alarma: '<path d="M6 17V11a6 6 0 0 1 12 0v6"/><path d="M4 17h16M10 20h4M12 2v2M4.2 5.2l1.4 1.4M19.8 5.2l-1.4 1.4"/>',
+  timbre: '<rect x="7" y="3" width="10" height="18" rx="3"/><circle cx="12" cy="8" r="1.6"/><circle cx="12" cy="15" r="2.2"/>',
 };
 
 export type NombreIcono = keyof typeof iconos;

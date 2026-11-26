@@ -9,7 +9,7 @@ export type Servicio = {
   incluye: string[];
   icono: NombreIcono;
   urgencia: boolean; // se atiende como urgencia 24/7
-  grupo: 'Hogar' | 'Puertas de vidrio' | 'Vehículos' | 'Seguridad' | 'Conjuntos y empresas';
+  grupo: 'Hogar' | 'Puertas de vidrio' | 'Vehículos' | 'Seguridad' | 'Cámaras de seguridad' | 'Conjuntos y empresas';
 };
 
 export const servicios: Servicio[] = [
@@ -21,6 +21,15 @@ export const servicios: Servicio[] = [
     icono: 'puerta',
     urgencia: true,
     grupo: 'Hogar',
+  },
+  {
+    slug: 'apertura-de-vehiculos',
+    titulo: 'Apertura de vehículos',
+    texto: 'Dejaste las llaves adentro del carro: hacemos la apertura sin dañar la puerta ni la chapa.',
+    incluye: ['Carros y camionetas', 'Apertura de baúl', 'Motos'],
+    icono: 'carro',
+    urgencia: true,
+    grupo: 'Vehículos',
   },
   {
     slug: 'cambio-de-guardas',
@@ -204,15 +213,6 @@ export const servicios: Servicio[] = [
     grupo: 'Hogar',
   },
   {
-    slug: 'apertura-de-vehiculos',
-    titulo: 'Apertura de vehículos',
-    texto: 'Dejaste las llaves adentro del carro: hacemos la apertura sin dañar la puerta ni la chapa.',
-    incluye: ['Carros y camionetas', 'Apertura de baúl', 'Motos'],
-    icono: 'carro',
-    urgencia: true,
-    grupo: 'Vehículos',
-  },
-  {
     slug: 'robo-o-forzamiento',
     titulo: 'Después de un robo',
     texto: 'Si forzaron tu puerta, salimos de inmediato a cambiar las guardas y reforzar la cerradura.',
@@ -275,12 +275,67 @@ export const servicios: Servicio[] = [
     urgencia: false,
     grupo: 'Conjuntos y empresas',
   },
+  {
+    slug: 'instalacion-de-camaras-de-seguridad',
+    titulo: 'Instalación de cámaras de seguridad',
+    texto: 'Instalamos cámaras en casas, apartamentos, locales, oficinas y conjuntos, y te dejamos todo listo para verlas desde el celular.',
+    incluye: ['Cámaras WiFi y kits con grabador', 'Visión nocturna y audio', 'Configuración en tu celular'],
+    icono: 'camara',
+    urgencia: false,
+    grupo: 'Cámaras de seguridad',
+  },
+  {
+    slug: 'camaras-wifi',
+    titulo: 'Cámaras WiFi para casa y negocio',
+    texto: 'Cámaras inalámbricas para vigilar la entrada, la sala o el negocio desde el celular, con alertas cuando detectan movimiento.',
+    incluye: ['Interior y exterior', 'Alertas de movimiento', 'Grabación en tarjeta o en la nube'],
+    icono: 'camara',
+    urgencia: false,
+    grupo: 'Cámaras de seguridad',
+  },
+  {
+    slug: 'camaras-para-negocios-y-conjuntos',
+    titulo: 'Cámaras para negocios y conjuntos',
+    texto: 'Sistemas de varias cámaras con grabador (DVR o NVR) para locales, bodegas, porterías, parqueaderos y zonas comunes.',
+    incluye: ['De 4 a 32 cámaras', 'Grabación continua', 'Monitor en portería'],
+    icono: 'edificio',
+    urgencia: false,
+    grupo: 'Cámaras de seguridad',
+  },
+  {
+    slug: 'videoporteros-y-timbres-con-camara',
+    titulo: 'Videoporteros y timbres con cámara',
+    texto: 'Ves y hablas con quien toca antes de abrir. Se conectan a la cerradura eléctrica para abrir desde adentro o desde el celular.',
+    incluye: ['Videoporteros para casa y local', 'Timbres inteligentes WiFi', 'Conexión con cerradura eléctrica'],
+    icono: 'timbre',
+    urgencia: false,
+    grupo: 'Cámaras de seguridad',
+  },
+  {
+    slug: 'alarmas-y-sensores',
+    titulo: 'Alarmas y sensores',
+    texto: 'Alarmas para casa y negocio con sensores de puerta, ventana y movimiento que te avisan al celular.',
+    incluye: ['Sensores de puerta y ventana', 'Sirena y aviso al celular', 'Kits WiFi fáciles de usar'],
+    icono: 'alarma',
+    urgencia: false,
+    grupo: 'Cámaras de seguridad',
+  },
+  {
+    slug: 'revision-de-camaras',
+    titulo: 'Revisión y reubicación de cámaras',
+    texto: 'Revisamos cámaras que no graban, perdieron la señal o quedaron mal ubicadas, y las configuramos de nuevo en tu celular.',
+    incluye: ['Cámaras sin imagen o sin grabar', 'Cambio de disco o tarjeta', 'Nueva configuración en el celular'],
+    icono: 'herramienta',
+    urgencia: false,
+    grupo: 'Cámaras de seguridad',
+  },
 ];
 
 export const serviciosPopulares = servicios.slice(0, 6);
 export const serviciosVidrio = servicios.filter((s) => s.grupo === 'Puertas de vidrio');
 export const serviciosUrgencia = servicios.filter((s) => s.urgencia);
-export const gruposServicio = ['Hogar', 'Puertas de vidrio', 'Vehículos', 'Seguridad', 'Conjuntos y empresas'] as const;
+export const gruposServicio = ['Hogar', 'Puertas de vidrio', 'Vehículos', 'Seguridad', 'Cámaras de seguridad', 'Conjuntos y empresas'] as const;
+export const serviciosCamaras = servicios.filter((s) => s.grupo === 'Cámaras de seguridad');
 
 // Página de cada servicio. Llaves de carro y mantenimiento ya tienen su página propia.
 const paginasPropias: Record<string, string> = { 'llaves-de-carro': '/llaves-de-carro', mantenimiento: '/mantenimiento' };

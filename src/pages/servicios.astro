@@ -13,6 +13,11 @@ import { servicios, gruposServicio, urlServicio } from '../data/servicios';
     <div class="container">
       <span class="eyebrow">Servicios</span>
       <h1>Todos nuestros servicios de cerrajería</h1>
+      <label class="buscador">
+        <Icon name="lupa" />
+        <span class="sr-only">Buscar un servicio</span>
+        <input type="search" id="buscar" placeholder="Busca: carro, vidrio, llave, cámaras…" autocomplete="off" enterkeyhint="search" />
+      </label>
       <p class="lead">{servicios.length} servicios para tu casa, tu carro, tu conjunto o tu empresa. Los más pedidos van primero.</p>
       <div class="filtro" role="group" aria-label="Filtrar servicios">
         <button type="button" class="chip activo" data-grupo="">Todos</button>
@@ -25,7 +30,7 @@ import { servicios, gruposServicio, urlServicio } from '../data/servicios';
   <section class="section section-tight">
     <div class="container grid grid-3" id="lista">
       {servicios.map((s, i) => (
-        <article class="card servicio" id={s.slug} data-grupo={s.grupo} data-urgencia={String(s.urgencia)}>
+        <article class="card servicio" id={s.slug} data-grupo={s.grupo} data-urgencia={String(s.urgencia)} data-buscar={[s.titulo, s.texto, s.grupo, s.slug.replace(/-/g, ' '), ...s.incluye].join(' ')}>
           <div class="servicio-top">
             <span class="icon-badge"><Icon name={s.icono} /></span>
             {i < 6 && <span class="tag">Más pedido</span>}
@@ -41,6 +46,10 @@ import { servicios, gruposServicio, urlServicio } from '../data/servicios';
         </article>
       ))}
     </div>
+    <div class="container sin-resultados" id="sinResultados" hidden>
+      <p>No encontramos ese servicio en la lista, pero casi siempre tenemos la solución.</p>
+      <a class="btn btn-wa" id="sinResultadosWa" href={whatsapp('Hola Cerraya, necesito ayuda con algo')} target="_blank" rel="noopener"><Icon name="whatsapp" />Preguntar por WhatsApp</a>
+    </div>
   </section>
 
   <CtaFinal titulo="¿No encuentras lo que necesitas?" texto="Escríbenos y cuéntanos qué pasa: casi siempre tenemos la solución." />
@@ -49,20 +58,50 @@ import { servicios, gruposServicio, urlServicio } from '../data/servicios';
 <script>
   const chips = document.querySelectorAll<HTMLButtonElement>('.filtro .chip');
   const tarjetas = document.querySelectorAll<HTMLElement>('.servicio');
+  const buscar = document.querySelector<HTMLInputElement>('#buscar')!;
+  const sinResultados = document.querySelector<HTMLElement>('#sinResultados')!;
+  const sinResultadosWa = document.querySelector<HTMLAnchorElement>('#sinResultadosWa')!;
+  const limpiar = (t: string) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  // Palabras que la gente escribe y que no siempre están en el texto del servicio.
+  const sinonimos: Record<string, string> = { auto: 'carro', vehiculo: 'carro', moto: 'carro', camara: 'camaras', chapa: 'cerradura', guarda: 'guardas', copia: 'duplicado', copias: 'duplicado', abrir: 'apertura', encerrado: 'apertura', vidrios: 'vidrio' };
+  const textos = new Map([...tarjetas].map((t) => [t, limpiar(t.dataset.buscar ?? '')]));
+  let grupo = '';
+
+  function filtrar() {
+    const palabras = limpiar(buscar.value).split(/\s+/).filter(Boolean).map((p) => sinonimos[p] ?? p);
+    let visibles = 0;
+    tarjetas.forEach((t) => {
+      const enGrupo = !grupo || (grupo === 'urgencia' ? t.dataset.urgencia === 'true' : t.dataset.grupo === grupo);
+      const texto = textos.get(t)!;
+      const coincide = palabras.every((p) => texto.includes(p) || (p.length > 4 && texto.includes(p.slice(0, -1))));
+      t.hidden = !(enGrupo && coincide);
+      if (!t.hidden) visibles++;
+    });
+    sinResultados.hidden = visibles > 0;
+    if (!visibles) sinResultadosWa.href = `https://wa.me/${sinResultadosWa.href.split('wa.me/')[1].split('?')[0]}?text=${encodeURIComponent(`Hola Cerraya, necesito: ${buscar.value}`)}`;
+  }
+
   chips.forEach((c) =>
     c.addEventListener('click', () => {
       chips.forEach((x) => x.classList.toggle('activo', x === c));
-      const g = c.dataset.grupo;
-      tarjetas.forEach((t) => {
-        t.hidden = !!g && (g === 'urgencia' ? t.dataset.urgencia !== 'true' : t.dataset.grupo !== g);
-      });
+      grupo = c.dataset.grupo ?? '';
+      filtrar();
     }),
   );
+  buscar.addEventListener('input', filtrar);
 </script>
 
 <style>
   .hero-serv { background: var(--cream); padding: clamp(2.5rem, 6vw, 4rem) 0 2rem; }
-  .filtro { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.5rem; }
+  .hero-serv .lead { margin: 1rem 0 0; font-size: 1rem; }
+  .buscador { display: flex; align-items: center; gap: .6rem; max-width: 620px; margin-top: .5rem; padding: 0 1.1rem; border: 2px solid var(--green-800); border-radius: 999px; background: var(--white); box-shadow: var(--shadow-sm); }
+  .buscador:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(242, 179, 61, .3); }
+  .buscador :global(svg) { width: 22px; height: 22px; flex: none; color: var(--green-800); }
+  .buscador input { flex: 1; min-width: 0; height: 56px; border: 0; outline: 0; background: transparent; font: inherit; font-size: 1.05rem; color: var(--ink); }
+  .sin-resultados { display: grid; justify-items: start; gap: .75rem; padding-block: 1rem 0; }
+  .sin-resultados[hidden] { display: none; }
+  .sin-resultados p { margin: 0; color: var(--muted); }
+  .filtro { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1rem; }
   .filtro .chip { cursor: pointer; font: inherit; font-size: .9rem; font-weight: 600; }
   .filtro .chip.activo { background: var(--green-800); border-color: var(--green-800); color: var(--cream); }
   .servicio { display: flex; flex-direction: column; }

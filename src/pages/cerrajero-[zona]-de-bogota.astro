@@ -1,0 +1,162 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Faq from '../components/Faq.astro';
+import FondoVivo from '../components/FondoVivo.astro';
+import CtaFinal from '../components/CtaFinal.astro';
+import VideosYServicios from '../components/VideosYServicios.astro';
+import { empresa, tel, whatsapp } from '../data/empresa';
+import { serviciosVidrio, serviciosCamaras, urlServicio } from '../data/servicios';
+import { zonas, localidadesDeZona, urlZona, type Zona } from '../data/zonas';
+import { negocioLocal, migas } from '../data/schema';
+
+export function getStaticPaths() {
+  return zonas.map((zona) => ({ params: { zona: zona.slug }, props: { zona } }));
+}
+
+const { zona: z } = Astro.props as { zona: Zona };
+const locs = localidadesDeZona(z);
+const nombresLocs = locs.map((l) => l.nombre);
+const listaLocs = nombresLocs.slice(0, -1).join(', ') + ' y ' + nombresLocs[nombresLocs.length - 1];
+const ref = (n: number) => z.referencias[n % z.referencias.length];
+const url = `${empresa.sitio}${urlZona(z)}`;
+const otras = zonas.filter((x) => x.slug !== z.slug);
+
+const casos = [
+  { titulo: 'Te quedaste por fuera', href: '/servicios/apertura-de-puertas', texto: `Aperturas de casas y apartamentos sin dañar la puerta en ${ref(0)}, ${ref(1)} y todo el ${z.nombre}, de día, de noche y en festivos.` },
+  { titulo: 'Llaves adentro del carro', href: '/servicios/apertura-de-vehiculos', texto: `Abrimos carros y camionetas sin daños en parqueaderos, calles y centros comerciales del ${z.nombre} de Bogotá.` },
+  { titulo: 'Cambio de guardas', href: '/servicios/cambio-de-guardas', texto: `Si perdiste las llaves, te mudaste o cambió el inquilino en ${ref(2)} o ${ref(3)}, cambiamos el cilindro y te entregamos llaves nuevas.` },
+  { titulo: 'Puertas de vidrio', href: '/puertas-de-vidrio', texto: `Bisagras hidráulicas, cerraduras y herrajes para locales, oficinas y porterías del ${z.nombre}: la dejamos funcionando.` },
+  { titulo: 'Cerraduras digitales', href: '/servicios/cerraduras-digitales', texto: `Instalamos cerraduras de huella, clave y app en apartamentos y oficinas de ${ref(4)}, ${ref(5)} y alrededores.` },
+  { titulo: 'Cámaras de seguridad', href: '/camaras-de-seguridad', texto: `Cámaras WiFi, videoporteros y alarmas para casas, locales y conjuntos del ${z.nombre}, configurados en tu celular.` },
+];
+
+const preguntas = [
+  { p: `¿Tienen cerrajero en el ${z.nombre} de Bogotá a cualquier hora?`, r: `Sí. Atendemos urgencias 24 horas, todos los días del año, en ${listaLocs}.` },
+  { p: `¿Cuánto se demoran en llegar al ${z.nombre}?`, r: 'Depende de tu barrio, la hora y el tráfico. Al llamar o escribir te decimos el tiempo estimado de llegada antes de confirmar.' },
+  { p: `¿Atienden en ${ref(0)} y ${ref(1)}?`, r: `Sí. Cubrimos todo el ${z.nombre}: ${z.referencias.slice(0, 8).join(', ')} y los demás barrios de ${listaLocs}.` },
+  { p: '¿Cuánto cuesta el servicio?', r: 'Depende del servicio, la cerradura y la hora. Te damos un valor estimado antes de salir y nada se cobra sin tu aprobación.' },
+];
+
+const schema = [
+  negocioLocal(),
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: `Cerrajero en el ${z.nombre} de Bogotá`,
+    serviceType: 'Cerrajería 24 horas',
+    provider: { '@id': `${empresa.sitio}/#negocio` },
+    areaServed: locs.map((l) => ({ '@type': 'AdministrativeArea', name: `${l.nombre}, Bogotá` })),
+    url,
+  },
+  migas([
+    { nombre: 'Inicio', url: empresa.sitio },
+    { nombre: 'Cobertura', url: `${empresa.sitio}/cerrajero-en` },
+    { nombre: `Cerrajero en el ${z.nombre}`, url },
+  ]),
+];
+---
+<Base
+  title={`Cerrajero en el ${z.nombre} de Bogotá 24 horas: ${nombresLocs.slice(0, 3).join(', ')} | Cerraya`}
+  description={`Cerrajero a domicilio en el ${z.nombre} de Bogotá: ${listaLocs}. Aperturas, cambio de guardas, apertura de carros, puertas de vidrio y cámaras en ${z.referencias.slice(0, 4).join(', ')} y más. 24/7.`}
+  schema={schema}
+>
+  <section class="hero-zona con-fondo">
+    <FondoVivo />
+    <div class="container">
+      <nav class="migas" aria-label="Ruta"><a href="/">Inicio</a><span>/</span><a href="/cerrajero-en">Cobertura</a><span>/</span><span aria-current="page">{z.nombre[0].toUpperCase() + z.nombre.slice(1)}</span></nav>
+      <h1>Cerrajero en el {z.nombre} de <span>Bogotá</span></h1>
+      <p class="lead">Atendemos {listaLocs}: {z.referencias.slice(0, 6).join(', ')} y todos sus barrios. Urgencias 24/7, también de noche y en festivos.</p>
+      <div class="actions">
+        <a href={tel} class="btn btn-accent btn-lg"><Icon name="telefono" />Llamar · {empresa.telefonoVisible}</a>
+        <a href={whatsapp(`Hola Cerraya, necesito un cerrajero en el ${z.nombre} de Bogotá`)} target="_blank" rel="noopener" class="btn btn-wa btn-lg"><Icon name="whatsapp" />WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <VideosYServicios />
+
+  <section class="section section-tight">
+    <div class="container">
+      <h2>Lo que más nos piden en el {z.nombre}</h2>
+      <p class="texto-zona">{z.texto}</p>
+      <div class="grid grid-3">
+        {casos.map((c) => (
+          <a class="card feature serv" href={c.href}>
+            <h3>{c.titulo}</h3>
+            <p>{c.texto}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-cream">
+    <div class="container">
+      <h2>Localidades del {z.nombre}</h2>
+      <div class="grid grid-2 locs">
+        {locs.map((l) => (
+          <a class="card loc" href={`/cerrajero-en/${l.slug}`}>
+            <h3>Cerrajero en {l.nombre}<Icon name="flecha" /></h3>
+            <p>{l.barrios.join(' · ')}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-green">
+    <div class="container mas-grid">
+      <div>
+        <h2>Puertas de vidrio en el {z.nombre}</h2>
+        <ul class="mas-lista">{serviciosVidrio.slice(0, 4).map((s) => <li><a href={urlServicio(s.slug)}>{s.titulo}</a></li>)}</ul>
+      </div>
+      <div>
+        <h2>Cámaras y seguridad</h2>
+        <ul class="mas-lista">{serviciosCamaras.slice(0, 4).map((s) => <li><a href={urlServicio(s.slug)}>{s.titulo}</a></li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid-2 ref-sec">
+      <div>
+        <h2>Cerca de ti en el {z.nombre}</h2>
+        <ul class="chips">{z.referencias.map((r) => <li>{r}</li>)}</ul>
+        <h3 class="otras-h">Otras zonas de Bogotá</h3>
+        <ul class="chips enlaces">{otras.map((o) => <li><a href={urlZona(o)}>Cerrajero en el {o.nombre}</a></li>)}</ul>
+      </div>
+      <div>
+        <h2>Preguntas frecuentes</h2>
+        <Faq preguntas={preguntas} />
+      </div>
+    </div>
+  </section>
+
+  <CtaFinal titulo={`¿Necesitas un cerrajero en el ${z.nombre} de Bogotá?`} />
+</Base>
+
+<style>
+  .hero-zona { background: linear-gradient(180deg, var(--green-800), var(--green-900)); color: var(--on-green); padding: 2rem 0 clamp(2.5rem, 6vw, 4rem); }
+  .hero-zona h1 { color: var(--cream); }
+  .hero-zona h1 span { color: var(--accent); }
+  .hero-zona .lead { color: var(--on-green-muted); max-width: 64ch; }
+  .hero-zona .actions { margin-top: 1.5rem; }
+  .migas { display: flex; flex-wrap: wrap; gap: .5rem; font-size: .88rem; color: var(--on-green-muted); margin-bottom: 1.25rem; }
+  .migas a { color: var(--cream); }
+  .texto-zona { max-width: 75ch; color: var(--muted); margin-bottom: 1.75rem; }
+  .serv, .loc { text-decoration: none; transition: border-color .18s, transform .18s; }
+  .serv:hover, .loc:hover { border-color: var(--green-600); transform: translateY(-2px); }
+  .loc h3 { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: .35rem; }
+  .loc h3 :global(svg) { width: 20px; height: 20px; color: var(--green-600); }
+  .loc p { color: var(--muted); font-size: .92rem; margin: 0; }
+  .mas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+  .mas-grid h2 { color: var(--cream); font-size: clamp(1.4rem, 2.6vw, 1.9rem); }
+  .mas-lista { list-style: none; padding: 0; margin: 0; display: grid; gap: .5rem; }
+  .mas-lista a { display: block; padding: .7rem 1rem; border-radius: var(--radius-sm); border: 1px solid rgba(247, 245, 232, .2); color: var(--cream); text-decoration: none; font-weight: 600; }
+  .mas-lista a:hover { border-color: var(--accent); }
+  .ref-sec { align-items: start; gap: 2.5rem; }
+  .otras-h { margin-top: 2rem; font-size: 1.15rem; }
+  .enlaces a { text-decoration: none; color: var(--green-800); font-weight: 600; }
+  @media (max-width: 860px) { .mas-grid { grid-template-columns: 1fr; } }
+</style>

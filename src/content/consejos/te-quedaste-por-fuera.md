@@ -3,7 +3,7 @@ titulo: ¿Te quedaste por fuera? Qué hacer (y qué no) mientras llega el cerraj
 descripcion: Cinco pasos para resolver una puerta cerrada sin dañarla, sin pagar de más y sin caer en manos de un cerrajero poco confiable.
 fecha: 2026-10-24
 categoria: Urgencias
-imagen: ../../assets/cerraduras/tipos/sobreponer.jpg
+imagen: ../../assets/cerraduras/tipos/ref-sobreponer.jpg
 destacado: true
 ---
 

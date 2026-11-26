@@ -3,7 +3,7 @@ titulo: ¿Cuánto cuesta un cerrajero en Bogotá? Lo que cambia el precio
 descripcion: Por qué dos servicios que parecen iguales cuestan distinto, qué preguntar antes de que salga el cerrajero y cómo evitar sorpresas al final.
 fecha: 2026-10-28
 categoria: Guías
-imagen: ../../assets/cerraduras/tipos/manija-y-pomo.jpg
+imagen: ../../assets/cerraduras/tipos/ref-manija-y-pomo.jpg
 ---
 
 "¿Cuánto me cobra por abrir una puerta?" es la primera pregunta de casi todas las llamadas, y la respuesta honesta es: depende. No es evasiva. Estos son los factores que mueven el precio de verdad.

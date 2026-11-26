@@ -3,7 +3,7 @@ titulo: Cómo saber si un cerrajero es confiable (y no caer en estafas)
 descripcion: Seis señales para reconocer a un cerrajero serio antes de abrirle la puerta, y las alertas que indican que es mejor llamar a otro.
 fecha: 2026-10-28
 categoria: Seguridad
-imagen: ../../assets/cerraduras/tipos/embutir.jpg
+imagen: ../../assets/cerraduras/tipos/ref-embutir.jpg
 destacado: true
 ---
 

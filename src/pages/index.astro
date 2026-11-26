@@ -12,7 +12,7 @@ import { schemaComerciales } from '../data/comerciales';
 import Faq from '../components/Faq.astro';
 import CtaFinal from '../components/CtaFinal.astro';
 import { empresa, tel, whatsapp } from '../data/empresa';
-import { serviciosVidrio } from '../data/servicios';
+import { serviciosVidrio, serviciosCamaras, urlServicio } from '../data/servicios';
 import { sintomasVidrio } from '../data/puertas-vidrio';
 import { productos } from '../data/cerraduras';
 import { marcasCarro } from '../data/llaves';
@@ -23,6 +23,7 @@ import personaje from '../assets/personaje/cerrajero-guino.png';
 
 const fotoLlave = fotoTipo('llave-carro');
 const fotoVidrio = fotoTipo('puerta-vidrio');
+const fotoCamaras = fotoTipo('camaras');
 
 const destacados = [
   'yale-kit-yale-connect-con-cerradura-digital-ymf30',
@@ -151,6 +152,24 @@ const preguntas = [
       <div class="vidrio-lado">
         {fotoVidrio && <Image class="vidrio-foto" src={fotoVidrio} alt="Puerta de vidrio templado con herrajes en acero inoxidable" widths={[480, 800]} sizes="(max-width: 960px) 100vw, 40vw" />}
         <p class="vidrio-n">{serviciosVidrio.length} servicios para puertas de vidrio</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section camaras-home">
+    <div class="container camaras-grid">
+      {fotoCamaras && <Image class="camaras-foto" src={fotoCamaras} alt="Cámaras de seguridad instaladas en la esquina de un edificio" widths={[400, 700]} sizes="(max-width: 960px) 100vw, 34vw" />}
+      <div>
+        <span class="eyebrow">Nuevo · Cámaras de seguridad</span>
+        <h2>Cámaras, videoporteros y alarmas, con el mismo cerrajero</h2>
+        <p class="lead">Instalamos cámaras WiFi y sistemas con grabador en casas, locales y conjuntos, y te las dejamos funcionando en el celular.</p>
+        <ul class="camaras-lista">
+          {serviciosCamaras.slice(0, 4).map((s) => <li><a href={urlServicio(s.slug)}><Icon name={s.icono} />{s.titulo}</a></li>)}
+        </ul>
+        <div class="actions">
+          <a class="btn btn-green btn-lg" href="/camaras-de-seguridad">Ver cámaras de seguridad<Icon name="flecha" /></a>
+          <a class="btn btn-outline btn-lg" href={whatsapp('Hola Cerraya, quiero cotizar cámaras de seguridad')} target="_blank" rel="noopener"><Icon name="whatsapp" />Cotizar</a>
+        </div>
       </div>
     </div>
   </section>
@@ -378,7 +397,14 @@ const preguntas = [
   .vidrio-n { margin: 0; color: var(--on-green-muted); font-size: .9rem; }
 
   @media (max-width: 1080px) { .productos { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 960px) { .hero-grid, .llaves, .vidrio-grid { grid-template-columns: 1fr; } }
+  .camaras-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(2rem, 5vw, 3.5rem); align-items: center; }
+  .camaras-grid :global(.camaras-foto) { width: 100%; height: auto; aspect-ratio: 4 / 5; max-height: 480px; object-fit: cover; border-radius: var(--radius); box-shadow: var(--shadow); }
+  .camaras-lista { list-style: none; padding: 0; margin: 1.25rem 0 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+  .camaras-lista a { display: flex; align-items: center; gap: .55rem; padding: .7rem .85rem; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--white); text-decoration: none; font-weight: 600; font-size: .93rem; color: var(--green-800); }
+  .camaras-lista a:hover { border-color: var(--green-600); }
+  .camaras-lista :global(svg) { width: 22px; height: 22px; flex: none; color: var(--green-600); }
+  @media (max-width: 960px) { .hero-grid, .llaves, .vidrio-grid, .camaras-grid { grid-template-columns: 1fr; } .camaras-grid :global(.camaras-foto) { aspect-ratio: 16 / 10; } }
+  @media (max-width: 520px) { .camaras-lista { grid-template-columns: 1fr; } }
   @media (max-width: 680px) {
     .trust-grid { grid-template-columns: repeat(2, 1fr); }
     .trust-grid div:nth-child(3) { border-left: 0; }

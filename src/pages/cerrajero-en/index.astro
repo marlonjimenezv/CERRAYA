@@ -4,6 +4,7 @@ import Icon from '../../components/Icon.astro';
 import CtaFinal from '../../components/CtaFinal.astro';
 import { empresa, tel } from '../../data/empresa';
 import { localidadesBogota } from '../../data/localidades';
+import { zonas, urlZona } from '../../data/zonas';
 import { negocioLocal, migas } from '../../data/schema';
 
 const schema = [
@@ -25,6 +26,7 @@ const schema = [
       <h1>Cerrajero 24/7 en toda Bogotá</h1>
       <p class="lead">Atendemos las {localidadesBogota.length} localidades urbanas de la ciudad. Elige la tuya o llámanos y salimos de inmediato.</p>
       <a class="btn btn-accent btn-lg" href={tel}><Icon name="telefono" />Llamar · {empresa.telefonoVisible}</a>
+      <ul class="chips zonas">{zonas.map((z) => <li><a href={urlZona(z)}>Cerrajero en el {z.nombre}</a></li>)}</ul>
     </div>
   </section>
 
@@ -46,6 +48,8 @@ const schema = [
 <style>
   .hero-cob { background: var(--cream); padding: clamp(2.5rem, 6vw, 4rem) 0 2rem; }
   .hero-cob .btn { margin-top: .5rem; }
+  .zonas { margin-top: 1.5rem; }
+  .zonas a { text-decoration: none; color: var(--green-800); font-weight: 700; }
   .loc { text-decoration: none; display: grid; gap: .35rem; transition: border-color .18s, transform .18s; }
   .loc:hover { border-color: var(--green-600); transform: translateY(-2px); }
   .loc h2 { font-size: 1.1rem; margin: 0; }

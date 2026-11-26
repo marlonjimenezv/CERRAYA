@@ -242,4 +242,54 @@ export const detalleServicios: Record<string, DetalleServicio> = {
       { p: '¿Hay cerraduras digitales para lockers?', r: 'Sí, con clave o tarjeta, sin llaves que se pierdan.' },
     ],
   },
+  'instalacion-de-camaras-de-seguridad': {
+    tituloSeo: 'Instalación de cámaras de seguridad en Bogotá',
+    intro: 'Instalamos cámaras de seguridad en casas, apartamentos, locales, oficinas, bodegas y conjuntos de Bogotá. Te ayudamos a elegir cuántas cámaras necesitas y dónde ponerlas, hacemos la instalación con el cableado ordenado y te dejamos todo configurado para ver en vivo y revisar grabaciones desde el celular. Como también somos cerrajeros, podemos dejar cámaras, cerraduras y control de acceso funcionando juntos.',
+    faq: [
+      { p: '¿Cuánto cuesta instalar cámaras de seguridad?', r: 'Depende de cuántas cámaras, si son WiFi o con grabador, y de cuánto cableado hace falta. Con fotos del lugar por WhatsApp te damos un valor estimado; si prefieres, hacemos una visita para cotizar exacto.' },
+      { p: '¿Puedo ver las cámaras desde el celular?', r: 'Sí. Te dejamos la aplicación instalada y configurada, y te enseñamos a ver en vivo, revisar grabaciones y recibir alertas.' },
+      { p: '¿Ustedes venden las cámaras o las pongo yo?', r: 'Las dos opciones. Podemos conseguir el equipo o instalar el que ya compraste, después de revisar que sirva para lo que necesitas.' },
+    ],
+  },
+  'camaras-wifi': {
+    tituloSeo: 'Cámaras WiFi para casa y negocio en Bogotá',
+    intro: 'Las cámaras WiFi son la forma más sencilla de vigilar tu casa o tu negocio: no necesitan grabador, se ven desde el celular y te avisan cuando detectan movimiento. Las instalamos en interior y exterior, revisamos que la señal llegue bien a cada punto y te dejamos configuradas las alertas y la grabación en tarjeta o en la nube.',
+    faq: [
+      { p: '¿Las cámaras WiFi graban si se va el internet?', r: 'Las que tienen tarjeta de memoria siguen grabando y guardan el video en la cámara. Lo que no puedes es verlas desde el celular hasta que vuelva el internet.' },
+      { p: '¿Sirven para exterior?', r: 'Sí, siempre que sean modelos para exterior, resistentes a la lluvia. Te decimos cuál conviene según el lugar.' },
+    ],
+  },
+  'camaras-para-negocios-y-conjuntos': {
+    tituloSeo: 'Cámaras de seguridad para negocios y conjuntos en Bogotá',
+    intro: 'Para locales, bodegas, oficinas, parqueaderos, porterías y zonas comunes de conjuntos instalamos sistemas de varias cámaras con grabador (DVR o NVR). Graban todo el tiempo, se pueden ver en un monitor en la portería y desde el celular de la administración. Hacemos el diseño de puntos, el cableado y la configuración, y te entregamos el sistema funcionando.',
+    faq: [
+      { p: '¿Cuántas cámaras necesita un conjunto?', r: 'Depende de las entradas, parqueaderos y zonas comunes. Hacemos una visita, marcamos los puntos y te entregamos una propuesta clara antes de instalar.' },
+      { p: '¿Cuántos días de grabación quedan guardados?', r: 'Depende del disco del grabador y de la cantidad de cámaras. Lo calculamos para que tengas los días que necesites.' },
+      { p: '¿Hacen mantenimiento al sistema?', r: 'Sí. Lo podemos incluir en un plan de mantenimiento junto con cerraduras y puertas de vidrio.' },
+    ],
+  },
+  'videoporteros-y-timbres-con-camara': {
+    tituloSeo: 'Videoporteros y timbres con cámara en Bogotá',
+    intro: 'Con un videoportero ves y hablas con quien está en la puerta antes de abrir. Instalamos videoporteros para casas y locales y timbres inteligentes WiFi que suenan en tu celular. Si tu puerta tiene cerradura eléctrica, los conectamos para que abras desde adentro o desde el celular.',
+    faq: [
+      { p: '¿Se puede abrir la puerta desde el celular?', r: 'Sí, si la puerta tiene cerradura eléctrica o electroimán y el videoportero lo permite. Si no la tiene, también te la instalamos.' },
+      { p: '¿Sirve para apartamento?', r: 'Sí. Los timbres con cámara WiFi se instalan en la puerta del apartamento sin hacer obra.' },
+    ],
+  },
+  'alarmas-y-sensores': {
+    tituloSeo: 'Alarmas para casa y negocio en Bogotá',
+    intro: 'Instalamos alarmas con sensores de puerta, ventana y movimiento que hacen sonar una sirena y te avisan al celular si alguien entra. Son ideales para locales que quedan solos en la noche, casas y apartamentos en viaje. Se pueden combinar con cámaras para ver qué pasó cuando suena la alarma.',
+    faq: [
+      { p: '¿La alarma tiene que estar conectada a una central?', r: 'No necesariamente. Los kits WiFi te avisan directo al celular sin pagar mensualidad. Si quieres monitoreo con central, te explicamos las opciones.' },
+      { p: '¿Funciona si se va la luz?', r: 'Los equipos con batería de respaldo siguen funcionando un tiempo sin luz. Te recomendamos modelos con batería.' },
+    ],
+  },
+  'revision-de-camaras': {
+    tituloSeo: 'Revisión y mantenimiento de cámaras de seguridad en Bogotá',
+    intro: 'Si tus cámaras dejaron de verse, no graban, perdieron la señal o quedaron mal ubicadas, las revisamos y las dejamos funcionando. Cambiamos discos y tarjetas de memoria, reubicamos cámaras, ordenamos el cableado y las configuramos de nuevo en tu celular, aunque no las hayamos instalado nosotros.',
+    faq: [
+      { p: '¿Revisan cámaras que instaló otra persona?', r: 'Sí. Revisamos el sistema que tengas y te decimos qué se puede arreglar y qué conviene cambiar.' },
+      { p: '¿Pueden pasar las cámaras a mi celular nuevo?', r: 'Sí. Configuramos la aplicación en tu nuevo celular y en el de las personas que tú digas.' },
+    ],
+  },
 };

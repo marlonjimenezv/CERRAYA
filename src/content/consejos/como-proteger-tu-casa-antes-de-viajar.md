@@ -3,7 +3,7 @@ titulo: "Cómo proteger tu casa antes de viajar: lista para revisar"
 descripcion: Puertas, llaves, ventanas y portería. Lo que conviene revisar antes de salir de vacaciones para no llevarte una sorpresa al volver.
 fecha: 2026-10-29
 categoria: Seguridad
-imagen: ../../assets/cerraduras/tipos/candados.jpg
+imagen: ../../assets/cerraduras/tipos/ref-candados.jpg
 ---
 
 En diciembre y en las vacaciones de mitad de año muchas casas y apartamentos de Bogotá se quedan solos varios días. Esta es la lista que te recomendamos repasar antes de cerrar la puerta.

@@ -33,3 +33,11 @@ Tomadas en el local y publicadas en el perfil de Google Maps de Cerraya. No llev
 - vitrina.jpg: exhibidor Yale (candado, pomo Dublín y sobreponer 3623-60).
 
 Las fotos de cada producto (src/assets/cerraduras/<id>.jpg) son las fotos del fabricante publicadas en la tienda donde se consultó el precio.
+
+## Cámaras y seguridad (Unsplash, licencia libre)
+- camaras.jpg: https://unsplash.com/photos/p9f6sjMglRE
+- camara-exterior.jpg: https://unsplash.com/photos/_2bOT1rHDm0
+- camara-pared.jpg: https://unsplash.com/photos/oRZDnS2QkuE
+- videoportero.jpg: https://unsplash.com/photos/zdjZ4kCaJaY
+- citofono.jpg: https://unsplash.com/photos/A9wbeTxMBeU
+- alarma.jpg: https://unsplash.com/photos/cT7IeEz5-G8
