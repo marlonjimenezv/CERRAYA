@@ -4,8 +4,9 @@
 
 export const fechaConsulta = '24 de octubre de 2026';
 
-// Margen de Cerraya sobre el precio de mercado, en %. Con 0 se vende a precio de mercado.
-export const ajustePrecioPct = 0;
+// Margen de Cerraya sobre el precio de mercado, en %, por el trabajo de comprar la cerradura (decisión del 2026-11-26).
+// La instalación se cobra aparte. Con 0 se vende a precio de mercado.
+export const ajustePrecioPct = 15;
 
 // Valor (COP) que se suma al precio de un tipo para venderlo "con instalación incluida".
 // Referencia de mercado en Bogotá (oct 2026): instalar una digital cuesta entre $150.000 y $350.000
