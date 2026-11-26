@@ -8,6 +8,7 @@ import VideosYServicios from '../components/VideosYServicios.astro';
 import { empresa, tel, whatsapp } from '../data/empresa';
 import { serviciosVidrio, serviciosCamaras, urlServicio } from '../data/servicios';
 import { zonas, localidadesDeZona, urlZona, type Zona } from '../data/zonas';
+import { municipios } from '../data/municipios';
 import { negocioLocal, migas } from '../data/schema';
 
 export function getStaticPaths() {
@@ -124,7 +125,10 @@ const schema = [
         <h2>Cerca de ti en el {z.nombre}</h2>
         <ul class="chips">{z.referencias.map((r) => <li>{r}</li>)}</ul>
         <h3 class="otras-h">Otras zonas de Bogotá</h3>
-        <ul class="chips enlaces">{otras.map((o) => <li><a href={urlZona(o)}>Cerrajero en el {o.nombre}</a></li>)}</ul>
+        <ul class="chips enlaces">
+          {otras.map((o) => <li><a href={urlZona(o)}>Cerrajero en el {o.nombre}</a></li>)}
+          {z.slug === 'occidente' && municipios.map((m) => <li><a href={`/cerrajero-en/${m.slug}`}>Cerrajero en {m.nombre}</a></li>)}
+        </ul>
       </div>
       <div>
         <h2>Preguntas frecuentes</h2>

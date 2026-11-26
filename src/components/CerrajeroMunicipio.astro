@@ -1,0 +1,117 @@
+---
+// Página de cerrajero en un municipio cercano (Funza, Madrid).
+import Base from '../layouts/Base.astro';
+import Icon from './Icon.astro';
+import Faq from './Faq.astro';
+import FondoVivo from './FondoVivo.astro';
+import CtaFinal from './CtaFinal.astro';
+import VideosYServicios from './VideosYServicios.astro';
+import { empresa, tel, whatsapp } from '../data/empresa';
+import { localidadesBogota } from '../data/localidades';
+import { municipios, type Municipio } from '../data/municipios';
+import { negocioLocal, migas } from '../data/schema';
+
+interface Props { m: Municipio }
+const { m } = Astro.props;
+const url = `${empresa.sitio}/cerrajero-en/${m.slug}`;
+const barrios = m.barrios.slice(0, -1).join(', ') + ' y ' + m.barrios[m.barrios.length - 1];
+const vecinas = m.vecinasBogota.map((s) => localidadesBogota.find((l) => l.slug === s)!).filter(Boolean);
+const otros = municipios.filter((x) => x.slug !== m.slug);
+
+const preguntas = [
+  { p: `¿Tienen cerrajero en ${m.nombre}?`, r: `Sí. Atendemos ${m.nombreLargo}: ${barrios}.` },
+  { p: `¿Cobran desplazamiento a ${m.nombre}?`, r: 'Sí, por estar fuera de Bogotá se suma un valor de desplazamiento. Te damos el precio total antes de ir y no se cobra nada que no hayas aprobado.' },
+  { p: '¿Cuánto se demoran en llegar?', r: 'Depende de la hora y el tráfico en la vía. Al llamar o escribir te decimos el tiempo estimado antes de confirmar.' },
+  { p: '¿Atienden de noche, domingos y festivos?', r: `Sí, 24 horas y todos los días del año en ${m.nombre}.` },
+];
+
+const schema = [
+  negocioLocal(),
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: `Cerrajero en ${m.nombreLargo}`,
+    serviceType: 'Cerrajería 24 horas',
+    provider: { '@id': `${empresa.sitio}/#negocio` },
+    areaServed: { '@type': 'City', name: m.nombreLargo },
+    url,
+  },
+  migas([
+    { nombre: 'Inicio', url: empresa.sitio },
+    { nombre: 'Cobertura', url: `${empresa.sitio}/cerrajero-en` },
+    { nombre: `Cerrajero en ${m.nombre}`, url },
+  ]),
+];
+---
+<Base
+  title={`Cerrajero en ${m.nombreLargo} 24 horas | Cerraya`}
+  description={`Cerrajero a domicilio en ${m.nombreLargo}: aperturas, cambio de guardas, apertura de carros, cerraduras, puertas de vidrio y cámaras en ${m.barrios.slice(0, 4).join(', ')} y todo ${m.nombre}. 24/7.`}
+  schema={schema}
+>
+  <section class="hero-mun con-fondo">
+    <FondoVivo />
+    <div class="container">
+      <nav class="migas" aria-label="Ruta"><a href="/">Inicio</a><span>/</span><a href="/cerrajero-en">Cobertura</a><span>/</span><span aria-current="page">{m.nombre}</span></nav>
+      <h1>Cerrajero en {m.nombre}, <span>24/7</span></h1>
+      <p class="lead">Atendemos urgencias e instalaciones de cerrajería en {m.nombreLargo}, incluidos {barrios}. Cerrajeros con más de {empresa.experiencia} años de experiencia.</p>
+      <div class="actions">
+        <a href={tel} class="btn btn-accent btn-lg"><Icon name="telefono" />Llamar · {empresa.telefonoVisible}</a>
+        <a href={whatsapp(`Hola Cerraya, necesito un cerrajero en ${m.nombre}`)} target="_blank" rel="noopener" class="btn btn-wa btn-lg"><Icon name="whatsapp" />WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <VideosYServicios />
+
+  <section class="section section-tight">
+    <div class="container">
+      <h2>Cerrajería en {m.nombre}</h2>
+      <p class="texto">{m.texto}</p>
+      <div class="grid grid-2">
+        {m.casos.map((c) => (
+          <a class="card feature serv" href={c.href}>
+            <h3>{c.titulo}</h3>
+            <p>{c.texto}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-cream">
+    <div class="container grid grid-2 dos">
+      <div>
+        <h2>Barrios de {m.nombre}</h2>
+        <ul class="chips">{m.barrios.map((b) => <li>{b}</li>)}</ul>
+        <h3 class="vec-h">También atendemos cerca</h3>
+        <ul class="chips enlaces">
+          {otros.map((o) => <li><a href={`/cerrajero-en/${o.slug}`}>Cerrajero en {o.nombre}</a></li>)}
+          {vecinas.map((v) => <li><a href={`/cerrajero-en/${v.slug}`}>Cerrajero en {v.nombre}</a></li>)}
+          <li><a href="/cerrajero-occidente-de-bogota">Cerrajero en el occidente de Bogotá</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Preguntas frecuentes</h2>
+        <Faq preguntas={preguntas} />
+      </div>
+    </div>
+  </section>
+
+  <CtaFinal titulo={`¿Necesitas un cerrajero en ${m.nombre}?`} />
+</Base>
+
+<style>
+  .hero-mun { background: linear-gradient(180deg, var(--green-800), var(--green-900)); color: var(--on-green); padding: 2rem 0 clamp(2.5rem, 6vw, 4rem); }
+  .hero-mun h1 { color: var(--cream); }
+  .hero-mun h1 span { color: var(--accent); white-space: nowrap; }
+  .hero-mun .lead { color: var(--on-green-muted); max-width: 62ch; }
+  .hero-mun .actions { margin-top: 1.5rem; }
+  .migas { display: flex; flex-wrap: wrap; gap: .5rem; font-size: .88rem; color: var(--on-green-muted); margin-bottom: 1.25rem; }
+  .migas a { color: var(--cream); }
+  .texto { max-width: 75ch; color: var(--muted); margin-bottom: 1.5rem; }
+  .serv { text-decoration: none; transition: border-color .18s, transform .18s; }
+  .serv:hover { border-color: var(--green-600); transform: translateY(-2px); }
+  .dos { align-items: start; gap: 2.5rem; }
+  .vec-h { font-size: 1.15rem; margin-top: 1.75rem; }
+  .enlaces a { text-decoration: none; color: var(--green-800); font-weight: 600; }
+</style>

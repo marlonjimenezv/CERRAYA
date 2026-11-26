@@ -5,6 +5,7 @@ import CtaFinal from '../../components/CtaFinal.astro';
 import { empresa, tel } from '../../data/empresa';
 import { localidadesBogota } from '../../data/localidades';
 import { zonas, urlZona } from '../../data/zonas';
+import { municipios } from '../../data/municipios';
 import { negocioLocal, migas } from '../../data/schema';
 
 const schema = [
@@ -40,6 +41,7 @@ const schema = [
         </a>
       ))}
     </div>
+    <p class="container municipios">También atendemos {municipios.map((m, i) => <>{i > 0 && ' y '}<a href={`/cerrajero-en/${m.slug}`}>{m.nombreLargo}</a></>)}.</p>
   </section>
 
   <CtaFinal />
@@ -49,6 +51,8 @@ const schema = [
   .hero-cob { background: var(--cream); padding: clamp(2.5rem, 6vw, 4rem) 0 2rem; }
   .hero-cob .btn { margin-top: .5rem; }
   .zonas { margin-top: 1.5rem; }
+  .municipios { margin-top: 1.5rem; color: var(--muted); font-size: .9rem; }
+  .municipios a { color: var(--green-800); font-weight: 600; }
   .zonas a { text-decoration: none; color: var(--green-800); font-weight: 700; }
   .loc { text-decoration: none; display: grid; gap: .35rem; transition: border-color .18s, transform .18s; }
   .loc:hover { border-color: var(--green-600); transform: translateY(-2px); }

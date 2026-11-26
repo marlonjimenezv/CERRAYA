@@ -1,0 +1,6 @@
+---
+import CerrajeroMunicipio from '../../components/CerrajeroMunicipio.astro';
+import { municipios } from '../../data/municipios';
+const m = municipios.find((x) => x.slug === 'madrid-cundinamarca')!;
+---
+<CerrajeroMunicipio m={m} />
