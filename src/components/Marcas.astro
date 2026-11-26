@@ -1,17 +1,20 @@
 ---
-// Marcas que confiaron en nosotros: logos de empresas y nombres de conjuntos residenciales.
+// Marcas que confiaron en nosotros: una banda de lado a lado con los logos pasando en bucle.
 import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 import { marcas } from '../data/marcas';
+
+// La lista va dos veces para que el bucle no tenga corte.
+const banda = [...marcas, ...marcas];
 ---
-<section class="section marcas" aria-labelledby="marcas-titulo">
-  <div class="container">
-    <h2 id="marcas-titulo">Marcas que confiaron en nosotros</h2>
-    <ul class="marcas-grid">
-      {marcas.map((m) => (
-        <li class:list={['marca', `marca-${m.tipo}`]}>
+<section class="marcas" aria-labelledby="marcas-titulo">
+  <h2 id="marcas-titulo">Marcas que confiaron en nosotros</h2>
+  <div class="pista">
+    <ul class="banda" style={`--dur: ${marcas.length * 5}s`}>
+      {banda.map((m, i) => (
+        <li class:list={['marca', `marca-${m.tipo}`]} aria-hidden={i >= marcas.length ? 'true' : undefined}>
           {m.logo ? (
-            <Image src={m.logo} alt={m.nombre} width={Math.min(m.logo.width, 360)} loading="lazy" />
+            <Image src={m.logo} alt={i >= marcas.length ? '' : m.nombre} width={Math.min(m.logo.width, 480)} loading="lazy" />
           ) : m.tipo === 'conjunto' ? (
             <span class="marca-nombre">
               <Icon name="edificio" />
@@ -27,26 +30,31 @@ import { marcas } from '../data/marcas';
 </section>
 
 <style>
-  .marcas { padding: clamp(2.75rem, 6vw, 4rem) 0; background: var(--white); border-bottom: 1px solid var(--line); }
-  .marcas h2 { text-align: center; margin: 0 auto 1.75rem; max-width: none; font-size: clamp(1.35rem, 2.6vw, 1.9rem); }
-  .marcas-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .85rem; }
-  .marca { display: grid; place-items: center; min-height: 104px; padding: 1rem 1.1rem; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-sm); }
-  .marca img { display: block; width: auto; height: auto; max-width: 100%; max-height: 54px; object-fit: contain; }
-  .marca-nombre { display: flex; align-items: center; gap: .6rem; text-align: left; line-height: 1.15; }
-  .marca-nombre strong { display: block; font-family: var(--display); font-weight: 800; font-size: 1.05rem; color: var(--green-800); letter-spacing: -.01em; }
-  .marca-empresa .marca-nombre strong { font-size: 1.2rem; text-align: center; }
-  .marca-nombre small { display: block; font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: .15rem; }
-  .marca-nombre :global(svg) { flex: none; width: 34px; height: 34px; padding: 7px; border-radius: 50%; background: var(--cream-2); color: var(--green-700, var(--green-800)); }
+  .marcas { padding: clamp(2.5rem, 5vw, 3.5rem) 0; background: var(--white); border-bottom: 1px solid var(--line); overflow: hidden; }
+  .marcas h2 { text-align: center; margin: 0 auto 1.75rem; padding: 0 1rem; max-width: none; font-size: clamp(1.35rem, 2.6vw, 1.9rem); }
 
-  @media (max-width: 960px) {
-    .marcas-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  }
+  .pista { overflow: hidden; border-block: 1px solid var(--line); background: var(--paper); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+  .banda { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; width: max-content; animation: deslizar var(--dur, 50s) linear infinite; }
+  .pista:hover .banda { animation-play-state: paused; }
+  @keyframes deslizar { to { transform: translateX(-50%); } }
+
+  .marca { flex: none; display: grid; place-items: center; height: 128px; padding: 0 clamp(2rem, 4vw, 3.25rem); }
+  .marca img { display: block; height: 74px; width: auto; max-width: 260px; object-fit: contain; }
+  .marca-nombre { display: flex; align-items: center; gap: .75rem; line-height: 1.15; white-space: nowrap; }
+  .marca-nombre strong { display: block; font-family: var(--display); font-weight: 800; font-size: 1.6rem; color: var(--green-800); letter-spacing: -.01em; }
+  .marca-nombre small { display: block; font-size: .78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: .2rem; }
+  .marca-nombre :global(svg) { flex: none; width: 56px; height: 56px; padding: 12px; border-radius: 50%; background: var(--cream-2); color: var(--green-700); }
+
   @media (max-width: 560px) {
-    .marcas-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; }
-    .marca { min-height: 88px; padding: .8rem; }
-    .marca img { max-height: 44px; }
-    .marca-nombre strong { font-size: .95rem; }
-    .marca-empresa .marca-nombre strong { font-size: 1.05rem; }
-    .marca-nombre :global(svg) { width: 28px; height: 28px; padding: 6px; }
+    .marca { height: 100px; padding: 0 1.6rem; }
+    .marca img { height: 56px; max-width: 200px; }
+    .marca-nombre strong { font-size: 1.25rem; }
+    .marca-nombre small { font-size: .7rem; }
+    .marca-nombre :global(svg) { width: 44px; height: 44px; padding: 9px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .banda { animation: none; }
+    .pista { overflow-x: auto; mask-image: none; }
+    .marca[aria-hidden='true'] { display: none; }
   }
 </style>
