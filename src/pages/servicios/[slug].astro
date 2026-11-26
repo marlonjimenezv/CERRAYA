@@ -11,7 +11,7 @@ import { servicios, serviciosConPagina, urlServicio, type Servicio } from '../..
 import { detalleServicios } from '../../data/servicios-detalle';
 import { localidadesBogota } from '../../data/localidades';
 import { negocioLocal, migas } from '../../data/schema';
-import { fotoServicio } from '../../data/fotos';
+import { fotoServicio, servicioConFotoPropia } from '../../data/fotos';
 
 export function getStaticPaths() {
   return serviciosConPagina.map((servicio) => ({ params: { slug: servicio.slug }, props: { servicio } }));
@@ -82,7 +82,7 @@ const schema = [
       {foto && (
         <figure class="hero-foto">
           <Image src={foto} alt={`${servicio.titulo} en Bogotá`} widths={[480, 800]} sizes="(max-width: 960px) 100vw, 38vw" loading="eager" />
-          <figcaption>Imagen de referencia</figcaption>
+          {!servicioConFotoPropia(servicio.slug) && <figcaption>Imagen de referencia</figcaption>}
         </figure>
       )}
     </div>

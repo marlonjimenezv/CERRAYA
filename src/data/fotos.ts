@@ -43,3 +43,8 @@ const fotoPorServicio: Record<string, string> = {
   'muebles-y-buzones': 'muebles',
 };
 export const fotoServicio = (slug: string) => (fotoPorServicio[slug] ? fotoTipo(fotoPorServicio[slug]) : undefined);
+
+// Fotos tomadas por Cerraya en el local (publicadas también en Google Maps): no llevan "Imagen de referencia".
+const tiposPropios = new Set(['sobreponer', 'candados', 'cerrojos', 'manija-y-pomo', 'embutir', 'vitrina']);
+export const tipoConFotoPropia = (slug: string) => tiposPropios.has(slug);
+export const servicioConFotoPropia = (slug: string) => tiposPropios.has(fotoPorServicio[slug] ?? '');

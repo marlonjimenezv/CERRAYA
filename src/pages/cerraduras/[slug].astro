@@ -6,7 +6,7 @@ import Ilustracion from '../../components/Ilustracion.astro';
 import ProductoCard from '../../components/ProductoCard.astro';
 import CtaFinal from '../../components/CtaFinal.astro';
 import { empresa } from '../../data/empresa';
-import { fotoTipo } from '../../data/fotos';
+import { fotoTipo, tipoConFotoPropia } from '../../data/fotos';
 import { tiposCerradura, productos, rangoPrecios, pesos, type TipoCerradura } from '../../data/cerraduras';
 
 export function getStaticPaths() {
@@ -56,7 +56,7 @@ const schema = {
         {foto ? (
           <figure class="hero-foto">
             <Image src={foto} alt={tipo.nombre} widths={[480, 800, 1100]} sizes="(max-width: 860px) 100vw, 40vw" loading="eager" />
-            <figcaption>Imagen de referencia</figcaption>
+            {!tipoConFotoPropia(tipo.slug) && <figcaption>Imagen de referencia</figcaption>}
           </figure>
         ) : (
           <div class="hero-ilu"><Ilustracion tipo={tipo.slug} /></div>

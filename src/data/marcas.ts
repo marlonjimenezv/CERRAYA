@@ -11,7 +11,7 @@ import newBody from '../assets/marcas/new-body.png';
 
 export type Marca = {
   nombre: string;
-  tipo: 'empresa' | 'conjunto';
+  tipo: 'empresa' | 'conjunto' | 'agrupacion';
   logo?: ImageMetadata;
 };
 
@@ -26,4 +26,5 @@ export const marcas: Marca[] = [
   { nombre: 'Castilla Real', tipo: 'conjunto' },
   { nombre: 'Bella Luna', tipo: 'conjunto' },
   { nombre: 'Bonaire', tipo: 'conjunto' },
+  { nombre: 'Los Urapanes', tipo: 'agrupacion' },
 ];

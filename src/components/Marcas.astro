@@ -15,10 +15,10 @@ const banda = [...marcas, ...marcas];
         <li class:list={['marca', `marca-${m.tipo}`]} aria-hidden={i >= marcas.length ? 'true' : undefined}>
           {m.logo ? (
             <Image src={m.logo} alt={i >= marcas.length ? '' : m.nombre} width={Math.min(m.logo.width, 480)} loading="lazy" />
-          ) : m.tipo === 'conjunto' ? (
+          ) : m.tipo !== 'empresa' ? (
             <span class="marca-nombre">
               <Icon name="edificio" />
-              <span><small>Conjunto residencial</small><strong>{m.nombre}</strong></span>
+              <span><small>{m.tipo === 'conjunto' ? 'Conjunto residencial' : 'Agrupación de vivienda'}</small><strong>{m.nombre}</strong></span>
             </span>
           ) : (
             <span class="marca-nombre"><strong>{m.nombre}</strong></span>

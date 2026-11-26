@@ -22,3 +22,14 @@ Fotos de [Unsplash](https://unsplash.com) bajo la [Licencia Unsplash](https://un
 | puerta-vidrio-lobby.jpg | Sebastian Herrmann | https://unsplash.com/photos/Ax6IJkNFXX4 |
 
 Las fotos de puertas de vidrio se descargaron el 22 de noviembre de 2026 (licencia gratuita de Unsplash, no Unsplash+). Se usan como imágenes de referencia en /puertas-de-vidrio y en las páginas de servicios.
+
+## Fotos propias de Cerraya (noviembre de 2026)
+Tomadas en el local y publicadas en el perfil de Google Maps de Cerraya. No llevan la etiqueta "Imagen de referencia".
+- sobreponer.jpg: tablero de cerraduras de sobreponer.
+- candados.jpg: candado Goodwall.
+- cerrojos.jpg: cerrojo KL Security 106.
+- manija-y-pomo.jpg: pomo Mercury en vitrina.
+- embutir.jpg: cerradura multipunto de 4 bulones instalada.
+- vitrina.jpg: exhibidor Yale (candado, pomo Dublín y sobreponer 3623-60).
+
+Las fotos de cada producto (src/assets/cerraduras/<id>.jpg) son las fotos del fabricante publicadas en la tienda donde se consultó el precio.
