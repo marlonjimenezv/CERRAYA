@@ -1,0 +1,155 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Faq from '../../components/Faq.astro';
+import FondoVivo from '../../components/FondoVivo.astro';
+import CtaFinal from '../../components/CtaFinal.astro';
+import { empresa, tel, whatsapp } from '../../data/empresa';
+import { serviciosCamaras, urlServicio } from '../../data/servicios';
+import { localidadesBogota, type Localidad } from '../../data/localidades';
+import { fotoTipo } from '../../data/fotos';
+import { negocioLocal, migas } from '../../data/schema';
+
+export function getStaticPaths() {
+  return localidadesBogota.map((localidad, i) => ({ params: { localidad: localidad.slug }, props: { localidad, i } }));
+}
+
+const { localidad: l, i } = Astro.props as { localidad: Localidad; i: number };
+const url = `${empresa.sitio}/camaras-de-seguridad/${l.slug}`;
+const b = (n: number) => l.barrios[n % l.barrios.length];
+const barrios = l.barrios.slice(0, -1).join(', ') + ' y ' + l.barrios[l.barrios.length - 1];
+const vecinas = [-2, -1, 1, 2].map((d) => localidadesBogota[(i + d + localidadesBogota.length) % localidadesBogota.length]);
+const mensaje = `Hola Cerraya, quiero cotizar cámaras de seguridad en ${l.nombre}`;
+
+// Rota servicios y foto para que cada localidad no repita la misma página.
+const servicios = [...serviciosCamaras.slice(i % serviciosCamaras.length), ...serviciosCamaras.slice(0, i % serviciosCamaras.length)];
+const fotos = ['camaras', 'camara-exterior', 'camara-pared', 'alarma', 'videoportero'];
+const foto = fotoTipo(fotos[i % fotos.length]);
+
+const casos = [
+  { titulo: `Casas y apartamentos en ${b(0)}`, href: '/servicios/camaras-wifi', texto: `Cámaras WiFi para la entrada, la sala o el patio en ${b(0)} y ${b(1)}. Las ves desde el celular y te avisan si hay movimiento.` },
+  { titulo: `Locales y oficinas de ${l.nombre}`, href: '/servicios/instalacion-de-camaras-de-seguridad', texto: `Cámaras para caja, vitrina, bodega y puerta en ${b(2)} y ${b(3)}, con grabación para revisar lo que pasó cuando no estabas.` },
+  { titulo: `Conjuntos y edificios`, href: '/servicios/camaras-para-negocios-y-conjuntos', texto: `Sistemas con grabador para porterías, parqueaderos y zonas comunes en ${b(4)} y el resto de ${l.nombre}, con monitor en la portería.` },
+  { titulo: 'Videoportero y cerradura', href: '/servicios/videoporteros-y-timbres-con-camara', texto: `Ves quién toca antes de abrir y, si quieres, abres desde el celular. Lo conectamos con la cerradura eléctrica en ${b(5)} o donde estés.` },
+];
+
+const preguntas = [
+  { p: `¿Instalan cámaras de seguridad en ${l.nombre}?`, r: `Sí. Atendemos todos los barrios de ${l.nombre}, entre ellos ${barrios}.` },
+  { p: '¿Cuánto cuesta instalar cámaras?', r: 'Depende de cuántas cámaras, si son WiFi o con grabador y del cableado. Mándanos fotos del lugar por WhatsApp y te damos un valor estimado; si prefieres, vamos a cotizar en sitio.' },
+  { p: '¿Quedan funcionando en mi celular?', r: 'Sí. Te dejamos la aplicación configurada en tu celular y en el de quien tú digas, con alertas y acceso a las grabaciones.' },
+  { p: `¿Revisan cámaras que ya tengo en ${b(0)}?`, r: 'Sí. Revisamos cámaras que no graban, perdieron la señal o quedaron mal ubicadas, aunque las haya instalado otra persona.' },
+];
+
+const schema = [
+  negocioLocal(),
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: `Instalación de cámaras de seguridad en ${l.nombre}, Bogotá`,
+    serviceType: 'Cámaras de seguridad, videoporteros y alarmas',
+    provider: { '@id': `${empresa.sitio}/#negocio` },
+    areaServed: { '@type': 'AdministrativeArea', name: `${l.nombre}, Bogotá` },
+    url,
+  },
+  migas([
+    { nombre: 'Inicio', url: empresa.sitio },
+    { nombre: 'Cámaras de seguridad', url: `${empresa.sitio}/camaras-de-seguridad` },
+    { nombre: l.nombre, url },
+  ]),
+];
+---
+<Base
+  title={`Cámaras de seguridad en ${l.nombre}, Bogotá: instalación WiFi y con grabador | Cerraya`}
+  description={`Instalación de cámaras de seguridad en ${l.nombre}: cámaras WiFi, sistemas con grabador, videoporteros y alarmas para casas, locales y conjuntos en ${b(0)}, ${b(1)}, ${b(2)} y toda la localidad.`}
+  schema={schema}
+>
+  <section class="hero-loc con-fondo">
+    <FondoVivo />
+    <div class="container hero-grid">
+      <div>
+        <nav class="migas" aria-label="Ruta"><a href="/">Inicio</a><span>/</span><a href="/camaras-de-seguridad">Cámaras de seguridad</a><span>/</span><span aria-current="page">{l.nombre}</span></nav>
+        <h1>Cámaras de seguridad en <span>{l.nombre}</span></h1>
+        <p class="lead">Instalamos cámaras WiFi, sistemas con grabador, videoporteros y alarmas en {b(0)}, {b(1)}, {b(2)} y todo {l.nombre}, y te dejamos todo funcionando en tu celular.</p>
+        <div class="actions">
+          <a href={whatsapp(mensaje)} target="_blank" rel="noopener" class="btn btn-wa btn-lg"><Icon name="whatsapp" />Cotizar por WhatsApp</a>
+          <a href={tel} class="btn btn-accent btn-lg"><Icon name="telefono" />Llamar · {empresa.telefonoVisible}</a>
+        </div>
+      </div>
+      {foto && (
+        <figure class="hero-foto">
+          <Image src={foto} alt={`Cámara de seguridad instalada, servicio en ${l.nombre}`} widths={[400, 700]} sizes="(max-width: 960px) 100vw, 34vw" loading="eager" />
+        </figure>
+      )}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Cámaras para cada lugar de {l.nombre}</h2>
+      <div class="grid grid-2">
+        {casos.map((c) => (
+          <a class="card feature serv" href={c.href}>
+            <h3>{c.titulo}</h3>
+            <p>{c.texto}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-cream">
+    <div class="container">
+      <h2>Lo que instalamos en {l.nombre}</h2>
+      <div class="grid grid-3">
+        {servicios.map((s) => (
+          <a class="card feature serv" href={urlServicio(s.slug)}>
+            <span class="icon-badge"><Icon name={s.icono} /></span>
+            <h3>{s.titulo}</h3>
+            <p>{s.texto}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid-2 dos">
+      <div>
+        <h2>Barrios de {l.nombre}</h2>
+        <ul class="chips">{l.barrios.map((x) => <li>{x}</li>)}</ul>
+        <h3 class="vec-h">También en localidades cercanas</h3>
+        <ul class="chips enlaces">
+          {vecinas.map((v) => <li><a href={`/camaras-de-seguridad/${v.slug}`}>Cámaras en {v.nombre}</a></li>)}
+          <li><a href={`/cerrajero-en/${l.slug}`}>Cerrajero en {l.nombre}</a></li>
+          <li><a href={`/puertas-de-vidrio/${l.slug}`}>Puertas de vidrio en {l.nombre}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Preguntas frecuentes</h2>
+        <Faq preguntas={preguntas} />
+      </div>
+    </div>
+  </section>
+
+  <CtaFinal titulo={`¿Quieres cámaras en ${l.nombre}?`} texto="Mándanos fotos del lugar por WhatsApp y te decimos cuántas cámaras necesitas y cuánto cuesta." />
+</Base>
+
+<style>
+  .hero-loc { background: linear-gradient(180deg, var(--green-800), var(--green-900)); color: var(--on-green); padding: 2rem 0 clamp(2.5rem, 6vw, 4rem); }
+  .hero-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+  .hero-loc h1 { color: var(--cream); }
+  .hero-loc h1 span { color: var(--accent); }
+  .hero-loc .lead { color: var(--on-green-muted); max-width: 60ch; }
+  .hero-loc .actions { margin-top: 1.5rem; }
+  .hero-foto { margin: 0; }
+  .hero-foto :global(img) { width: 100%; height: auto; aspect-ratio: 4 / 5; max-height: 440px; object-fit: cover; border-radius: var(--radius); box-shadow: var(--shadow); }
+  .migas { display: flex; flex-wrap: wrap; gap: .5rem; font-size: .88rem; color: var(--on-green-muted); margin-bottom: 1.25rem; }
+  .migas a { color: var(--cream); }
+  .serv { text-decoration: none; transition: border-color .18s, transform .18s; }
+  .serv:hover { border-color: var(--green-600); transform: translateY(-2px); }
+  .dos { align-items: start; gap: 2.5rem; }
+  .vec-h { font-size: 1.15rem; margin-top: 1.75rem; }
+  .enlaces a { text-decoration: none; color: var(--green-800); font-weight: 600; }
+  @media (max-width: 960px) { .hero-grid { grid-template-columns: 1fr; } .hero-foto :global(img) { aspect-ratio: 16 / 10; } }
+</style>

@@ -1,15 +1,15 @@
 ---
 import { Image } from 'astro:assets';
-import Base from '../layouts/Base.astro';
-import Icon from '../components/Icon.astro';
-import Faq from '../components/Faq.astro';
-import FondoVivo from '../components/FondoVivo.astro';
-import CtaFinal from '../components/CtaFinal.astro';
-import { empresa, tel, whatsapp } from '../data/empresa';
-import { serviciosCamaras, urlServicio } from '../data/servicios';
-import { localidadesBogota } from '../data/localidades';
-import { fotoTipo } from '../data/fotos';
-import { negocioLocal, migas } from '../data/schema';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Faq from '../../components/Faq.astro';
+import FondoVivo from '../../components/FondoVivo.astro';
+import CtaFinal from '../../components/CtaFinal.astro';
+import { empresa, tel, whatsapp } from '../../data/empresa';
+import { serviciosCamaras, urlServicio } from '../../data/servicios';
+import { localidadesBogota } from '../../data/localidades';
+import { fotoTipo } from '../../data/fotos';
+import { negocioLocal, migas } from '../../data/schema';
 
 const url = `${empresa.sitio}/camaras-de-seguridad`;
 const mensaje = 'Hola Cerraya, quiero cotizar cámaras de seguridad';
@@ -130,6 +130,13 @@ const schema = [
     </div>
   </section>
 
+  <section class="section">
+    <div class="container">
+      <h2>Cámaras de seguridad en todas las localidades</h2>
+      <ul class="chips enlaces">{localidadesBogota.map((l) => <li><a href={`/camaras-de-seguridad/${l.slug}`}>Cámaras en {l.nombre}</a></li>)}</ul>
+    </div>
+  </section>
+
   <section class="section section-cream">
     <div class="narrow">
       <h2>Preguntas frecuentes</h2>
@@ -168,5 +175,6 @@ const schema = [
   .fotos-lado :global(img) { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; border-radius: var(--radius); }
   .empresas { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
   .empresas h2 { color: var(--cream); }
+  .enlaces a { text-decoration: none; color: var(--green-800); font-weight: 600; }
   @media (max-width: 960px) { .hero-grid { grid-template-columns: 1fr; } .hero-foto :global(img) { aspect-ratio: 16 / 10; } }
 </style>
