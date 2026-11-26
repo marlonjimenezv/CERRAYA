@@ -1,0 +1,39 @@
+---
+// Botón de WhatsApp fijo abajo a la derecha, en todas las páginas.
+// En celular, donde ya está la barra de abajo con WhatsApp, se oculta para no repetirlo.
+import Icon from './Icon.astro';
+import { whatsapp } from '../data/empresa';
+
+interface Props {
+  conBarra?: boolean;
+}
+const { conBarra = true } = Astro.props;
+---
+<a class:list={['wa-flotante', { 'con-barra': conBarra }]} href={whatsapp()} target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+  <Icon name="whatsapp" />
+</a>
+
+<style>
+  .wa-flotante {
+    position: fixed;
+    right: 20px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    z-index: 70;
+    display: grid;
+    place-items: center;
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    background: #25d366;
+    color: #fff;
+    box-shadow: 0 10px 24px -6px rgba(6, 42, 32, .45), 0 0 0 4px rgba(37, 211, 102, .18);
+    transition: transform .18s, box-shadow .18s;
+  }
+  .wa-flotante:hover { transform: scale(1.06); box-shadow: 0 12px 28px -6px rgba(6, 42, 32, .5), 0 0 0 6px rgba(37, 211, 102, .22); }
+  .wa-flotante :global(svg) { width: 32px; height: 32px; }
+  @media (max-width: 760px) {
+    .wa-flotante { width: 56px; height: 56px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); }
+    .wa-flotante.con-barra { display: none; }
+  }
+  @media print { .wa-flotante { display: none; } }
+</style>

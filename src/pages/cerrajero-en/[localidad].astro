@@ -123,6 +123,7 @@ const schema = [
       <ul class="chips enlaces">
         {zona && <li><a href={urlZona(zona)}>Cerrajero en el {zona.nombre} de Bogotá</a></li>}
         <li><a href={`/camaras-de-seguridad/${l.slug}`}>Cámaras de seguridad en {l.nombre}</a></li>
+        <li><a href={`/cerraduras-con-instalacion/${l.slug}`}>Cerraduras con instalación en {l.nombre}</a></li>
         {vecinas.map((v) => <li><a href={`/cerrajero-en/${v.slug}`}>Cerrajero en {v.nombre}</a></li>)}
       </ul>
     </div>

@@ -2,11 +2,17 @@
 // Uso interno: los precios base son precios de mercado consultados en Homecenter Colombia el 24 de octubre de 2026
 // (producto solo, sin instalación). `fuenteUrl` sirve para actualizarlos. En el sitio no se menciona la fuente.
 
+// Frase de la venta con instalación (pedida por el usuario el 2026-11-26).
+export const fraseInstalacion = { principal: 'Te llevamos la cerradura y te la dejamos instalada.', garantia: 'Un año de garantía en las mejores marcas.' };
+
 export const fechaConsulta = '24 de octubre de 2026';
 
 // Margen de Cerraya sobre el precio de mercado, en %, por el trabajo de comprar la cerradura (decisión del 2026-11-26).
+// Las más baratas (precio de mercado por debajo de `limiteBaratas`) llevan `ajusteBaratasPct`.
 // La instalación se cobra aparte. Con 0 se vende a precio de mercado.
 export const ajustePrecioPct = 15;
+export const ajusteBaratasPct = 25;
+export const limiteBaratas = 100000;
 
 // Valor (COP) que se suma al precio de un tipo para venderlo "con instalación incluida".
 // Referencia de mercado en Bogotá (oct 2026): instalar una digital cuesta entre $150.000 y $350.000
@@ -15,7 +21,8 @@ export const ajustePrecioPct = 15;
 export const instalacionIncluida: Record<string, number> = { digitales: 0 };
 
 export function precioVenta(precioBase: number, tipo = '') {
-  const conMargen = ajustePrecioPct ? Math.ceil((precioBase * (1 + ajustePrecioPct / 100)) / 1000) * 1000 - 100 : precioBase;
+  const pct = precioBase < limiteBaratas ? ajusteBaratasPct : ajustePrecioPct;
+  const conMargen = pct ? Math.ceil((precioBase * (1 + pct / 100)) / 1000) * 1000 - 100 : precioBase;
   return conMargen + (instalacionIncluida[tipo] ?? 0);
 }
 
@@ -54,7 +61,6 @@ export const tiposCerradura: TipoCerradura[] = [
     marcas: ['Yale', 'Schlage', 'Kwikset', 'Philips', 'MH Security Locks', 'Zerrutti', 'Smartlock', 'Elite'],
     fuenteUrl: 'https://www.homecenter.com.co/homecenter-co/category/cat740127/cerraduras-inteligentes-y-digitales/',
     modelos: [
-      { marca: 'Yale', nombre: 'Cerradura digital YMF40 con kit Yale Connect', precio: 2399900 },
       { marca: 'Yale', nombre: 'Kit Yale Connect+ con cerradura digital YMF30', precio: 1384900 },
       { marca: 'Zerrutti', nombre: 'Cerradura digital inteligente 8035', precio: 1042900 },
       { marca: 'MH Security Locks', nombre: 'Cerradura inteligente HC721 con reconocimiento facial', precio: 944900 },
@@ -63,10 +69,6 @@ export const tiposCerradura: TipoCerradura[] = [
       { marca: 'MH Security Locks', nombre: 'Cerradura inteligente HC321, 5 tipos de apertura', precio: 629900 },
       { marca: 'MH Security Locks', nombre: 'Cerradura digital de manija Ibiza', precio: 435900 },
       { marca: 'Kwikset', nombre: 'Cerrojo electrónico Powerbolt 250 con teclado', precio: 419900 },
-      { marca: 'Schlage', nombre: 'Cerradura digital de sobreponer S-480 negra', precio: 359900 },
-      { marca: 'Philips', nombre: 'Pomo digital PH120', precio: 349900, fuente: 'Tienda Yale Colombia' },
-      { marca: 'Yale', nombre: 'Manija digital biométrica Bari negra', precio: 322900 },
-      { marca: 'Elite', nombre: 'Cerradura inteligente SL2000L (puertas hasta 6 cm)', precio: 149900 },
     ],
   },
   {
@@ -180,7 +182,6 @@ export const tiposCerradura: TipoCerradura[] = [
       { marca: 'Yale', nombre: 'Cerradura eléctrica con control remoto', precio: 506900 },
       { marca: 'Yale', nombre: 'Combo cerradura eléctrica', precio: 425900 },
       { marca: 'Yale', nombre: 'Cerradura eléctrica Boto, 60 mm', precio: 283900 },
-      { marca: 'Yale', nombre: 'Acceso biométrico Autonom', precio: 269900 },
     ],
   },
   {
@@ -200,9 +201,7 @@ export const tiposCerradura: TipoCerradura[] = [
       { marca: 'Fixser', nombre: 'Caja de seguridad antifuego, 32 litros', precio: 699900 },
       { marca: 'Fixser', nombre: 'Caja de seguridad digital, 54 litros', precio: 559900 },
       { marca: 'Yale', nombre: 'Caja fuerte digital para portátil, 43 × 35 × 20 cm', precio: 399900 },
-      { marca: 'Yale', nombre: 'Caja fuerte digital, 8,5 litros', precio: 291900 },
       { marca: 'Fixser', nombre: 'Caja fuerte con huella, 8,5 litros', precio: 286900 },
-      { marca: 'Yale', nombre: 'Caja fuerte mediana, 25 × 35 × 25 cm', precio: 279900 },
       { marca: 'Karson', nombre: 'Caja de seguridad, 16 litros', precio: 209900 },
     ],
   },

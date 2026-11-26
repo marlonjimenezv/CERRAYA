@@ -6,7 +6,7 @@ import Icon from '../../components/Icon.astro';
 import Ilustracion from '../../components/Ilustracion.astro';
 import ProductoCard from '../../components/ProductoCard.astro';
 import CtaFinal from '../../components/CtaFinal.astro';
-import { tiposCerradura, productos, rangoPrecios, pesos } from '../../data/cerraduras';
+import { tiposCerradura, productos, rangoPrecios, pesos, fraseInstalacion } from '../../data/cerraduras';
 import { promociones } from '../../data/promociones';
 import { fotoTipo } from '../../data/fotos';
 
@@ -22,10 +22,11 @@ const promo = promociones.find((p) => p.activa && p.enTienda);
     <div class="container">
       <span class="eyebrow">Tienda Cerraya</span>
       <h1>Cerraduras que vendemos e instalamos</h1>
-      <p class="lead">Elige tus cerraduras, agrégalas a tu cotización y te las llevamos instaladas, con garantía. Las marcas más reconocidas del mercado.</p>
+      <p class="frase">{fraseInstalacion.principal} <span>{fraseInstalacion.garantia}</span></p>
       <ul class="beneficios">
         <li><Icon name="herramienta" />Instalación profesional</li>
-        <li><Icon name="garantia" />Garantía en cada trabajo</li>
+        <li><Icon name="garantia" />Un año de garantía</li>
+        <li><Icon name="mapa" /><a href="/cerraduras-con-instalacion">Instalación en toda Bogotá</a></li>
         <li><Icon name="lista" />Cotización en PDF en minutos</li>
       </ul>
     </div>
@@ -158,6 +159,8 @@ const promo = promociones.find((p) => p.activa && p.enTienda);
 </script>
 
 <style>
+  .frase { margin: .75rem 0 0; max-width: 34ch; font-family: var(--display); font-weight: 800; font-size: clamp(1.3rem, 2.6vw, 1.8rem); line-height: 1.25; color: var(--cream); }
+  .frase span { display: block; margin-top: .35rem; color: var(--accent); }
   .hero-tienda { background: linear-gradient(180deg, var(--green-800), var(--green-900)); color: var(--on-green); padding: clamp(2.25rem, 5vw, 3.75rem) 0; }
   .hero-tienda h1 { color: var(--cream); }
   .hero-tienda .eyebrow { color: var(--accent); }
@@ -165,6 +168,7 @@ const promo = promociones.find((p) => p.activa && p.enTienda);
   .beneficios { list-style: none; padding: 0; margin: 1.5rem 0 0; display: flex; flex-wrap: wrap; gap: .6rem 1.6rem; color: var(--cream); font-size: .93rem; }
   .beneficios li { display: inline-flex; align-items: center; gap: .45rem; }
   .beneficios :global(svg) { width: 20px; height: 20px; color: var(--accent); }
+  .beneficios a { color: var(--cream); text-decoration-color: var(--accent); text-underline-offset: 3px; }
 
   .promo-banda { display: block; background: var(--accent); color: var(--accent-ink); text-decoration: none; }
   .promo-inner { display: flex; align-items: center; gap: .9rem; flex-wrap: wrap; padding: .85rem 0; }

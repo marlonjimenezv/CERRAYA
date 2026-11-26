@@ -6,14 +6,14 @@ import { empresa } from '../data/empresa';
 import { fotoTipo } from '../data/fotos';
 
 // Fotos debajo de las opiniones: cada una lleva al servicio que muestra.
-// Son fotos de referencia; cambiarlas por fotos propias de trabajos en src/assets/cerraduras/tipos.
+// Son fotos del perfil de Cerraya en Google Maps (src/assets/cerraduras/tipos/maps-*.jpg).
 const fotos = [
-  { foto: 'puerta-vidrio', texto: 'Puertas de vidrio', href: '/puertas-de-vidrio' },
-  { foto: 'digitales', texto: 'Cerraduras digitales', href: '/servicios/cerraduras-digitales' },
-  { foto: 'puerta-vidrio-local', texto: 'Locales comerciales', href: '/servicios/reparacion-puertas-de-vidrio' },
-  { foto: 'ref-cerrojos', texto: 'Cambio de guardas', href: '/servicios/cambio-de-guardas' },
-  { foto: 'llave-carro', texto: 'Llaves de carro', href: '/llaves-de-carro' },
-  { foto: 'herraje-vidrio', texto: 'Herrajes para vidrio', href: '/servicios/herrajes-puertas-de-vidrio' },
+  { foto: 'maps-instalacion', texto: 'Instalación de cerraduras', href: '/servicios/instalacion-de-cerraduras' },
+  { foto: 'maps-guardas', texto: 'Cambio de guardas', href: '/servicios/cambio-de-guardas' },
+  { foto: 'maps-copias', texto: 'Copias de llaves', href: '/servicios/duplicado-de-llaves' },
+  { foto: 'maps-vidrio', texto: 'Puertas de vidrio', href: '/puertas-de-vidrio' },
+  { foto: 'maps-vitrina', texto: 'Tienda de cerraduras', href: '/cerraduras' },
+  { foto: 'maps-reparacion', texto: 'Reparación de cerraduras', href: '/servicios/reparacion-de-cerraduras' },
 ]
   .map((f) => ({ ...f, img: fotoTipo(f.foto) }))
   .filter((f) => f.img);
